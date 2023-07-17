@@ -23,5 +23,9 @@
     #exams_list {
         height: 370px;
         overflow-y: scroll;
-    }   
+    }
+
+    .title__panel {
+        text-transform: uppercase;
+    }
 </style>

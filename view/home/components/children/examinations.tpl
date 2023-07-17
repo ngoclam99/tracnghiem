@@ -48,6 +48,10 @@
   background-color: #f2f2f2;
 }
 
+.title__panel {
+    text-transform: uppercase;
+}
+
 </style>
 
 <script src="assets/js/examination/js-recent-exams.js"></script>

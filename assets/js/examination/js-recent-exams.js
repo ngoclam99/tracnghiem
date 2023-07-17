@@ -8,7 +8,7 @@ $(function () {
                 data.content.forEach(e => {
                     let exam = ` <div class="slide">
                                     <div class="panel panel-primary exam_item">
-                                        <div class="panel-heading text-overflow text-white fw-bold">${e.title}</div>
+                                        <div class="panel-heading text-overflow text-white fw-bold title__panel">${e.title}</div>
                                         <div class="panel-body">
                                             <img src="${e.thumbnail}" class="img-thumbnail img-responsive" style="width:100%; height:100px;"/>
                                             <hr />
