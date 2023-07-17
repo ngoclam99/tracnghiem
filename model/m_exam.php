@@ -81,8 +81,7 @@ function Top10Exams()
             ORDER BY e.is_hot DESC,
             e.created_at DESC,
             exam_status ASC
-            LIMIT 10
-        ";
+            LIMIT 10";
     $result = mysql_query($sql, dbconnect());
     $msg = new Message();
     if ($result) {
@@ -121,7 +120,9 @@ function LoadExams($page, $pageSize)
         FROM exams e
         INNER JOIN exam_configs c ON c.exam_id = e.id
         GROUP BY e.id,title, thumbnail
-        ORDER BY exam_status ";
+            ORDER BY e.is_hot DESC,
+            e.created_at DESC,
+            exam_status ASC";
 
     //Tính số trang của kết quả tìm được dựa vào kích thước trang & số dòng của kết quả
     $pages = 1;
@@ -549,5 +550,3 @@ function EarliestExam()
                 ", dbconnect());
     return mysql_fetch_array($exam);
 }
-
-    
