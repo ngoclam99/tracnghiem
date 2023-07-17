@@ -50,6 +50,8 @@
     <!-- plugins sweetalert2 -->
     <link type="text/css" href="assets/plugins/sweetalert2/sweetalert2.min.css?t=1683896486" rel="stylesheet">
     <script src="assets/plugins/sweetalert2/sweetalert2.min.js?t=1683896486"></script>
+    <link rel="StyleSheet" href="assets/css/style_custom.css?t=<?= time() ?> ">
+    <script src="assets/js/js_custom?t=<?= time() ?> "></script>
 </head>
 
 

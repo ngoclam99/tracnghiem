@@ -280,16 +280,34 @@ function Report(id) {
 
 // load danh sách câu hỏi dựa vào id của đề thi
 function LoadQuestionsByExam(exam_id) {
-
     if (localStorage.getItem(`exam_${user_id}_${exam_id}`) !== null) {
         questions = JSON.parse(localStorage.getItem(`exam_${user_id}_${exam_id}`));
+        $('#total_questions').text(questions.length);
+        $('#answered_questions').text(questions.filter(x => x.checked).length);
+        $('#questionsPagination').empty();
+
+        let idx = 1;
+        questions.forEach(q => {
+            let li = `<li id="${q.id}"><a onclick="ShowQuestion(${q.id})"
+                href="javascript:void(0);" class="${q.checked ? 'done' : ''}">${idx < 10 ? '0' + idx : idx}</a></li>`;
+            $('#questionsPagination').append(li);
+            idx++;
+        })
+        if (current_question_id > 0) {
+            $(`#questionsPagination li#${current_question_id} a`).addClass('active');
+        } else {
+            current_question_id = questions[0].id;
+        }
+        let current_question = questions.filter(x => x.id == current_question_id)[0];
+        current_index = $.inArray(current_question, questions);
+        var currentLink = $("ul#questionsPagination li a").eq(current_index);
+        currentLink.click();
     } else {
         $.ajax({
             url: 'controller/exam/load-questions.php',
             type: 'get',
             data: { exam_id },
             success: function (data) {
-                console.log(data);
                 if (data.statusCode == 200 && data.content.length > 0) {
                     questions = data.content;
                     $('#total_questions').text(questions.length);
@@ -312,14 +330,10 @@ function LoadQuestionsByExam(exam_id) {
                     current_index = $.inArray(current_question, questions);
                     var currentLink = $("ul#questionsPagination li a").eq(current_index);
                     currentLink.click();
-
                 }
             }
         })
     }
-
-
-
 
 }
 
@@ -415,11 +429,11 @@ function ShowQuestion(id) {
 
 }
 function ShowMultiQuestions() {
-    $('#showQuestion').css({
-        'height': '410px',
-        'overflow-y': 'scroll'
-    });
-    console.log(questions);
+    // $('#showQuestion').css({
+    //     'height': '410px',
+    //     'overflow-y': 'scroll'
+    // });
+
     let ro = $('.ex_random_options').data('ro');
     $('#showQuestion').empty();
     let number = 1;
@@ -594,4 +608,3 @@ function isInteger(str) {
     // Sử dụng biểu thức chính quy để kiểm tra xem chuỗi chỉ chứa các chữ số
     return /^\d+$/.test(str);
 }
-

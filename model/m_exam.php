@@ -425,7 +425,6 @@ function GetHotExam()
 function GetQuestions($exam_id)
 {
     $msg = new Message();
-
     /*
         Lấy thông tin bài thi 
         và các cấu hình liên quan

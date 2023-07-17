@@ -402,15 +402,16 @@ function showQuestion(question_id) {
 		$('#'+question_id).show();
 		$('#'+question_id).css('position','relative');
 		$('html,body').animate({
-			scrollTop: $('.answer_solution').offset().top
-		}, 500);
+				scrollTop: $('.answer_solution').offset().top
+		}, 800);
 	}else {
 		$('.question-item').show();
 		$('html,body').animate({
-			scrollTop: $('#'+question_id).offset().top - 40
-		},500);
+			scrollTop: $('#'+question_id).offset().top - 10
+		}, 800);
 	}
-
+	$(".test").removeClass('activeBG');
+	$('#'+question_id).addClass('activeBG');
 }
 
 function scrollDiv()
