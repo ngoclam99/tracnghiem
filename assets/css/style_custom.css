@@ -1,0 +1,14 @@
+.activeBG {
+	animation: 2s linear activeBG;
+	background: aliceblue;
+}
+
+@keyframes activeBG {
+	0% {
+		background: #fff;
+	}
+
+	100% {
+		background: aliceblue;
+	}	
+}
