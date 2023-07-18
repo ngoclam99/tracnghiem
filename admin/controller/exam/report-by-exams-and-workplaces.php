@@ -1,6 +1,5 @@
 <?php
     include('../../model/m_exam.php');
-
     $exams = $_GET['exams'];
     $workplaces = $_GET['workplaces'];
     $page = $_GET['page'];

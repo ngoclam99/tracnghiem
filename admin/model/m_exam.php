@@ -186,16 +186,12 @@ function History($page, $search, $pageSize, $workplaces, $exams)
 
     //Tính số trang của kết quả tìm được dựa vào kích thước trang & số dòng của kết quả
     $pages = 1;
+    $result = mysql_query($sql, dbconnect());
+    $totalRows = mysql_num_rows($result);
     if (strcmp($pageSize, "All") != 0) {
-        $result = mysql_query($sql, dbconnect());
-
-        $totalRows = mysql_num_rows($result);
         $pages = $totalRows % $pageSize == 0 ? $totalRows / $pageSize : floor($totalRows / $pageSize) + 1;
         $sql .= " LIMIT " . ($page - 1) * $pageSize . "," . $pageSize . "";
     }
-
-    
-	
 
     $result = mysql_query($sql, dbconnect());
     $msg = new Message();
@@ -283,7 +279,6 @@ function soNguoiDuThi($page, $search, $pageSize, $workplaces, $exams) {
 
         $totalRows = mysql_num_rows($result);
         $pages = $totalRows % $pageSize == 0 ? $totalRows / $pageSize : floor($totalRows / $pageSize) + 1;
-        $sql .= " LIMIT " . ($page - 1) * $pageSize . "," . $pageSize . "";
     }
 
     $result = mysql_query($sql, dbconnect());
@@ -303,7 +298,11 @@ function soNguoiDuThi($page, $search, $pageSize, $workplaces, $exams) {
 
 function LoadResultByExamsAndWorkplaces($exams, $workplaces, $page, $pageSize, $max,$begin,$end,$province,$districts)
 {
-
+    if (intval($province) != 0) {
+        $where_province = " AND m.province_code = '".$province."'";
+    } else {
+        $where_province = "";
+    }
     $sql = "SELECT subquery.candidate, subquery.result_id, subquery.username, subquery.fullname, subquery.gender, subquery.get_birthdate,
                 subquery.birthdate, subquery.phone, subquery.email, subquery.get_job, subquery.job, subquery.get_workplace,
                 subquery.workplace, subquery.working_unit, subquery.get_position, subquery.position, subquery.exam, subquery.times,
@@ -344,9 +343,7 @@ function LoadResultByExamsAndWorkplaces($exams, $workplaces, $page, $pageSize, $
             JOIN wards w ON m.ward_code = w.code
 			JOIN provinces pro ON m.province_code = pro.code
 			JOIN districts dis ON m.district_code = dis.code
-            WHERE er.created_at >= '".$begin."' AND er.created_at <= '".$end."'
-            AND m.province_code = '".$province."'";
-            
+            WHERE er.created_at >= '".$begin."' AND er.created_at <= '". $end . "'" . $where_province;
             if($districts){
                 $sql .= " AND m.district_code IN (";
                 for ($i = 0; $i < count($districts); $i++) {
@@ -378,7 +375,8 @@ function LoadResultByExamsAndWorkplaces($exams, $workplaces, $page, $pageSize, $
             
             $sql.=" GROUP BY subquery.candidate ORDER BY subquery.mark DESC, subquery.spent_duration ASC";
 
-           
+    $persion_number =  getTotolLuotThi($province);
+  
     //Tính số trang của kết quả tìm được dựa vào kích thước trang & số dòng của kết quả
     $pages = 1;
     if (strcmp($pageSize, "All") != 0) {
@@ -398,12 +396,13 @@ function LoadResultByExamsAndWorkplaces($exams, $workplaces, $page, $pageSize, $
             $arr[] = $local;
         }
 
-
         $msg->icon = "success";
         $msg->statusCode = 200;
         $msg->title = "Lấy danh sách lịch sử thi thành công!";
         $msg->content = $arr;
         $msg->pages = $pages;
+        $msg->songuoithi = $persion_number->songuoithi;
+        $msg->soluotthi = $persion_number;
     } else {
         $msg->statusCode = 500;
         $msg->icon = "error";
@@ -867,4 +866,107 @@ function setCode($id)
         $msg->statusCode = 500;
     }
     return $msg;
+}
+
+function History_NumberPersion($page, $search, $pageSize, $workplaces, $exams)
+{
+    $sql = "SELECT m.id AS candidate,er.id AS result_id,m.username,m.fullname,
+                CASE 
+                    WHEN m.gender = 1 THEN 'Nam'
+                    WHEN m.gender = 0 THEN 'Nữ'
+                    ELSE 'Khác'
+                END AS gender,
+                m.get_birthdate,
+                CASE WHEN m.get_birthdate = 1 THEN DATE_FORMAT( m.birthdate,'%d/%m/%Y')  ELSE '' END AS birthdate,
+                m.phone,m.email,
+                m.get_job,j.name AS job,
+                m.get_workplace,wp.name AS workplace,
+                pro.full_name AS province, dis.full_name AS district, w.full_name AS ward, er.forecast_candidates AS forecast,
+                m.get_position,p.name AS position,
+                e.title AS exam,
+                er.times,
+                (COUNT(CASE WHEN erd.option_id =erd.question_answer THEN 1 END)*e.mark_per_question) AS mark ,
+                COUNT(erd.question_id)*e.mark_per_question AS total_marks,
+                (COUNT(CASE WHEN erd.option_id =erd.question_answer THEN 1 END)*e.mark_per_question) / COUNT(erd.question_id)*e.mark_per_question as test,
+                DATE_FORMAT(er.started_at,'%d/%m/%Y %T') AS exam_date,
+                er.spent_duration 
+            FROM members m
+            LEFT JOIN jobs j ON m.job_id = j.id
+            LEFT JOIN workplaces wp ON m.workplace_id = wp.id
+            LEFT JOIN positions p ON m.position_id = p.id
+            JOIN exam_results er ON er.member_id = m.id
+            JOIN exam_result_details erd ON erd.exam_result_id = er.id 
+            JOIN exams e ON er.exam_id = e.id
+            JOIN wards w ON m.ward_code = w.code
+            JOIN provinces pro ON m.province_code = pro.code
+            JOIN districts dis ON m.district_code = dis.code
+            WHERE   (m.username LIKE '%" . $search . "%'
+                    OR m.fullname LIKE '%" . $search . "%'
+                    OR m.phone LIKE '%" . $search . "%'
+                    OR m.email LIKE '%" . $search . "%'
+                    OR wp.name LIKE '%" . $search . "%'
+                    OR j.name LIKE '%" . $search . "%')
+            ";
+
+    if ($workplaces) {
+        $sql .= " AND wp.id IN (";
+        for ($i = 0; $i < count($workplaces); $i++) {
+            $sql .= $i < count($workplaces) - 1 ? $workplaces[$i] . "," : $workplaces[$i];
+        }
+        $sql .= ")";
+    }
+    if ($exams) {
+        $sql .= " AND e.id IN (";
+        for ($i = 0; $i < count($exams); $i++) {
+            $sql .= $i < count($exams) - 1 ? $exams[$i] . "," : $exams[$i];
+        }
+        $sql .= ")";
+    }
+    $sql .= " GROUP BY m.id,er.id\nORDER BY test DESC, spent_duration ASC";
+
+    //Tính số trang của kết quả tìm được dựa vào kích thước trang & số dòng của kết quả
+    $result = mysql_query($sql, dbconnect());
+    $totalRows = mysql_num_rows($result);
+
+    $msg = new Message();
+    $msg->icon = "success";
+    $msg->statusCode = 200;
+    $msg->title = "Lấy thông tin người dự thi!";
+    $msg->soluotthi = $totalRows;
+
+    return $msg;
+}
+
+function getTotolLuotThi($provice) {
+    if ($provice != '') {
+        $sql = 'SELECT count(*) 
+                FROM members m
+                LEFT JOIN jobs j ON m.job_id = j.id
+                LEFT JOIN workplaces wp ON m.workplace_id = wp.id
+                LEFT JOIN positions p ON m.position_id = p.id
+                JOIN exam_results er ON er.member_id = m.id
+                JOIN exam_result_details erd ON erd.exam_result_id = er.id 
+                JOIN exams e ON er.exam_id = e.id
+                JOIN wards w ON m.ward_code = w.code
+                JOIN provinces pro ON m.province_code = pro.code
+                JOIN districts dis ON m.district_code = dis.code
+                WHERE m.province_code = ' . $provice  . '
+                GROUP BY m.id,er.id';
+    } else {
+        $sql = 'SELECT count(*) 
+                FROM members m
+                LEFT JOIN jobs j ON m.job_id = j.id
+                LEFT JOIN workplaces wp ON m.workplace_id = wp.id
+                LEFT JOIN positions p ON m.position_id = p.id
+                JOIN exam_results er ON er.member_id = m.id
+                JOIN exam_result_details erd ON erd.exam_result_id = er.id 
+                JOIN exams e ON er.exam_id = e.id
+                JOIN wards w ON m.ward_code = w.code
+                JOIN provinces pro ON m.province_code = pro.code
+                JOIN districts dis ON m.district_code = dis.code
+                GROUP BY m.id,er.id';
+    }
+    $result = mysql_query($sql, dbconnect());
+    $totalRows = mysql_num_rows($result);
+    return  $totalRows;      
 }

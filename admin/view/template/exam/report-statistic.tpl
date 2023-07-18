@@ -19,7 +19,7 @@
                         <div class="row">                           
                             <div class="form-group col-xs-6 col-sm-6 col-md-3 col-lg-3 mt-5"> 
                                 <label>Từ ngày<span class="style2">(*)</span></label>                    
-                                <div class='input-group date'  style="z-index:20000000000000;">
+                                <div class='input-group date' style="z-index:20000000000000;">
                                 <input type='text' class="form-control" id='dtpBegin'/>
                                 <span class="input-group-addon">
                                     <i class="fa fa-calendar"></i>
@@ -29,7 +29,7 @@
 
                             <div class="form-group col-xs-6 col-sm-6 col-md-3 col-lg-3 mt-5"> 
                                 <label>Tới ngày<span class="style2">(*)</span></label>                    
-                                <div class='input-group date'  style="z-index:20000000000000;">
+                                <div class='input-group date' style="z-index:20000000000000;">
                                 <input type='text' class="form-control" id='dtpEnd'/>
                                 <span class="input-group-addon">
                                     <i class="fa fa-calendar"></i>
@@ -80,8 +80,29 @@
 
                         <div class="panel panel-success" style="margin-top:5px">
                             <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <span><b>Số lượt thi:</b> <span class="label label-success" id="soluotthi"></span></span> |
+                                        <span><b>Số người thi</b> <span class="label label-primary" id="songuoithi"></span></span>
+                                    </div>
+
+                                    <div class="col-md-6 text-right form-inline">
+                                        <div class="form-group text-right">
+                                            <label>Số dòng:</label>
+                                            <select class="form-control" style="width:100px; margin-left:10px;"
+                                                id="slPageSize">
+                                                <option>10</option>
+                                                <option>50</option>
+                                                <option>100</option>
+                                                <option>500</option>
+                                                <option>All</option>
+                                            </select>                                           
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div id="result" class="table-responsive"
-                                    style="display:block; height:370px; overflow-y:scroll;">
+                                    style="display:block; height:80vh; overflow-y:scroll;">
                                     <table class="table table-bordered table-striped table-hover"
                                         style="margin-bottom: 0;" id="tableData">
                                         <thead>
@@ -118,16 +139,7 @@
                                                     Chức vụ
                                                 </th>
                                                 <th class="text-center">
-                                                    Tỉnh thành
-                                                </th>
-                                                <th class="text-center">
-                                                    Huyện thị
-                                                </th>
-                                                <th class="text-center">
-                                                    Xã phường
-                                                </th>
-                                                <th class="text-center">
-                                                    Địa chỉ
+                                                    Quê quán
                                                 </th>
                                                 <th class="text-center">
                                                     Cuộc thi
@@ -156,22 +168,9 @@
 
                                 <hr style=" border: 1px solid #ccc; border-top: none">
                                 <div class="row">
-                                    <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+                                    <div class="text-center">
                                         <ul class="pagination pagination-sm" id="pagination"
                                             style="margin-top:0 !important;"></ul>
-                                    </div>
-                                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 text-right form-inline">
-                                        <div class="form-group text-right">
-                                            <label>Số dòng:</label>
-                                            <select class="form-control" style="width:100px; margin-left:10px;"
-                                                id="slPageSize">
-                                                <option>10</option>
-                                                <option>50</option>
-                                                <option>100</option>
-                                                <option>500</option>
-                                                <option>All</option>
-                                            </select>                                           
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -201,7 +200,10 @@
     border: 1px solid black;
     padding: 8px;
   }
+
+   #soluotthi, #songuoithi {
+        font-size: 17px;
+        font-weight: 500;
+        box-shadow: 0px 5px 10px rgb(137 130 130 / 42%);
+    }
 </style>
-
-
-

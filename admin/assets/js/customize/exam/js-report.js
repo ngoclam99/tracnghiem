@@ -30,10 +30,7 @@ $(function () {
     })
     $('#slDistricts').on('change', function () {
         LoadWardsByDist($(this).val())
-    })
-
-    
-    
+    });
 })
 
 
@@ -43,8 +40,9 @@ function LoadProvinces() {
         type: 'get',
         success: function (data) {          
                 let default_pro = -1;
-                // console.log(data);
+                console.log(data);
                 $('#slProvinces').empty();
+                $('#slProvinces').append(`<option value="" selected>--- Tất cả --- </option>`);
                 data.forEach(p => {
                     if (p.default_pro == 1) {
                         default_pro = p.code;
@@ -53,28 +51,32 @@ function LoadProvinces() {
                 })
 
                 $('#slProvinces').selectpicker('refresh');
-                $(`#slProvinces option[value=${default_pro}]`).attr('selected', 'selected');
+                $(`#slProvinces option[value=${default_pro}]`);
                 $(`#slProvinces`).trigger('change');
         }
     })
 }
 
 function LoadDistrictsByPro(province_code) {
-    $.ajax({
-        url: 'controller/location/districts.php',
-        type: 'get',
-        data: { province_code },
-        success: function (data) {       
-                $('#slDistricts').empty();
-                data.forEach(d => {
-                    $('#slDistricts').append(`<option value="${d.code}">${d.full_name}</option>`);
-                })
-                $('#slDistricts').selectpicker('refresh');
-                $(`#slDistricts`).trigger('change');     
-                $('#btnSearch').click();
+    
+        $.ajax({
+            url: 'controller/location/districts.php',
+            type: 'get',
+            data: { province_code },
+            success: function (data) {
+                    if (parseInt(province_code) > 0) {   
+                        $('#slDistricts').empty();
+                        data.forEach(d => {
+                            $('#slDistricts').append(`<option value="${d.code}">${d.full_name}</option>`);
+                        })
+                    }
 
-        }
-    })
+                    $('#slDistricts').selectpicker('refresh');
+                    $(`#slDistricts`).trigger('change'); 
+                    $('#btnSearch').click();
+
+            }
+        });
 }
 
 function LoadWardsByDist(district_code) {
@@ -101,6 +103,7 @@ $('#btnSearch').click(function () {
 })
 
 $('#btnExportExcel').click(function () {
+    alert(1);
     $("#tableData").table2excel({
         name: "Sheet1",
         filename: "data",
@@ -159,10 +162,12 @@ function LoadData() {
                                 <td class="text-nowrap">${t.get_workplace == 1 ? t.workplace : ''}</td>
                                 <td class="text-nowrap">${t.working_unit}</td>
                                 <td class="text-nowrap">${t.get_position == 1 ? t.position : ''}</td>
-                                <td class="text-nowrap">${t.province}</td>
-                                <td class="text-nowrap">${t.district}</td>
-                                <td class="text-nowrap">${t.ward}</td>
-                                <td class="text-nowrap">${t.address}</td>
+                                <td class="text-nowrap">
+                                    <p>${t.province}</p>
+                                    <p>${t.district}</p>
+                                    <p>${t.ward}</p>
+                                    <p>Địa chỉ: ${t.address}</p>
+                                </td>
                                 <td class="text-nowrap text-warning fw-bold">${t.exam}</td>
                                 <td class="text-center fw-bold text-info">${t.times}</td>
                                 <td class="text-center fw-bold text-info">${t.mark}/${t.total_marks}</td>
@@ -179,6 +184,8 @@ function LoadData() {
                         $('#pagination').append(`<li class="${page == i ? 'active' : ''}"><a href="#">${i}</a></li>`);
                     }
                 }
+                document.getElementById("soluotthi").innerText = data.soluotthi;
+                document.getElementById("songuoithi").innerText = data.content.length;
             }
         }
     })

@@ -18,15 +18,17 @@
                     <div class="box-body">
                         <div class="row">                 
                             <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3" style="margin-top:5px">
+                                <label for="">Chọn cuộc thi</label>
                                 <select class="selectpicker" id="slExams" data-live-search="true" multiple style="width:100% important;"></select>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3" style="margin-top:5px">
+                                <label for="">Chọn đơn vị công tác</label>
                                 <select class="selectpicker" id="slUnits" data-live-search="true" multiple style="width:100% important;"></select>
                             </div>           
                             <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6" style="margin-top:5px">
-                                <div class="input-group input-group-sm">                                
+                                <div class="input-group input-group-sm" style="margin-top: 26px;" >                            
                                     <input type="text" class="form-control" id="txtSearch"
-                                        placeholder="Từ khóa tìm kiếm" />
+                                        placeholder="Từ khóa tìm kiếm"/>
                                     <span class="input-group-btn">
                                         <button class="btn btn-info btn-flat" id="btnSearch">
                                             <i class="fa fa-search" aria-hidden="true"></i>
@@ -34,13 +36,34 @@
                                         </button>                                        
                                     </span>
                                 </div>
-                            </div>                           
+                            </div>    
                         </div>
 
+                            <br>                   
                         <div class="panel panel-success" style="margin-top:5px">
                             <div class="panel-body">
-                                <div id="result" class="table-responsive"
-                                    style="display:block; height:370px; overflow-y:scroll;">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <span><b>Số lượt thi:</b> <span class="label label-success" id="soluotthi"></span></span> |
+                                        <span><b>Số người thi</b> <span class="label label-primary" id="songuoithi"></span></span>
+                                    </div>
+
+                                    <div class="col-md-6 text-right form-inline">
+                                        <div class="form-group text-right">
+                                            <label>Số dòng:</label>
+                                            <select class="form-control" style="width:100px; margin-left:10px;"
+                                                id="slPageSize">
+                                                <option>10</option>
+                                                <option>50</option>
+                                                <option>100</option>
+                                                <option>500</option>
+                                                <option>All</option>
+                                            </select>                                           
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="margin-top: 20px;" id="result" class="table-responsive"
+                                    style="display:block; height:80vh; overflow-y:scroll;">
                                     <table class="table table-bordered table-striped table-hover"
                                         style="margin-bottom: 0;">
                                         <thead>
@@ -111,30 +134,9 @@
 
                                 <hr style=" border: 1px solid #ccc; border-top: none">
                                 <div class="row">
-                                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                    <div class=" text-center">
                                         <ul class="pagination pagination-sm" id="pagination"
                                             style="margin-top:0 !important;"></ul>
-                                    </div>
-									<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-										<div class="col-xs-6 cols-sm-6">
-											Số lượt thi: <span class="" id="soluotthi"></span>
-										</div>
-										<div class="col-xs-6 cols-sm-6">
-											Số người thi <span id="songuoithi"></span>
-										</div>
-                                    </div>
-                                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 text-right form-inline">
-                                        <div class="form-group text-right">
-                                            <label>Số dòng:</label>
-                                            <select class="form-control" style="width:100px; margin-left:10px;"
-                                                id="slPageSize">
-                                                <option>10</option>
-                                                <option>50</option>
-                                                <option>100</option>
-                                                <option>500</option>
-                                                <option>All</option>
-                                            </select>                                           
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -150,6 +152,11 @@
 <script src="assets/js/customize/exam/js-list.js"></script>
 <script src="assets/js/customize/workplace/js-provinces-workplaces.js"></script>
 <script src="assets/js/customize/exam/js-report-history.js"></script>
+<style>
+    #soluotthi, #songuoithi {
+        font-size: 17px;
+        font-weight: 500;
+        box-shadow: 0px 5px 10px rgb(137 130 130 / 42%);
+    }
 
-
-
+</style>
