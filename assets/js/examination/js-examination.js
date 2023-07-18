@@ -545,7 +545,7 @@ $(document).on('click', "#showQuestion label", function () {
     let crIdx = $.inArray(question, questions);
    
     if(crIdx == questions.length-1){
-        $('#btnSaveExamResult').click();
+        // $('#btnSaveExamResult').click();
     }
 
 })

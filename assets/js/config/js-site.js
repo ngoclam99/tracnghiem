@@ -10,7 +10,7 @@ $(function () {
             if (data.statusCode == 200) {
 
                 data.content.forEach(c => {
-                    $(`span.${c.cf_key.toLowerCase()}`).text(c.cf_value);
+                    // $(`span.${c.cf_key.toLowerCase()}`).text(c.cf_value);
                     $(`meta.${c.cf_key.toLowerCase()}`).attr('content', c.cf_value);
                     $(`title.${c.cf_key.toLowerCase()}`).text(c.cf_value);
                     $(`link.${c.cf_key.toLowerCase()}`).attr('href', c.cf_value);

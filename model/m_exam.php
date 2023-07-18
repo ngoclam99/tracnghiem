@@ -344,10 +344,12 @@ function save($exam_id,$result,$times,$spent_duration,$exam_date,$forecast_candi
     $msg = new Message();
     session_start();
     $p = (array)$_SESSION['profile'];
+
     $er = erSave($exam_id, $p['id'], $times, $spent_duration, $exam_date,$forecast_candidates);
     if ($er->statusCode != 201) {
         return $er;
     }
+   
     foreach ($result as $r) {
         $option = getCorrectOption($r['id']);
         if ($option->statusCode != 200) {
