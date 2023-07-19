@@ -391,7 +391,9 @@ function Register(
     $cfJob,
     $cfPosition,
     $cfWorkPlace,
-    $cfWorkingUnit
+    $cfWorkingUnit,
+    $doituong = '0',
+    $doituong_chitiet='0'
 ) {
     $avatarurl = '';
     $isupload = true;
@@ -451,6 +453,8 @@ function Register(
         $sql .= ",get_position='" . $cfPosition . "'";
         $sql .= ",get_workplace='" . $cfWorkPlace . "'";
         $sql .= ",get_working_unit='" . $cfWorkingUnit . "'";
+        $sql .= ",id_doituong='" . $doituong . "'";
+        $sql .= ",id_doituong_chitiet='" . $doituong_chitiet . "'";
 
         $result = mysql_query($sql, dbconnect());
 

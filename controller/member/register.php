@@ -33,9 +33,11 @@ $cfJob = $_POST['cfJob'];
 $cfPosition = $_POST['cfPosition'];
 $cfWorkPlace = $_POST['cfWorkPlace'];
 $cfWorkingUnit = $_POST['cfWorkingUnit'];
+$doituong = $_POST['doituong'];
+$doituong_chitiet = $_POST['doituong_chitiet'];
 
 $result =Register($fullname,$avatar,$username,$password,$email,$phone,$gender,$birthdate,
 $province_code,$district_code,$ward_code,$address,$job_id,$position,$workplace_id,$working_unit,
-$cfBirthdate,$cfGender,$cfAddress,$cfJob,$cfPosition,$cfWorkPlace,$cfWorkingUnit);
+$cfBirthdate,$cfGender,$cfAddress,$cfJob,$cfPosition,$cfWorkPlace,$cfWorkingUnit, $doituong, $doituong_chitiet);
 header("Content-Type: application/json");
 echo json_encode($result);

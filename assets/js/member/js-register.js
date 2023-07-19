@@ -169,7 +169,31 @@ $('.btnSubmitRegister').click(function () {
         return;
     }
 
+    if ($(".slDoiTuong").val() == '') {
+        Swal.fire({
+            title: 'Thông báo',
+            icon: 'error',
+            html: 'Đơn vị không được để trống',
+            customClass: 'swal-wide',
+            showCloseButton: false,
+            showCancelButton: false,
+            focusConfirm: false,
+        });
+        return !1;
+    }
 
+    if ($(".slDoiTuong").val() != '' && $(".slDoiTuongChiTiet").val() == '') {
+        Swal.fire({
+            title: 'Thông báo',
+            icon: 'error',
+            html: 'Đơn vị chi tiết không được để trống',
+            customClass: 'swal-wide',
+            showCloseButton: false,
+            showCancelButton: false,
+            focusConfirm: false,
+        });
+        return !1;
+    }
 
     //dữ liệu nhập là hợp lệ => tiến hành post dữ liệu để lưu vào csdl
     let formData = new FormData();
@@ -190,8 +214,8 @@ $('.btnSubmitRegister').click(function () {
     formData.append("position", position);
     formData.append("workplace_id", workplace_id);
     formData.append("working_unit", workingunit);
-
-
+    formData.append("doituong", $(".slDoiTuong").val());
+    formData.append("doituong_chitiet", $(".slDoiTuongChiTiet").val());
     formData.append("cfGender", GENDER ? 1 : 0);
     formData.append("cfBirthdate", BIRTHDATE ? 1 : 0);
     formData.append("cfAddress", ADDRESS ? 1 : 0);
@@ -439,8 +463,10 @@ function loadDoiTuong() {
 
 
 function loadDoiTuongChiTiet(id) {
+    $(".slDoiTuongChiTiet").html("");
+    $(".slDoiTuongChiTiet").fadeOut();
     if (parseInt(id) > 0) {
-        
+
         $.ajax({
             url: 'controller/member/load_doituong.php',
             type: 'POST',
@@ -451,8 +477,6 @@ function loadDoiTuongChiTiet(id) {
             success: function (data) {
                 if (data != '') {
                     list = JSON.parse(data);
-                    $(".slDoiTuongChiTiet").fadeOut();
-                    $(".slDoiTuongChiTiet").html("");
                     html = '<option value="">---Chọn đơn vị ---</option>';
                     if (list.length > 0) {
                         $(".slDoiTuongChiTiet").fadeIn(500);
