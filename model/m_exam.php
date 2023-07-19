@@ -182,6 +182,7 @@ function Top10Candidates()
     ) t2 ON t1.member_id = t2.member_id AND t1.tongcaudung = t2.tongdung
     INNER JOIN exams as ex ON t1.exam_id = ex.id
     INNER JOIN members as mb ON t1.member_id = mb.id
+    WHERE ex.is_stat = 1
     ORDER BY t2.tongdung DESC, t1.spent_duration ASC";    
 
     $result = mysql_query($sql, dbconnect());
