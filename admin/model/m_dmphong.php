@@ -42,4 +42,49 @@ function editdm($id, $local)
     mysql_query("delete from danh_ba_dm where id= '".(int)$id."'", dbconnect());
 }
 
+function getListdmDT() {
+    $local_list = mysql_query("SELECT * FROM dm_doituong ORDER BY id DESC", dbconnect());
+    $result = array();
+    while ($local = mysql_fetch_assoc($local_list)){
+        $sql = mysql_query("SELECT * FROM doituong_chitiet WHERE id_doituong = " . $local['id'] . " ORDER BY id DESC", dbconnect());
+        $arr_detail = array();
+        while ($detail = mysql_fetch_assoc($sql)) {
+            $arr_detail[] = $detail;
+        }
+        $local['detail'] = $arr_detail;
+        $result[]= $local;
+    }
+    return $result;
+}
+
+ function deldmdonvi($id){
+    mysql_query("delete from dm_doituong where id= '".(int)$id."'", dbconnect());
+}
+
+//add can bo
+function insertdmdt($ten_donvi) {
+    mysql_query("insert dm_doituong set 
+    ten_donvi = '".$ten_donvi."'",
+    dbconnect());
+}
+
+ function deldmdonvi_detail($id){
+    mysql_query("delete from doituong_chitiet where id= '".(int)$id."'", dbconnect());
+}
+
+function insertdmdt_detail($title, $id){
+    mysql_query("insert doituong_chitiet set 
+    title = '".$title."',
+    id_doituong = '".$id."'",
+    dbconnect());
+}
+
+function getListDVDetail($id) {
+    $sql = mysql_query("SELECT * FROM doituong_chitiet WHERE id_doituong = " . $id . " ORDER BY id DESC", dbconnect());
+    $arr_detail = array();
+    while ($detail = mysql_fetch_assoc($sql)) {
+        $arr_detail[] = $detail;
+    }
+    return $arr_detail;
+}
 ?>

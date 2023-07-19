@@ -407,3 +407,62 @@ function validateUsername(usr) {
     let regex = /^[^\s!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+$/;
     return regex.test(usr);
 }
+
+$(function() {
+    $(".slDoiTuongChiTiet").hide();
+    $(".slDoiTuong").change(function() {
+        loadDoiTuongChiTiet($(this).val());
+    });
+
+    loadDoiTuong();
+});
+
+function loadDoiTuong() {
+    $.ajax({
+        url: 'controller/member/load_doituong.php',
+        type: 'POST',
+        data: {
+            load_dt: 1,
+        },
+        success: function (data) {
+            if (data != '') {
+                list = JSON.parse(data);
+                html = ' <option value="">---Chọn đối tượng ---</option>';
+                list.forEach(val => {
+                    html += '<option value="' + val['id'] + '"> ' + val['ten_donvi'] + ' </option>';
+                })
+                $(".slDoiTuong").html(html);
+            }
+        }
+    })
+}
+
+
+function loadDoiTuongChiTiet(id) {
+    if (parseInt(id) > 0) {
+        
+        $.ajax({
+            url: 'controller/member/load_doituong.php',
+            type: 'POST',
+            data: {
+                load_dt_chitiet: 1,
+                id_doituong: id,
+            },
+            success: function (data) {
+                if (data != '') {
+                    list = JSON.parse(data);
+                    $(".slDoiTuongChiTiet").fadeOut();
+                    $(".slDoiTuongChiTiet").html("");
+                    html = '<option value="">---Chọn đơn vị ---</option>';
+                    if (list.length > 0) {
+                        $(".slDoiTuongChiTiet").fadeIn(500);
+                        list.forEach(val => {
+                            html += '<option value="' + val['id'] + '"> ' + val['title'] + ' </option>';
+                        })
+                    }
+                    $(".slDoiTuongChiTiet").html(html);
+                }
+            }
+        });
+    }
+}

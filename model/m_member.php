@@ -542,3 +542,19 @@ function ip_time($id, $ip)
           time_login = NOW()
           where id_members = '" . (int) $id . "'", dbconnect());
 }
+
+function LoadDoiTuong() {
+    $result = mysql_query("select * from dm_doituong", dbconnect());
+    while ($local = mysql_fetch_assoc($result)) {
+        $arr[] = $local;
+    }
+    return $arr;
+}
+
+function LoadDoiTuongChiTiet($id_dt) {
+    $result = mysql_query("select * from doituong_chitiet WHERE id_doituong = " . $id_dt, dbconnect());
+    while ($local = mysql_fetch_assoc($result)) {
+        $arr[] = $local;
+    }
+    return $arr;
+}

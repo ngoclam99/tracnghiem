@@ -173,7 +173,7 @@ function Top10Candidates()
     //         ORDER BY mark_ratio DESC, spent_duration DESC
     //         LIMIT 10
     //         ";
-    $sql = "SELECT t1.tongcaudung, ex.mark_per_question, DATE_FORMAT(t1.started_at,'%d/%m/%Y %T') AS exam_date, mb.fullname, ex.number_of_questions
+    $sql = "SELECT t1.tongcaudung, ex.mark_per_question, DATE_FORMAT(t1.started_at,'%d/%m/%Y %T') AS exam_date, mb.fullname, ex.number_of_questions, t1.spent_duration
     FROM exam_results t1
     INNER JOIN (
         SELECT member_id, MAX(tongcaudung) AS tongdung
@@ -201,8 +201,12 @@ function Top10Candidates()
                     $local['logo'] = 'hcbac.png';
                     break;
 
-                default:
+                case 2:
                     $local['logo'] = 'hcdong.png';
+                    break;    
+
+                default:
+                    $local['logo'] = 'hc.png';
                     break;
             }
             

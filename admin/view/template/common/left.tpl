@@ -61,6 +61,9 @@
                             <li><a href="index.php?module=dmphong&amp;act=list"><i
                                         class="fa fa-chevron-right fa-fw"></i>Danh mục phòng ban</a></li>
 
+                            <li><a href="index.php?module=dmdonvi&amp;act=list"><i
+                                        class="fa fa-chevron-right fa-fw"></i>Danh sách đơn vị dự thi</a></li>
+
                         </ul>
                     </li>
 

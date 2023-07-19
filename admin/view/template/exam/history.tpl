@@ -44,8 +44,7 @@
                             <div class="panel-body">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <span><b>Số lượt thi:</b> <span class="label label-success" id="soluotthi"></span></span> |
-                                        <span><b>Số người thi</b> <span class="label label-primary" id="songuoithi"></span></span>
+                                        
                                     </div>
 
                                     <div class="col-md-6 text-right form-inline">
@@ -65,7 +64,10 @@
                                 <div style="margin-top: 20px;" id="result" class="table-responsive"
                                     style="display:block; height:80vh; overflow-y:scroll;">
                                     <div class="row">
-                                        <div class="col-md-10"></div>
+                                        <div class="col-md-10">
+                                            <span><b>Số lượt thi:</b> <span class="label label-success" id="soluotthi"></span></span> |
+                                        <span><b>Số người thi</b> <span class="label label-primary" id="songuoithi"></span></span>      
+                                        </div>
                                         <div class="col-md-2 text-right">
                                             <button class="btn btn-info bg-info btn-flat btn-margin ml-2" id="btnExportExcel" style="width:100% !important;">
                                                 <i class="fa fa-file-excel-o" aria-hidden="true"></i>
@@ -168,6 +170,7 @@
         font-size: 17px;
         font-weight: 500;
         box-shadow: 0px 5px 10px rgb(137 130 130 / 42%);
+        display: inline-block;
     }
 
 </style>

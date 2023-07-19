@@ -162,3 +162,12 @@
         border-radius: 6px;
         box-shadow: 5px 5px 5px rgb(55 54 54 / 20%);
     }
+
+.notification-item {
+    height: 390px;
+    overflow-y: scroll;
+}
+
+.red {
+    color: red;
+}
