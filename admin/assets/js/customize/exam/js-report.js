@@ -103,7 +103,6 @@ $('#btnSearch').click(function () {
 })
 
 $('#btnExportExcel').click(function () {
-    alert(1);
     $("#tableData").table2excel({
         name: "Sheet1",
         filename: "data",
@@ -170,7 +169,7 @@ function LoadData() {
                                 </td>
                                 <td class="text-nowrap text-warning fw-bold">${t.exam}</td>
                                 <td class="text-center fw-bold text-info">${t.times}</td>
-                                <td class="text-center fw-bold text-info">${t.mark}/${t.total_marks}</td>
+                                <td class="text-center fw-bold text-info textPoint"><span>${t.mark}/${t.total_marks}.</span></td>
                                 <td class="text-nowrap">${t.exam_date}</td>
                                 <td class="text-center fw-bold text-info">${formatDuration(t.spent_duration)}</td>
                                 <td class="text-right">${t.isForecast ==1?t.forecast_candidate:''}</td>

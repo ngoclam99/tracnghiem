@@ -64,8 +64,17 @@
                                 </div>
                                 <div style="margin-top: 20px;" id="result" class="table-responsive"
                                     style="display:block; height:80vh; overflow-y:scroll;">
-                                    <table class="table table-bordered table-striped table-hover"
-                                        style="margin-bottom: 0;">
+                                    <div class="row">
+                                        <div class="col-md-10"></div>
+                                        <div class="col-md-2 text-right">
+                                            <button class="btn btn-info bg-info btn-flat btn-margin ml-2" id="btnExportExcel" style="width:100% !important;">
+                                                <i class="fa fa-file-excel-o" aria-hidden="true"></i>
+                                                Xuất Excel
+                                            </button>
+                                        </div>
+                                    </div>  
+                                            <br>
+                                    <table class="table table-bordered table-striped table-hover" style="margin-bottom: 0;" id="tableData">
                                         <thead>
                                             <tr>
                                                 <th class="text-center">
@@ -149,6 +158,8 @@
     </section>
 </div>
 <?php include('view/template/common/footer.tpl'); ?>
+<script src="assets/dist/js/xlsx.full.min.js"></script>
+<script src="assets/dist/js/jquery.table2excel.min.js"></script>
 <script src="assets/js/customize/exam/js-list.js"></script>
 <script src="assets/js/customize/workplace/js-provinces-workplaces.js"></script>
 <script src="assets/js/customize/exam/js-report-history.js"></script>

@@ -207,3 +207,10 @@
         box-shadow: 0px 5px 10px rgb(137 130 130 / 42%);
     }
 </style>
+
+
+<style>
+    .textPoint {
+        mso-number-format:"\@";/*force text*/
+    }
+</style>

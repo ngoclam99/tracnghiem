@@ -9,8 +9,18 @@
                 </div>
             </div>
             <div class="clearfix"></div>
-            <div class="notification-list top10candidates"></div>
+            <!-- <div class="notification-list top10candidates">
+                
+            </div> -->
+            <div class="navbar">
+                <ul class="top10candidates">
+                </ul>
+            </div>
         </div>
     </div>
 </div>
+<div>
+    
+</div>
+
 <script src="assets/js/home/js-top10candidates.js"></script>

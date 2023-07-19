@@ -82,7 +82,7 @@ function LoadHistory() {
 								<td class="text-nowrap">${t.forecast}</td> // tinh
                                 <td class="text-nowrap text-warning fw-bold">${t.exam}</td>
                                 <td class="text-center fw-bold text-info">${t.times}</td>
-                                <td class="text-center fw-bold text-info">${t.mark}/${t.total_marks}</td>
+                                <td class="text-center fw-bold text-info">${t.mark}/${t.total_marks}.</td>
                                 <td class="text-nowrap">${t.exam_date}</td>
                                 <td class="text-center fw-bold text-info">${formatDuration(t.spent_duration)}</td>
                                 <td class="text-nowrap">
@@ -117,4 +117,25 @@ function formatDuration(duration) {
 $('#slPageSize').on('change', function () {
     pageSize = $('#slPageSize option:selected').text();
     $('#btnSearch').click();
+})
+
+
+$('#btnExportExcel').click(function () {
+    $("#tableData").table2excel({
+        name: "Sheet1",
+        filename: "data",
+        fileext: ".xlsx",
+        exclude_rows: false,
+        exclude_cols: false,
+        preserveColors: false,
+        exportOptions: {
+            format: {
+              date: {
+                display: function (data, format) {
+                  // Modify this function to remove date formatting
+                  return data;
+                }
+            }
+        }
+      }});
 })

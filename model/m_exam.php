@@ -158,30 +158,57 @@ function LoadExams($page, $pageSize)
 
 function Top10Candidates()
 {
-    $sql = "SELECT DISTINCT m.id, m.fullname,
-                DATE_FORMAT(er.started_at,'%d/%m/%Y %T') AS exam_date,
-                er.spent_duration,
-                (COUNT(CASE WHEN erd.option_id =erd.question_answer THEN 1 END)*e.mark_per_question) AS mark ,
-                COUNT(erd.question_id)*e.mark_per_question AS total_marks,
-                (COUNT(CASE WHEN erd.option_id =erd.question_answer THEN 1 END)*e.mark_per_question)/(COUNT(erd.question_id)*e.mark_per_question) AS mark_ratio
-            FROM members m
-            JOIN exam_results er ON er.member_id = m.id
-            JOIN exam_result_details erd ON erd.exam_result_id = er.id
-            JOIN exams e ON er.exam_id = e.id
-            WHERE e.is_stat = 1
-            GROUP BY m.id,e.id,er.id
-            ORDER BY mark_ratio DESC, spent_duration DESC
-            LIMIT 10
-            ";
-	
+    // $sql = "SELECT DISTINCT m.id, m.fullname,
+    //             DATE_FORMAT(er.started_at,'%d/%m/%Y %T') AS exam_date,
+    //             er.spent_duration,
+    //             (COUNT(CASE WHEN erd.option_id =erd.question_answer THEN 1 END)*e.mark_per_question) AS mark ,
+    //             COUNT(erd.question_id)*e.mark_per_question AS total_marks,
+    //             (COUNT(CASE WHEN erd.option_id =erd.question_answer THEN 1 END)*e.mark_per_question)/(COUNT(erd.question_id)*e.mark_per_question) AS mark_ratio
+    //         FROM members m
+    //         JOIN exam_results er ON er.member_id = m.id
+    //         JOIN exam_result_details erd ON erd.exam_result_id = er.id
+    //         JOIN exams e ON er.exam_id = e.id
+    //         WHERE e.is_stat = 1
+    //         GROUP BY er.member_id, m.id,e.id,er.id
+    //         ORDER BY mark_ratio DESC, spent_duration DESC
+    //         LIMIT 10
+    //         ";
+    $sql = "SELECT t1.tongcaudung, ex.mark_per_question, DATE_FORMAT(t1.started_at,'%d/%m/%Y %T') AS exam_date, mb.fullname, ex.number_of_questions
+    FROM exam_results t1
+    INNER JOIN (
+        SELECT member_id, MAX(tongcaudung) AS tongdung
+        FROM exam_results
+        GROUP BY member_id
+    ) t2 ON t1.member_id = t2.member_id AND t1.tongcaudung = t2.tongdung
+    INNER JOIN exams as ex ON t1.exam_id = ex.id
+    INNER JOIN members as mb ON t1.member_id = mb.id
+    ORDER BY t2.tongdung DESC, t1.spent_duration ASC";    
+
     $result = mysql_query($sql, dbconnect());
     $msg = new Message();
     if ($result) {
         $arr = array();
-        while ($local = mysql_fetch_array($result)) {
-            $arr[] = $local;
-        }
+        $i = 0;
+        while ($local = mysql_fetch_assoc($result)) {
+            $local['tong_mark'] = $local['mark_per_question'] * $local['tongcaudung'];
+            $local['mark'] = $local['tongcaudung'];
+            switch ($i) {
+                case 0:
+                    $local['logo'] = 'hcvang.png';
+                    break;
 
+                case 1:
+                    $local['logo'] = 'hcbac.png';
+                    break;
+
+                default:
+                    $local['logo'] = 'hcdong.png';
+                    break;
+            }
+            
+            $arr[] = $local;
+            $i++;
+        }
         $msg->icon = "success";
         $msg->title = "Lấy top 10 điểm cao nhất thành công!";
         $msg->statusCode = 200;
@@ -193,6 +220,14 @@ function Top10Candidates()
         $msg->content = mysql_error();
     }
     return $msg;
+}
+
+function pr($a)
+{
+    echo '<pre>';
+    echo htmlspecialchars(print_r($a, true));
+    echo '</pre>';
+    exit();
 }
 
 function Top10Units()
@@ -345,12 +380,14 @@ function save($exam_id,$result,$times,$spent_duration,$exam_date,$forecast_candi
     session_start();
     $p = (array)$_SESSION['profile'];
 
+    // Lưu bảng result
     $er = erSave($exam_id, $p['id'], $times, $spent_duration, $exam_date,$forecast_candidates);
     if ($er->statusCode != 201) {
         return $er;
     }
    
     foreach ($result as $r) {
+
         $option = getCorrectOption($r['id']);
         if ($option->statusCode != 200) {
             return $option;
@@ -361,6 +398,14 @@ function save($exam_id,$result,$times,$spent_duration,$exam_date,$forecast_candi
             return $is;
         }
     }
+
+    // Lưu bảng result detail
+    $sql = "SELECT COUNT(IF(question_answer = option_id, 1,NULL)) as socaudung FROM exam_result_details WHERE exam_result_id = " . $er->content;
+    $tongsocaudung = mysql_query($sql,dbconnect());
+    $number_true = mysql_fetch_assoc($tongsocaudung);
+    // Cập nhật lại vào bảng kết quả:
+    $sql = "UPDATE exam_results SET tongcaudung = " . $number_true['socaudung'] . " WHERE id = " . $er->content;
+    mysql_query($sql,dbconnect());
 
     $msg = new Message();
     $msg->icon = "success";
