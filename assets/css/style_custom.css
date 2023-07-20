@@ -171,3 +171,62 @@
 .red {
     color: red;
 }
+
+@media screen and (max-width: 768px){
+    .search-cart .top-cart-contain .mini-cart {
+        padding: 0px 12px;
+    }
+
+    .search-cart .searchsmall .showsearchfromtop {
+        line-height: 0px;
+        position: relative;
+        top: -5px;
+        left: 7px;
+    }
+
+    .icon-bar {
+        background: #ffffffa1;
+    }
+
+    .navbar-toggle {
+        border: 1px solid transparent;
+        background: #f0f0f024;
+    }
+
+    .sidenav .close_menu {
+        width: 80%;
+    }
+
+    .OnlineTestDoTest {
+        padding: 0 !important;
+    }
+
+    .boxtest, #NumberOfCandidates {
+        padding: 10px;
+    }
+
+    .TriSea-technologies-Switch>label  {
+        top: 8px;
+        left: -14px;
+    }
+
+    #modeName {
+        font-size: 14px;    position: relative;
+        left: 4px;
+        top: 16px;
+    }
+
+}
+
+
+@media screen and (min-width: 768px){
+    .TriSea-technologies-Switch>label {
+        top: 20px;
+    }
+
+    #modeName {
+        left: 64px;
+        top: 2px;
+        position: relative;
+    }
+}

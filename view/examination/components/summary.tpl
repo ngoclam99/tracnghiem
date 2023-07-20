@@ -4,8 +4,9 @@
     <div class="TriSea-technologies-Switch pull-right col-xs-4 col-sm-4 col-md-4 col-lg-4">
         <input id="switchMode" name="switchMode" type="checkbox" checked />
         <label for="switchMode" class="label-warning"></label>
-        <span style="font-size: 14px; margin-left:5px;" id="modeName">Single</span>
     </div>
+    <p><span style="" id="modeName">Single</span></p>
+
 </div>
 <div id="ex_summary">
     <div class="second-info">

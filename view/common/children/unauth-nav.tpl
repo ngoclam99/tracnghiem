@@ -3,7 +3,12 @@
         <div class="wraper">
             <div class="container">
                 <div class="menu-bar hidden-md hidden-lg">
-                    <img src="assets/images/icons/menu-bar.png" alt="TỈNH ĐOÀN SƠN LA - THI TRỰC TUYẾN">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
                 </div>
                 <div class="header-main">
                     <div class="row">

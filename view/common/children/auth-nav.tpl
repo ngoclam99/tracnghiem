@@ -4,7 +4,12 @@
         <div class="wraper">
             <div class="container">
                 <div class="menu-bar hidden-md hidden-lg">
-                    <img src="assets/images/icons/menu-bar.png" alt="TỈNH ĐOÀN SƠN LA - THI TRỰC TUYẾN">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
                 </div>
                 <div class="header-main">
                     <div class="row">
@@ -112,10 +117,10 @@
                 <li class="level0 level-top parent">
                     <a title="Trang chủ" href="index.php?module=home&act=index">Trang chủ</a>
                 </li>
-                <li class="nav-item nav-items ">
+                <li class="nav-item nav-items level0 level-top">
                     <a href="index.php?module=examination&act=index" class="nav-link">Vào thi</a>
                 </li>
-                <li class="nav-item nav-items ">
+                <li class="nav-item nav-items level0 level-top">
                     <a href="index.php?module=examination&act=history" class="nav-link">Lịch sử thi</a>
                 </li>
             </ul>

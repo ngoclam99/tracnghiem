@@ -25,7 +25,7 @@
         </div>
     </div>
     <div class="col-sm-6 col-md-7 col-sm-pull-18 col-md-pull-17">
-        <?php include('view/common/children/profile.tpl'); ?>
+        <!-- <?php include('view/common/children/profile.tpl'); ?> -->
         <?php include('components/pagination.tpl'); ?>
         <div class="clearfix"> </div>
     </div>
