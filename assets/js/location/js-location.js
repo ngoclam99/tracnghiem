@@ -24,9 +24,9 @@ function LoadProvinces() {
                 })
                 $(`.slProvinces option[value=${default_pro}]`).attr('selected', 'selected');
 
-                // if (ADDRESS) {
-                //     $(`.slProvinces`).trigger('change');
-                // }
+                if (ADDRESS) {
+                    $(`.slProvinces`).trigger('change');
+                }
             }
 
 

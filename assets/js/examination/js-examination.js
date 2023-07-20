@@ -570,7 +570,21 @@ function countdown() {
             clearInterval(countdownInterval);
             timeOut = true;
             $('.remainTime').text(`00:00:00`);
-            $('#btnSaveExamResult').click();
+            submited = false;
+            Swal.fire({
+                title: 'Bạn vẫn muốn nộp bài?',
+                html: "<h4>Thời gian làm bài bạn của hết.</h4>",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Xác nhận nộp',
+                cancelButtonText: 'Huỷ bài thi'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $('#btnSaveExamResult').click();
+                }
+            })
         }
     }, 1000);
 }

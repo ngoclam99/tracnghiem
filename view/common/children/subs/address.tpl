@@ -29,4 +29,4 @@
 </div>
 
 
-<script src="assets/js/location/js-location.js"></script>
+<script src="assets/js/location/js-location.js?time=2"></script>

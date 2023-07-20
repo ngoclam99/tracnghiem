@@ -5,16 +5,7 @@ $(document).ready(function(){
         success:function(data){
             if(data.statusCode == 200){
                 let p = data.content;
-                if(p.avatar && p.avatar.trim().length > 0){
-                   $('.pf_avatar').attr('src',p.avatar);
-                   $('.pf_avatar').attr('alt',p.fullname);
-                   $('.pf_avatar').attr('title',p.fullname);
-                   $('a.user').css("background-image", `url(${p.avatar})`);  
-                       
-                }else{
-                    $('.pf_avatar').attr('src','assets/images/no_avatar.png');
-                    $('a.user').css("background-image", `url(assets/images/no_avatar.png)`);        
-                }
+                
                 localStorage.setItem('candidate',p.id);
 
                 

@@ -127,7 +127,31 @@ $('#btnSaveChanges').click(function () {
         }
     }
    
+    if ($(".slDoiTuong").val() == '') {
+        Swal.fire({
+            title: 'Thông báo',
+            icon: 'error',
+            html: 'Đơn vị không được để trống',
+            customClass: 'swal-wide',
+            showCloseButton: false,
+            showCancelButton: false,
+            focusConfirm: false,
+        });
+        return !1;
+    }
 
+    if ($(".slDoiTuong").val() != '' && $(".slDoiTuongChiTiet").val() == '') {
+        Swal.fire({
+            title: 'Thông báo',
+            icon: 'error',
+            html: 'Đơn vị chi tiết không được để trống',
+            customClass: 'swal-wide',
+            showCloseButton: false,
+            showCancelButton: false,
+            focusConfirm: false,
+        });
+        return !1;
+    }
  
 
     let formData = new FormData();
@@ -147,6 +171,8 @@ $('#btnSaveChanges').click(function () {
     formData.append("workplace_id", workplace_id);
     formData.append("position", position);
     formData.append("working_unit", working_unit);
+    formData.append("doituong", $(".slDoiTuong").val());
+    formData.append("doituong_chitiet", $(".slDoiTuongChiTiet").val());
 
     $.ajax({
         url: 'controller/member/update-profile.php',
@@ -155,18 +181,17 @@ $('#btnSaveChanges').click(function () {
         processData: false,
         contentType: false,
         success: function (data) {
+            console.log(data);
             if (data.statusCode == 200) {
                 Swal.fire({
                     icon: data.icon,
                     title: 'Successfull!!!',
                     text: data.title,
-                }).then(_ => {
-                    window.location.href = "index.php?module=member&act=login";
                 })
             } else {
                 $.toast({
-                    heading: data.title,
-                    text: data.content,
+                    heading: "Thông báo",
+                    text: "Có lỗi xảy ra trong quá trình cập nhật dữ liệu",
                     showHideTransition: 'fade',
                     icon: data.icon
                 })
@@ -187,6 +212,16 @@ function LoadMemberDetail() {
                 $('#pf_username').val(p.username);
                 $('#pf_username').attr('data-userid', p.id);
                 $('#pf_fullname').val(p.fullname);
+
+                if(p.avatar && p.avatar.trim().length > 0){
+                   $('.pf_avatar').attr('src',p.avatar);
+                   $('.pf_avatar').attr('alt',p.fullname);
+                   $('.pf_avatar').attr('title',p.fullname);
+                   $('a.user').css("background-image", `url(${p.avatar})`);  
+                }else{
+                    $('.pf_avatar').attr('src','assets/images/no_avatar.png');
+                    $('a.user').css("background-image", `url(assets/images/no_avatar.png)`);        
+                }
 
                 if (p.get_birthdate == 1) {
                     $('#txtBirthdate').val(p.mBirthdate);
@@ -222,6 +257,10 @@ function LoadMemberDetail() {
                 }
                 $('#txtPosition').val(p.position);
                 $('#txtWorkingUnit').val(p.working_unit);
+                $(".slDoiTuong").val(p.id_doituong).trigger('change');
+                setTimeout(function() {
+                    $(".slDoiTuongChiTiet").val(p.id_doituong_chitiet).trigger('change');
+                }, 1000)
             }
         }
     })
@@ -331,4 +370,62 @@ function validatePhoneNumber(phoneNumber) {
 function formatDate(date) {
     let d = date.split('/');
     return `${d[2]}-${d[1]}-${d[0]}`;
+}
+
+$(function() {
+    $(".slDoiTuong").change(function() {
+        loadDoiTuongChiTiet($(this).val());
+    });
+
+    loadDoiTuong();
+    loadDoiTuongChiTiet($(".slDoiTuong").val())
+});
+
+function loadDoiTuong() {
+    $.ajax({
+        url: 'controller/member/load_doituong.php',
+        type: 'POST',
+        data: {
+            load_dt: 1,
+        },
+        success: function (data) {
+            if (data != '') {
+                list = JSON.parse(data);
+                html = ' <option value="">---Chọn đối tượng ---</option>';
+                list.forEach(val => {
+                    html += '<option value="' + val['id'] + '"> ' + val['ten_donvi'] + ' </option>';
+                })
+                $(".slDoiTuong").html(html);
+            }
+        }
+    })
+}
+
+
+function loadDoiTuongChiTiet(id) {
+    $(".slDoiTuongChiTiet").hide();
+    $(".slDoiTuongChiTiet").html("");
+    if (parseInt(id) > 0) {
+        $.ajax({
+            url: 'controller/member/load_doituong.php',
+            type: 'POST',
+            data: {
+                load_dt_chitiet: 1,
+                id_doituong: id,
+            },
+            success: function (data) {
+                if (data != '') {
+                    list = JSON.parse(data);
+                    html = '<option value="">---Chọn đơn vị ---</option>';
+                    if (list.length > 0) {
+                        $(".slDoiTuongChiTiet").fadeIn(500);
+                        list.forEach(val => {
+                            html += '<option value="' + val['id'] + '"> ' + val['title'] + ' </option>';
+                        })
+                    }
+                    $(".slDoiTuongChiTiet").html(html);
+                }
+            }
+        });
+    }
 }

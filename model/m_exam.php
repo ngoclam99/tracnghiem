@@ -183,7 +183,7 @@ function Top10Candidates()
     INNER JOIN exams as ex ON t1.exam_id = ex.id
     INNER JOIN members as mb ON t1.member_id = mb.id
     WHERE ex.is_stat = 1
-    ORDER BY t2.tongdung DESC, t1.spent_duration ASC";    
+    ORDER BY t2.tongdung DESC, t1.spent_duration ASC LIMIT 10";    
 
     $result = mysql_query($sql, dbconnect());
     $msg = new Message();
@@ -225,14 +225,6 @@ function Top10Candidates()
         $msg->content = mysql_error();
     }
     return $msg;
-}
-
-function pr($a)
-{
-    echo '<pre>';
-    echo htmlspecialchars(print_r($a, true));
-    echo '</pre>';
-    exit();
 }
 
 function Top10Units()

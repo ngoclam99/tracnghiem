@@ -93,7 +93,9 @@ function mChangeProfile(
     $job_id,
     $workplace_id,
     $position,
-    $working_unit
+    $working_unit,
+    $doituong,
+    $doituong_chitiet
 ) {
     $avatarurl = '';
     $isupload = true;
@@ -106,7 +108,7 @@ function mChangeProfile(
         if (strlen($m["avatar"]) > 0) {
             unlink('../../'+$m["avatar"]);
         }
-
+        $avatar['name'] = clean_text($avatar['name']);
         if (isset($avatar['name'])) {
             $avatardir = 'assets/images/upload/avatar/';
             $storeddir = '../../' . $avatardir;
@@ -134,6 +136,8 @@ function mChangeProfile(
                     workplace_id = '" . $workplace_id . "',
                     position = '" . $position . "',
                     working_unit = '" . $working_unit . "',
+                    id_doituong = '" . $doituong . "',
+                    id_doituong_chitiet = '" . $doituong_chitiet . "',
                     get_gender = 1,
                     get_birthdate = 1,
                     get_job = 1,
@@ -150,8 +154,8 @@ function mChangeProfile(
                 $msg->title = "Cập nhật thông tin thành viên thành công. Bạn cần phải đăng nhập lại!";
                 $msg->icon = "success";
                 $msg->statusCode = 200;
-                session_start();
-                unset($_SESSION['profile']); 
+                // session_start();
+                // unset($_SESSION['profile']); 
             } else {
                 $msg->title = "Cập nhật thông tin thành viên thất bại!";
                 $msg->icon = "error";

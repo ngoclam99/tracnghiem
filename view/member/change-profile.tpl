@@ -120,6 +120,20 @@
                     placeholder = "Đơn vị công tác"/> 
                 </div>
             </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <label>Đối tượng dự thi <span class="red">(*)</span></label>
+                    <select class="form-control selectpicker slDoiTuong" data-live-search="true" style="width: 100%;">
+                        <option value="">---Chọn đối tượng ---</option>
+                    </select>
+                </div>
+                <div class="col-md-12" style="margin-top: 25px;">
+                    <select class="form-control selectpicker slDoiTuongChiTiet" data-live-search="true" style="width: 100%;">
+                        <option value="">---Chọn đơn vị ---</option>
+                    </select>
+                </div>
+            </div>
         </div>
         <div class="panel-footer text-right">
             <button class="btn btn-primary" id="btnSaveChanges">

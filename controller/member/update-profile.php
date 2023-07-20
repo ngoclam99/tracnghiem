@@ -20,9 +20,10 @@ $position = $_POST['position'];
 $workplace_id = $_POST['workplace_id'];
 $working_unit = $_POST['working_unit'];
 $avatar = $_FILES['avatar'];
-
+$doituong = $_POST['doituong'];
+$doituong_chitiet = $_POST['doituong_chitiet'];
 $result = mChangeProfile($id,$fullname,$avatar,$birthdate,$gender,$phone,$email,$province_code,
-$district_code,$ward_code,$address,$job_id,$workplace_id,$position,$working_unit);
+$district_code,$ward_code,$address,$job_id,$workplace_id,$position,$working_unit, $doituong, $doituong_chitiet);
 header("Content-Type: application/json");
 echo json_encode($result);
 ?>
