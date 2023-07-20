@@ -433,7 +433,6 @@ function ShowQuestion(id) {
     $(`#questionsPagination li a.active`).removeClass('active');
     $(`#questionsPagination li#${id} a`).addClass('active');
 
-
     //lưu id của câu hỏi hiện tại
     current_question_id = id;
 
@@ -474,7 +473,7 @@ function ShowQuestion(id) {
 
 
                     //tiêu đề câu hỏi
-                    let content = `<div class="test" id="${current_question.id}">
+                    let content = `<div class="test contentQS${current_question.id}" id="${current_question.id}">
                     <p class="question-info">
                     <h4 id="${current_question.id}">Câu hỏi số ${number} - Chủ đề: <span style="color:#2e66ad; font-weight: bold;">${current_question.topic}</span></h4>
                     <a class="fr btn-feedback btn-onclick report" id="${current_question.id}" onclick="Report(${current_question_id})">
@@ -501,6 +500,10 @@ function ShowQuestion(id) {
 
                     content += `</div>`;
                     $('#showQuestion').append(content);
+                    // Scroll chuột
+                    $("html, body").animate({ 
+                        scrollTop: $(".contentQS" + current_question_id).offset().top - 100
+                    }, 600);
                         // $('#showQuestion').fadeIn(300);
                 }
             }
@@ -536,7 +539,7 @@ function ShowMultiQuestions() {
                 if (data.statusCode == 200) {
 
                     //tiêu đề câu hỏi
-                    let content = `<div class="test" id="${q.id}">
+                    let content = `<div class="test contentQS${q.id}" id="${q.id}">
                     <p class="question-info">
                     <h4 id="${q.id}">Câu hỏi số ${number} - Chủ đề: <span style="color:#2e66ad; font-weight: bold;">${q.topic}</span></h4>
                     <a class="fr btn-feedback btn-onclick report" id="${q.id}" onclick="Report(${q.id})">
@@ -721,10 +724,6 @@ $(document).keydown(function(e) {
     if (e.keyCode == 27 && localStorage.getItem('duration') <= 0) {
         return;
     }
-});
-
-$("#questionsPagination > li > a").click(function() {
-    alert(1);
 });
 
 var getUrlParameter = function getUrlParameter(sParam) {
