@@ -98,70 +98,108 @@ function mChangeProfile(
     $doituong_chitiet
 ) {
     $avatarurl = '';
-    $isupload = true;
+    $isupload = false;
     $msg = new Message();
 
     $sql = "SELECT avatar FROM members WHERE id = '" . $id . "'";
     $result = mysql_query($sql, dbconnect());
     if ($result && mysql_num_rows($result) > 0) {
         $m = mysql_fetch_array($result);
-        if (strlen($m["avatar"]) > 0) {
-            unlink('../../'+$m["avatar"]);
-        }
-        $avatar['name'] = clean_text($avatar['name']);
-        if (isset($avatar['name'])) {
-            $avatardir = 'assets/images/upload/avatar/';
-            $storeddir = '../../' . $avatardir;
-            $filename = time() . '_' . basename($avatar["name"]);
-            $uploadfile = $storeddir . $filename;
-            $isupload = move_uploaded_file($avatar['tmp_name'], $uploadfile);
-            if ($isupload) {
-                $avatarurl = $avatardir . $filename;
+        if (!empty($avatar)) {
+            // if (strlen($m["avatar"]) > 0) {
+            //     unlink('/' . $m["avatar"]);
+            // }
+
+            $avatar['name'] = clean_text($avatar['name']);
+            if (isset($avatar['name'])) {
+                $avatardir = 'assets/images/upload/avatar/';
+                $storeddir = '../../' . $avatardir;
+                $filename = time() . '_' . basename($avatar["name"]);
+                $uploadfile = $storeddir . $filename;
+                $isupload = move_uploaded_file($avatar['tmp_name'], $uploadfile);
+                if ($isupload) {
+                    $avatarurl = $avatardir . $filename;
+                }
             }
         }
 
         if ($isupload) {
             $sql = "UPDATE members
-                SET fullname = '" . $fullname . "',
-                    avatar = '" . $avatarurl . "',
-                    gender = '" . $gender . "',
-                    birthdate = '" . $birthdate . "',
-                    phone = '" . $phone . "',
-                    email = '" . $email . "',
-                    province_code = '" . $province_code . "',
-                    district_code = '" . $district_code . "',
-                    ward_code = '" . $ward_code . "',
-                    address = '" . $address . "',
-                    job_id = '" . $job_id . "',
-                    workplace_id = '" . $workplace_id . "',
-                    position = '" . $position . "',
-                    working_unit = '" . $working_unit . "',
-                    id_doituong = '" . $doituong . "',
-                    id_doituong_chitiet = '" . $doituong_chitiet . "',
-                    get_gender = 1,
-                    get_birthdate = 1,
-                    get_job = 1,
-                    get_position = 1,
-                    get_workplace = 1,
-                    get_working_unit = 1,
-                    get_address = 1
-                WHERE id = '" . $id . "'
-                    ";
-            $result = mysql_query($sql, dbconnect());
-            $msg = new Message();
+            SET fullname = '" . $fullname . "',
+                avatar = '" . $avatarurl . "',
+                gender = '" . $gender . "',
+                birthdate = '" . $birthdate . "',
+                phone = '" . $phone . "',
+                email = '" . $email . "',
+                province_code = '" . $province_code . "',
+                district_code = '" . $district_code . "',
+                ward_code = '" . $ward_code . "',
+                address = '" . $address . "',
+                job_id = '" . $job_id . "',
+                workplace_id = '" . $workplace_id . "',
+                position = '" . $position . "',
+                working_unit = '" . $working_unit . "',
+                id_doituong = '" . $doituong . "',
+                id_doituong_chitiet = '" . $doituong_chitiet . "',
+                get_gender = 1,
+                get_birthdate = 1,
+                get_job = 1,
+                get_position = 1,
+                get_workplace = 1,
+                get_working_unit = 1,
+                get_address = 1
+            WHERE id = '" . $id . "'
+                ";
+        } else {
+            $sql = "UPDATE members
+            SET fullname = '" . $fullname . "',
+                gender = '" . $gender . "',
+                birthdate = '" . $birthdate . "',
+                phone = '" . $phone . "',
+                email = '" . $email . "',
+                province_code = '" . $province_code . "',
+                district_code = '" . $district_code . "',
+                ward_code = '" . $ward_code . "',
+                address = '" . $address . "',
+                job_id = '" . $job_id . "',
+                workplace_id = '" . $workplace_id . "',
+                position = '" . $position . "',
+                working_unit = '" . $working_unit . "',
+                id_doituong = '" . $doituong . "',
+                id_doituong_chitiet = '" . $doituong_chitiet . "',
+                get_gender = 1,
+                get_birthdate = 1,
+                get_job = 1,
+                get_position = 1,
+                get_workplace = 1,
+                get_working_unit = 1,
+                get_address = 1
+            WHERE id = '" . $id . "'
+                ";
+        }
 
-            if ($result) {
-                $msg->title = "Cập nhật thông tin thành viên thành công. Bạn cần phải đăng nhập lại!";
-                $msg->icon = "success";
-                $msg->statusCode = 200;
-                // session_start();
-                // unset($_SESSION['profile']); 
-            } else {
-                $msg->title = "Cập nhật thông tin thành viên thất bại!";
-                $msg->icon = "error";
-                $msg->statusCode = 500;
-                $msg->content = mysql_error();
-            }
+        
+        $result = mysql_query($sql, dbconnect());
+        $msg = new Message();
+
+        if ($result) {
+            $msg->title = "Cập nhật thông tin thành viên thành công. Bạn cần phải đăng nhập lại!";
+            $msg->icon = "success";
+            $msg->statusCode = 200;
+            $sql = mysql_query("SELECT * from members WHERE id = " . $id, dbconnect());
+            $user = mysql_fetch_assoc($sql);
+            unset($user['password']);
+            unset($user['ip_address']);
+            unset($user['get_birthdate']);
+            unset($user['group_id']);
+            session_start();
+            $_SESSION['profile'] =  $user;
+            // unset($_SESSION['profile']); 
+        } else {
+            $msg->title = "Cập nhật thông tin thành viên thất bại!";
+            $msg->icon = "error";
+            $msg->statusCode = 500;
+            $msg->content = mysql_error();
         }
     } else {
         $msg->title = "Không tìm thấy tài khoản phù hợp!";

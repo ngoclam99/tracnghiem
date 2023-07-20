@@ -172,6 +172,21 @@
     color: red;
 }
 
+.OnlineTestDoTest {
+    padding: 0px !important;
+}
+/*
+#btnSaveExamResult {
+    margin: 0px;
+    margin-left: 10px;
+    border-radius: 2px;
+    padding: 6px 46px;
+    box-shadow: 0px 5px 10px rgb(167 167 167 / 60%);
+    margin-top: -1px;
+    transition: all 0.6s;
+    border-bottom: 3px solid #ccc;
+}*/
+
 @media screen and (max-width: 768px){
     .search-cart .top-cart-contain .mini-cart {
         padding: 0px 12px;

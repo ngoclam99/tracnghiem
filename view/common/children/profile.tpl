@@ -3,9 +3,9 @@
     <div class="content signed clearfix">
         <div class="nv-info" style="display:none"></div>
         <div class="userBlock" style="border: 1px solid #dcdcdc;padding: 10px">
-            <h3 class="text-center margin-bottom-lg">
-                <span class="lev-user text-normal margin-right">Tài khoản:</span>
-                <span class="pf_fullname" data-userid=""></span>
+                    
+            <h3 class="text-left margin-bottom-lg">
+                <span class="lev-user text-normal">Tài khoản: <strong><span class="pf_fullname" data-userid=""></span></strong></span> 
             </h3>
 
             <div class="row margin-bottom-lg">
@@ -51,6 +51,3 @@
         </div>
     </div>
 </div>
-
-
-

@@ -5,10 +5,16 @@ $(document).ready(function(){
         success:function(data){
             if(data.statusCode == 200){
                 let p = data.content;
-                
                 localStorage.setItem('candidate',p.id);
-
-                
+                if(p.avatar && p.avatar.trim().length > 0){
+                   $('.pf_avatar').attr('src',p.avatar);
+                   $('.pf_avatar').attr('alt',p.fullname);
+                   $('.pf_avatar').attr('title',p.fullname);
+                   $('a.user').css("background-image", `url(${p.avatar})`);  
+                } else{
+                    $('.pf_avatar').attr('src','assets/images/no_avatar.png');
+                    $('a.user').css("background-image", `url(assets/images/no_avatar.png)`);        
+                }
                 $('.pf_username').text(p.username);
                 $('.pf_email').text(p.email);
                 $('.pf_role').text(`${p.role_id==1?'Đăng nhập bằng với vai trò Quản trị viên':p.role_id==2?'Đăng nhập với vai trò là Quản trị module':'Đăng nhập với vai trò người dùng'}`);

@@ -55,12 +55,8 @@ var timeOut = false;
 
 $('#btnSaveExamResult').click(async function (e) {
     e.preventDefault();
-
     let spent_duration = $('.ex_duration').data('duration') - localStorage.getItem('duration');
-
-
     let forecast_candidates = 0;
-
 
     if ($('#ex_title').data('forecast_candidates') == 1) {
         let forecast = $('#txtNumberOfCandidate').val();
@@ -75,8 +71,6 @@ $('#btnSaveExamResult').click(async function (e) {
         }
         forecast_candidates = parseInt($('#txtNumberOfCandidate').val());
     }
-
-
 
     let submited = true;
 
@@ -104,10 +98,7 @@ $('#btnSaveExamResult').click(async function (e) {
         }
     }
 
-
-
     if (submited) {
-
         $.ajax({
             url: 'controller/exam/save-result.php',
             type: 'post',
@@ -144,8 +135,105 @@ $('#btnSaveExamResult').click(async function (e) {
             }
         })
     }
-})
+});
 
+function saveResult(confirm) {
+    let spent_duration = $('.ex_duration').data('duration') - localStorage.getItem('duration');
+    let forecast_candidates = 0;
+
+    if ($('#ex_title').data('forecast_candidates') == 1) {
+        let forecast = $('#txtNumberOfCandidate').val();
+        if (!isInteger(forecast) || forecast < 1) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Tham gia dự đoán!',
+                text: 'Vui lòng nhập số thí sinh mà bạn dự đoán tham gia thi'
+            })
+            $('#txtNumberOfCandidate').select();
+            return;
+        }
+        forecast_candidates = parseInt($('#txtNumberOfCandidate').val());
+    }
+
+    let submited = true;
+
+    //chỉ kiểm tra các câu hỏi chưa làm khi thời gian làm bài chưa hết
+    if (!timeOut) {
+        let uncheckIds = $("ul#questionsPagination li a:not(.done)").map(function () {
+            return $(this).text();
+        }).get();
+        if (uncheckIds.length > 0) {
+            submited = false;
+            Swal.fire({
+                title: 'Bạn vẫn muốn nộp bài?',
+                html: "<h4>Bạn chưa trả lời hết câu hỏi [<span class='text-danger fw-bold'>" + uncheckIds.join(', ') + "]</span></h4>",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Xác nhận nộp',
+                cancelButtonText: 'Tiếp tục làm bài'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    submited = true;
+                }
+            })
+        }
+    }
+
+    if (confirm) {
+        Swal.fire({
+            title: 'Bạn có chắc chắn muốn nộp bài không?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Xác nhận nộp',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                submited = true;
+            }
+        })
+    }
+
+    if (submited) {
+        $.ajax({
+            url: 'controller/exam/save-result.php',
+            type: 'post',
+            data: {
+                exam_id,
+                result: questions,
+                spent_duration,
+                times: $('#btnOpenExam span.exam_times').text(),
+                exam_date,
+                forecast_candidates
+            },
+            success: function (data) {
+                console.log(data)
+                if (data.statusCode == 201) {
+                    localStorage.clear();
+                    clearInterval(countdownInterval);
+                    Swal.fire({
+                        title: `${data.title}`,
+                        showDenyButton: true,
+                        showCancelButton: false,
+                        confirmButtonText: 'Xem lại bài thi',
+                        denyButtonText: `Tới trang chủ`,
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = `index.php?module=examination&act=history-detail&id=${data.content}`;
+                        } else if (result.isDenied) {
+                            window.location.href = 'index.php?module=home&act=index';
+                        }
+                    })
+                }
+            },
+            error: function (xhr, status, error) {
+                console.log(xhr, error, status);
+            }
+        })
+    }
+}
 
 function LoadExamSummary(id) {
     $.ajax({
@@ -220,7 +308,7 @@ $('#btnOpenExam').click(function () {
             'Số lần làm bài của bạn đã đạt mức tối đa',
             'Bạn không thể làm lại bài thi này!',
             'error'
-        )
+            )
         return;
     }
 
@@ -247,33 +335,33 @@ function Report(id) {
     Swal.fire({
         title: `<strong>Phản hồi lỗi câu hỏi <b class="text-danger">${q.title}</b></strong>`,
         html:
-            `<div class="panel">            
-            <div class="panel-body">
-                <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 form-group">
-                        <label>Nhóm lỗi</label>
-                        <select class="form-control" id="sllErrorType">
-                            <option value="1">Lỗi tiêu đề</option>
-                            <option value="2">Lỗi đáp án</option>
-                            <option value="3">Lỗi khác</option>
-                        </select>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-16 col-lg-16 form-group">
-                        <label>Mô tả ngắn gọn về lỗi</label>
-                        <input type="text" class="form-control" id="txtErrorDescription"/>
-                    </div>
-                </div>
-            </div>            
-          </div>`,
+        `<div class="panel">            
+        <div class="panel-body">
+        <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 form-group">
+        <label>Nhóm lỗi</label>
+        <select class="form-control" id="sllErrorType">
+        <option value="1">Lỗi tiêu đề</option>
+        <option value="2">Lỗi đáp án</option>
+        <option value="3">Lỗi khác</option>
+        </select>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-16 col-lg-16 form-group">
+        <label>Mô tả ngắn gọn về lỗi</label>
+        <input type="text" class="form-control" id="txtErrorDescription"/>
+        </div>
+        </div>
+        </div>            
+        </div>`,
         showCloseButton: true,
         showCancelButton: true,
         focusConfirm: false,
         customClass: 'swal-wide',
         confirmButtonText:
-            '<i class="fa fa-thumbs-up"></i> Great!',
+        '<i class="fa fa-thumbs-up"></i> Great!',
         confirmButtonAriaLabel: 'Thumbs up, great!',
         cancelButtonText:
-            '<i class="fa fa-thumbs-down"></i>',
+        '<i class="fa fa-thumbs-down"></i>',
         cancelButtonAriaLabel: 'Thumbs down'
     })
 }
@@ -289,7 +377,7 @@ function LoadQuestionsByExam(exam_id) {
         let idx = 1;
         questions.forEach(q => {
             let li = `<li id="${q.id}"><a onclick="ShowQuestion(${q.id})"
-                href="javascript:void(0);" class="${q.checked ? 'done' : ''}">${idx < 10 ? '0' + idx : idx}</a></li>`;
+            href="javascript:void(0);" class="${q.checked ? 'done' : ''}">${idx < 10 ? '0' + idx : idx}</a></li>`;
             $('#questionsPagination').append(li);
             idx++;
         })
@@ -317,7 +405,7 @@ function LoadQuestionsByExam(exam_id) {
                     let idx = 1;
                     questions.forEach(q => {
                         let li = `<li id="${q.id}"><a onclick="ShowQuestion(${q.id})"
-                            href="javascript:void(0);" class="${q.checked ? 'done' : ''}">${idx < 10 ? '0' + idx : idx}</a></li>`;
+                        href="javascript:void(0);" class="${q.checked ? 'done' : ''}">${idx < 10 ? '0' + idx : idx}</a></li>`;
                         $('#questionsPagination').append(li);
                         idx++;
                     })
@@ -359,6 +447,7 @@ function ShowQuestion(id) {
 
     if (isSingle) {
         $('#showQuestion').empty();
+        // $('#showQuestion').fadeOut(100);
         let ro = $('.ex_random_options').data('ro');
         $.ajax({
             url: 'controller/option/get-by-question.php',
@@ -386,32 +475,33 @@ function ShowQuestion(id) {
 
                     //tiêu đề câu hỏi
                     let content = `<div class="test" id="${current_question.id}">
-                                    <p class="question-info">
-                                        <h4 id="${current_question.id}">Câu hỏi số ${number} - Chủ đề: <span style="color:#2e66ad; font-weight: bold;">${current_question.topic}</span></h4>
-                                        <a class="fr btn-feedback btn-onclick report" id="${current_question.id}" onclick="Report(${current_question_id})">
-                                                <img class="not-hover" src="assets/images/icons/icon-feedback.png">
-                                                <img class="hover" src="assets/images/icons/icon-feedback_hover.png">
-                                                <span>Báo lỗi</span>
-                                                
-                                        </a>
-                                    </p>
-                        <div class="question">${current_question.title}</div>`;
+                    <p class="question-info">
+                    <h4 id="${current_question.id}">Câu hỏi số ${number} - Chủ đề: <span style="color:#2e66ad; font-weight: bold;">${current_question.topic}</span></h4>
+                    <a class="fr btn-feedback btn-onclick report" id="${current_question.id}" onclick="Report(${current_question_id})">
+                    <img class="not-hover" src="assets/images/icons/icon-feedback.png">
+                    <img class="hover" src="assets/images/icons/icon-feedback_hover.png">
+                    <span>Báo lỗi</span>
+
+                    </a>
+                    </p>
+                    <div class="question">${current_question.title}</div>`;
 
                     //đổ các đáp án
                     let idx = 1;
                     content += `<section id="${id}">`
                     options.forEach(o => {
                         content += `<label id="${o.id}" data-question = "${current_question.id}" 
-                                            class="${current_question.checked && current_question.checked == o.id ? 'checked' : ''}">
-                                            <span class="title">${String.fromCharCode(64 + idx++)}</span>
-                                            <input class="hide checkbox" type="checkbox" id="${o.id}" name="${id}"> ${o.content} 
-                                    </label>`
+                        class="${current_question.checked && current_question.checked == o.id ? 'checked' : ''}">
+                        <span class="title">${String.fromCharCode(64 + idx++)}</span>
+                        <input class="hide checkbox" type="checkbox" id="${o.id}" name="${id}"> ${o.content} 
+                        </label>`
 
                     });
                     content += `</section>`
 
                     content += `</div>`;
                     $('#showQuestion').append(content);
+                        // $('#showQuestion').fadeIn(300);
                 }
             }
         })
@@ -447,26 +537,26 @@ function ShowMultiQuestions() {
 
                     //tiêu đề câu hỏi
                     let content = `<div class="test" id="${q.id}">
-                                    <p class="question-info">
-                                        <h4 id="${q.id}">Câu hỏi số ${number} - Chủ đề: <span style="color:#2e66ad; font-weight: bold;">${q.topic}</span></h4>
-                                        <a class="fr btn-feedback btn-onclick report" id="${q.id}" onclick="Report(${q.id})">
-                                                <img class="not-hover" src="assets/images/icons/icon-feedback.png">
-                                                <img class="hover" src="assets/images/icons/icon-feedback_hover.png">
-                                                <span>Báo lỗi</span>
-                                                
-                                        </a>
-                                    </p>
-                        <div class="question">${q.title}</div>`;
+                    <p class="question-info">
+                    <h4 id="${q.id}">Câu hỏi số ${number} - Chủ đề: <span style="color:#2e66ad; font-weight: bold;">${q.topic}</span></h4>
+                    <a class="fr btn-feedback btn-onclick report" id="${q.id}" onclick="Report(${q.id})">
+                    <img class="not-hover" src="assets/images/icons/icon-feedback.png">
+                    <img class="hover" src="assets/images/icons/icon-feedback_hover.png">
+                    <span>Báo lỗi</span>
+
+                    </a>
+                    </p>
+                    <div class="question">${q.title}</div>`;
 
                     //đổ các đáp án
                     let idx = 1;
                     content += `<section id="${q.id}">`
                     options.forEach(o => {
                         content += `<label id="${o.id}" data-question = "${q.id}" 
-                                            class="${q.checked && q.checked == o.id ? 'checked' : ''}">
-                                            <span class="title">${String.fromCharCode(64 + idx++)}</span>
-                                            <input class="hide checkbox" type="checkbox" id="${o.id}" name="${q.id}"> ${o.content} 
-                                    </label>`
+                        class="${q.checked && q.checked == o.id ? 'checked' : ''}">
+                        <span class="title">${String.fromCharCode(64 + idx++)}</span>
+                        <input class="hide checkbox" type="checkbox" id="${o.id}" name="${q.id}"> ${o.content} 
+                        </label>`
 
                     });
                     content += `</section>`
@@ -543,7 +633,7 @@ $(document).on('click', "#showQuestion label", function () {
     localStorage.setItem(`exam_${user_id}_${exam_id}`, JSON.stringify(questions));
 
     let crIdx = $.inArray(question, questions);
-   
+
     if(crIdx == questions.length-1){
         // $('#btnSaveExamResult').click();
     }
@@ -552,7 +642,6 @@ $(document).on('click', "#showQuestion label", function () {
 
 var countdownInterval;
 function countdown() {
-
     countdownInterval = setInterval(function () {
         var hours = Math.floor(duration / 3600);
         var minutes = Math.floor((duration % 3600) / 60);
@@ -564,6 +653,11 @@ function countdown() {
         // Giảm số giây đi 1
         duration--;
         localStorage.setItem('duration', duration);
+        if (localStorage.getItem('timedown') == null || localStorage.getItem('timedown') <= 0) {
+            localStorage.setItem('timedown', 60);
+        }
+
+        var timeleft = localStorage.getItem('timedown');
 
         // Dừng countdown nếu đã hết thời gian
         if (duration < 0) {
@@ -572,28 +666,72 @@ function countdown() {
             $('.remainTime').text(`00:00:00`);
             submited = false;
             Swal.fire({
-                title: 'Bạn vẫn muốn nộp bài?',
-                html: "<h4>Thời gian làm bài bạn của hết.</h4>",
+                title: 'Hết thời gian làm bài',
+                html: "<h4>Bạn có xác nhận nộp bài thi này không?</h4><p>Hệ thống sẽ tự động huỷ bài thi sau: <span id='load_time'></span></p>",
                 icon: 'question',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Xác nhận nộp',
-                cancelButtonText: 'Huỷ bài thi'
+                cancelButtonText: 'Huỷ bài thi',
+                hideOnOverlayClick: false,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
             }).then((result) => {
                 if (result.isConfirmed) {
-                    $('#btnSaveExamResult').click();
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Tham gia dự đoán!',
+                        text: 'Vui lòng dự đoạn số thí sinh mà bạn dự đoán tham gia trong kỳ thi này',
+                        input: 'text',
+                        showCancelButton: true,
+                        hideOnOverlayClick: false,
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,  
+                        showCancelButton: false,   
+                    }).then((result) => {
+                        if (result.value) {
+                            $("#txtNumberOfCandidate").val(result.value);
+                            $('#btnSaveExamResult').click();
+                        }
+                    });
+                } else {
+                    localStorage.clear();
+                    window.location.href = 'index.php?module=home&act=index';
                 }
-            })
+            });
+
+            var downloadTimer = setInterval(function(){
+              if(timeleft == 0){
+                $("#load_time").html(timeleft-- + 's');
+                localStorage.clear();
+                clearInterval(downloadTimer);
+                window.location.href = 'index.php?module=examination&act=index';
+            } else {
+              $("#load_time").html(timeleft-- + 's');
+              localStorage.setItem('timedown', timeleft);
+          }
+      }, 1000);
         }
     }, 1000);
 }
 
+$(document).keydown(function(e) {
+    // ESCAPE key pressed
+    if (e.keyCode == 27 && localStorage.getItem('duration') <= 0) {
+        return;
+    }
+});
+
+$("#questionsPagination > li > a").click(function() {
+    alert(1);
+});
+
 var getUrlParameter = function getUrlParameter(sParam) {
     var sPageURL = window.location.search.substring(1),
-        sURLVariables = sPageURL.split('&'),
-        sParameterName,
-        i;
+    sURLVariables = sPageURL.split('&'),
+    sParameterName,
+    i;
 
     for (i = 0; i < sURLVariables.length; i++) {
         sParameterName = sURLVariables[i].split('=');
