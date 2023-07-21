@@ -393,7 +393,10 @@ function save($exam_id,$result,$times,$spent_duration,$exam_date,$forecast_candi
     $msg = new Message();
     session_start();
     $p = (array)$_SESSION['profile'];
-
+    $sql = "SELECT MAX(times) as tong FROM exam_results WHERE member_id = " . $p['id'];
+    $query_times = mysql_query($sql,dbconnect());
+    $countimes = mysql_fetch_assoc($query_times);
+    $times = $countimes['tong'] + 1;
     // Lưu bảng result
     $er = erSave($exam_id, $p['id'], $times, $spent_duration, $exam_date,$forecast_candidates);
     if ($er->statusCode != 201) {
