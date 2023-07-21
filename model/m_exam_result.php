@@ -55,4 +55,3 @@ $result = mysql_query($sql,dbconnect());
     }
     return $msg;
 }
-

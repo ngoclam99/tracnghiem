@@ -9,16 +9,15 @@
                 </div>
             </div>
             <div class="clearfix"></div>
-            <div class="table-responsive">
+            <div class="table-responsive table table-bordered">
                 <table class="table table-hover">
                     <thead>
                         <tr>
                             <th class="text-center">STT</th>
                             <th class="text-left">Đơn vị</th>
-                            <th class="text-center">Số người đăng ký</th>
-                            <th class="text-center">Số người tham gia thi</th>
-                            <th class="text-center">Tỉ lệ tham gia</th>
-                            <th class="text-center">Số lần thi</th>
+                            <th class="text-center">Số người tham gia</th>
+                            <th class="text-center">Tổng lượt tham gia thi</th>
+                            <th class="text-center">Top 1 đơn vị</th>
                         </tr>
                     </thead>
                     <tbody class="notification-list top10units"></tbody>
@@ -27,4 +26,5 @@
         </div>
     </div>
 </div>
+
 <script src="assets/js/home/js-top10units.js"></script>

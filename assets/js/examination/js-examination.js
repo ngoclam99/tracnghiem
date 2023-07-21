@@ -133,6 +133,8 @@ $('#btnSaveExamResult').click(async function (e) {
                         } else if (result.isDenied) {
                             window.location.href = 'index.php?module=home&act=index';
                         }
+
+                        window.location.href = 'index.php?module=home&act=index';
                     })
                 }
             },
@@ -298,7 +300,6 @@ function LoadTimes() {
         type: 'get',
         data: { exam_id },
         success: function (data) {
-            console.log(data);
             current_times = data.content;
             current_times++;
             if (data.statusCode == 200) {

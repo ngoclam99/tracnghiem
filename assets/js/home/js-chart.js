@@ -146,8 +146,8 @@ function LoadChart() {
                                             let r = `<tr>
                                                 <td>${idx++}</td>
                                                 <td class="fw-bold text-primary">${tr.workplace}</td>
-                                                <td class="text-right">${tr.candidates}</td>
-                                                <td class="text-right">${tr.average_mark}</td>
+                                                <td class="text-center">${tr.candidates}</td>
+                                                <td class="text-center">${tr.average_mark}</td>
                                             </tr>`;
                                             $('#tblStat').append(r);
                                         })
