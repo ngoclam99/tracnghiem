@@ -1,3 +1,97 @@
+:root {
+    --color__label: #62899a;
+    --color__success: #40bb6b;
+    --color__total_money: #e91e98c7;
+    --vien-1 : #D980FA;
+    --vien-2 : #FDA7DF;
+    --size-vien : 2px;
+}
+
+
+.box1 > span
+{
+    z-index: 1;
+    opacity: 1;
+}
+
+.box1 > span:nth-child(1) {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: var(--size-vien);
+    background: linear-gradient(to right, var(--vien-1), var(--vien-2));
+    animation: trung1 2s linear infinite;
+    animation-delay: 1s;
+}
+
+.box1 > span:nth-child(2) {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: var(--size-vien);
+    height: 100%;
+    background: linear-gradient(to bottom, var(--vien-1), var(--vien-2));
+    animation: trung2 2s linear infinite;
+}
+
+.box1 > span:nth-child(3) {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: var(--size-vien);
+    background: linear-gradient(to left, var(--vien-1), var(--vien-2));
+    animation: trung3 2s linear infinite;
+    animation-delay: 1s;
+}
+
+.box1 > span:nth-child(4) {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: var(--size-vien);
+    height: 100%;
+    background: linear-gradient(to top, var(--vien-1), var(--vien-2));
+    animation: trung4 2s linear infinite;
+}
+
+@keyframes trung1 {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+@keyframes trung2 {
+    0% {
+        transform: translateY(-100%);
+    }
+    100% {
+        transform: translateY(100%);
+    }
+}
+
+@keyframes trung3 {
+    0% {
+        transform: translateX(100%);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+@keyframes trung4 {
+    0% {
+        transform: translateY(100%);
+    }
+    100% {
+        transform: translateY(-100%);
+    }
+}
+
 .activeBG {
 	animation: 2s linear activeBG;
 	background: aliceblue;
@@ -175,6 +269,10 @@
 .OnlineTestDoTest {
     padding: 0px !important;
 }
+
+#he_banner {
+    width: 100%; height: auto; max-height:600px !important;
+}
 /*
 #btnSaveExamResult {
     margin: 0px;
@@ -186,6 +284,17 @@
     transition: all 0.6s;
     border-bottom: 3px solid #ccc;
 }*/
+
+.title__center_home {
+    overflow: hidden;
+    position: relative;
+    padding: 11px;
+    margin-bottom: 18px;
+    text-align: center;
+    background: linear-gradient(0.25turn, #66b7d1, #ffffff, #428bca);
+    display: block;
+    border-radius: 6px;
+}
 
 @media screen and (max-width: 768px){
     .search-cart .top-cart-contain .mini-cart {

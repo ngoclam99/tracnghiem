@@ -6,18 +6,29 @@
 			success: function (data) {
 				if (data.statusCode == 200) {
 					let exam = data.content;
-
-					
-
 					$('#he_title').text(exam.title);
-
 					$('#btnHERegulation').attr('data-regulation',exam.regulation);
-					$('#he_banner').attr('src',exam.thumbnail);
+					$(".load_banner").hide();
+					if (exam.thumbnail != '') {
+						$(".load_banner").html(`<img id="he_banner" src="${exam.thumbnail}" class="img-responsive"/>`);	
+						setTimeout(function() {
+							$(".load_banner").fadeIn(200);
+						}, 100);
+					}
 
 					let bg = new Date(exam.begin);
-
-					$('#he_type').text(`CUỘC THI SẼ ${bg>new Date()?'DIỄN RA':'KẾT THÚC'} TRONG`);
-					
+					$(".title__center_home").fadeOut();
+					// <span></span>
+		            //     <span></span>
+		            //     <span></span>
+		            //     <span></span>
+					$(".title__center_home").html(`<div class="box1">
+		                
+		                <h2 class="title mb10" id="he_title">CUỘC THI SẼ ${bg>new Date()?'DIỄN RA':'KẾT THÚC'} TRONG</h2>
+		            </div>`);
+					setTimeout(function() {
+						$(".title__center_home").fadeIn(200);
+					}, 100);
 					if(bg>new Date()){
 						$('#btnHEDoExam').html(`Chưa thể<br> tham gia`);
 						$("#btnHEDoExam").attr("disabled", true);
@@ -25,8 +36,6 @@
 						$('#btnHEDoExam').html(`Tham gia<br> ngay`);
 						$("#btnHEDoExam").removeAttr('disabled');
 					}
-					
-
 
 					$('#he_begin div.time').text(`${checkTime(bg.getHours())}H${checkTime(bg.getMinutes())}`);
 					$('#he_begin div.date').text(`${checkTime(bg.getDate())}/${checkTime(bg.getMonth() + 1)}/${bg.getFullYear()}`);
@@ -89,8 +98,3 @@ $('#btnHERegulation').click(function(e){
 		confirmButtonText:'Ok, tôi đã hiểu!'		
 	  })
 })
-
-
-
-
-

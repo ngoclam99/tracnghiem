@@ -28,9 +28,9 @@ $(function () {
                             <div class="rank__flex_right">
                                 <span class="rank__flex_right_auth">
                                     <span class="title__rank">${m.fullname}</span>
-                                    <span class="red">(${m.mark}/${m.number_of_questions}) (${m.spent_duration}) </span>
+                                    <span class="red">(${m.mark}/${m.number_of_questions})</span>
                                 </span>
-                                <p class="rank__flex_right_time">${m.exam_date}</p> 
+                                <p class="rank__flex_right_time">${m.exam_date} <span class="red"> (${m.spent_duration}) </span></p> 
                             </div>
 
                             <div class="rank__flex_right_point">

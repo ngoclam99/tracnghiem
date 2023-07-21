@@ -183,6 +183,7 @@ function Top10Candidates()
     INNER JOIN exams as ex ON t1.exam_id = ex.id
     INNER JOIN members as mb ON t1.member_id = mb.id
     WHERE ex.is_stat = 1
+    GROUP BY t1.member_id
     ORDER BY t2.tongdung DESC, t1.spent_duration ASC LIMIT 10";    
 
     $result = mysql_query($sql, dbconnect());
@@ -193,6 +194,7 @@ function Top10Candidates()
         while ($local = mysql_fetch_assoc($result)) {
             $local['tong_mark'] = $local['mark_per_question'] * $local['tongcaudung'];
             $local['mark'] = $local['tongcaudung'];
+            $local['spent_duration'] = seconds2human($local['spent_duration']);
             switch ($i) {
                 case 0:
                     $local['logo'] = 'hcvang.png';
@@ -225,6 +227,21 @@ function Top10Candidates()
         $msg->content = mysql_error();
     }
     return $msg;
+}
+
+function seconds2human($ss) {
+    $s = $ss%60;
+    $m = floor(($ss%3600)/60);
+    $h = floor(($ss%86400)/3600);
+    $d = floor(($ss%2592000)/86400);
+    $M = floor($ss/2592000);
+    return ($h > 0) ? "$h: " : "" .  "$m:$s";
+}
+
+function secondsToTime($seconds) {
+    $dtF = new DateTime('@0');
+    $dtT = new DateTime("@$seconds");
+    return $dtF->diff($dtT)->format('%a days, %h hours, %i minutes and %s seconds');
 }
 
 function Top10Units()

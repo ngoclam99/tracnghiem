@@ -1,14 +1,12 @@
-<div class="banner slider-wrapper theme-default">
-    <img style="width: 100%; height: auto; max-height:600px !important;" id="he_banner" class="img-responsive" src="assets/images/banners/sub1.jpg" />
+<div class="banner slider-wrapper theme-default load_banner">
+    
 </div>
 <div class="time-countdown">
-    <div class="row" style="border: 1px solid #333; margin: 0 1px 10px 1px;">
-        <div class="col-xs-24 col-sm-24 col-md-24 col-lg-24 tex-center" style="text-align:center;">
-            <h2 class="title mb10"
-                style="text-transform: uppercase; padding: 10px 15px;  margin: auto; font-weight: bold;"
-                id="he_title">
-                Cuộc thi tìm hiểu về chuyển đổi số Quý 2 năm 2023
-            </h2>
+    <div class="row">
+        <div class="col-xs-24 col-sm-24 col-md-24 col-lg-24 tex-center">
+            <div class=" text--social title__center_home">
+                
+            </div>
         </div>
     </div>
     <div class="row lst">
@@ -121,4 +119,3 @@
         width: 80% !important;
     }
 </style>
-

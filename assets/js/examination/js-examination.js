@@ -89,7 +89,10 @@ $('#btnSaveExamResult').click(async function (e) {
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Xác nhận nộp',
-                cancelButtonText: 'Tiếp tục làm bài'
+                cancelButtonText: 'Tiếp tục làm bài',
+                showCloseButton: false,
+                showCancelButton: false,
+                focusConfirm: false,
             }).then((result) => {
                 if (result.isConfirmed) {
                     submited = true;
@@ -121,6 +124,9 @@ $('#btnSaveExamResult').click(async function (e) {
                         showCancelButton: false,
                         confirmButtonText: 'Xem lại bài thi',
                         denyButtonText: `Tới trang chủ`,
+                        showCloseButton: false,
+                        showCancelButton: false,
+                        focusConfirm: false,
                     }).then((result) => {
                         if (result.isConfirmed) {
                             window.location.href = `index.php?module=examination&act=history-detail&id=${data.content}`;

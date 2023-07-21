@@ -169,11 +169,37 @@ $('.btnSubmitRegister').click(function () {
         return;
     }
 
+    if ($(".txtAddress").val() == '') {
+        Swal.fire({
+            title: 'Thông báo',
+            icon: 'error',
+            html: 'Địa chỉ không được để trống',
+            customClass: 'swal-wide',
+            showCloseButton: false,
+            showCancelButton: false,
+            focusConfirm: false,
+        });
+        return !1;
+    }
+
+    if ($("#txtPosition").val() == '') {
+        Swal.fire({
+            title: 'Thông báo',
+            icon: 'error',
+            html: 'Chức vụ không được để trống',
+            customClass: 'swal-wide',
+            showCloseButton: false,
+            showCancelButton: false,
+            focusConfirm: false,
+        });
+        return !1;
+    }
+
     if ($(".slDoiTuong").val() == '') {
         Swal.fire({
             title: 'Thông báo',
             icon: 'error',
-            html: 'Đơn vị không được để trống',
+            html: 'Đối tượng dự thi không được để trống',
             customClass: 'swal-wide',
             showCloseButton: false,
             showCancelButton: false,
@@ -186,7 +212,7 @@ $('.btnSubmitRegister').click(function () {
         Swal.fire({
             title: 'Thông báo',
             icon: 'error',
-            html: 'Đơn vị chi tiết không được để trống',
+            html: 'Đối tượng dự thi chi tiết không được để trống',
             customClass: 'swal-wide',
             showCloseButton: false,
             showCancelButton: false,
