@@ -4,10 +4,6 @@ var exam_date;
 var total_times = 0;
 var current_times = 0;
 
-
-
-
-
 $(function () {
 
     $('#scrolldiv').hide();
@@ -194,13 +190,27 @@ function LoadExamSummary(id) {
             user_id = localStorage.getItem('candidate');
             LoadTimes();
             if (localStorage.getItem(`exam_${user_id}_${exam_id}`) !== null) {
-                $('#btnOpenExam').click();
+                loadbtnOpenExam();
             }
         },
         error: function (jqXHR, exception) {
             console.log(jqXHR, exception);
         }
     })
+}
+
+function getCurrentTime() {
+    $.ajax({
+        url: 'controller/member/load_doituong.php',
+        type: 'POST',
+        data: {
+            'load_current_time': 1,
+            'id' : localStorage.getItem('candidate')
+        },
+        success: function (res) {
+            $('#current_times').text(res);
+        }
+    });
 }
 
 function LoadTimes() {
@@ -219,6 +229,10 @@ function LoadTimes() {
 }
 
 $('#btnOpenExam').click(function () {
+    loadbtnOpenExam();
+})
+
+function loadbtnOpenExam(current_times = 0) {
     if (total_times != 0 && current_times > total_times) {
         Swal.fire(
             'Số lần làm bài của bạn đã đạt mức tối đa',
@@ -241,9 +255,9 @@ $('#btnOpenExam').click(function () {
     isForeCast ? $('#NumberOfCandidates').show() : $('#NumberOfCandidates').hide();
     let id = $('#ex_title').attr('data-exam');
     LoadQuestionsByExam(id);
-    $('#current_times').text(current_times);
+    getCurrentTime();
     countdown();
-})
+}
 
 function Report(id) {
     let q = questions.find(x => x.id == id);
@@ -337,9 +351,7 @@ function LoadQuestionsByExam(exam_id) {
             }
         })
     }
-
 }
-
 
 
 //hiển thị nội dung của câu hỏi dựa vào id câu hỏi
@@ -601,12 +613,17 @@ function countdown() {
                         icon: 'warning',
                         title: 'Tham gia dự đoán!',
                         text: 'Vui lòng dự đoạn số thí sinh mà bạn dự đoán tham gia trong kỳ thi này',
-                        input: 'text',
-                        showCancelButton: true,
+                        input: 'number',
+                        showCancelButton: false,
                         hideOnOverlayClick: false,
                         allowOutsideClick: false,
-                        allowEscapeKey: false,  
+                        allowEscapeKey: false,
                     }).then((result) => {
+                        if (result.value === '' || parseInt(result.value) == NaN || parseInt(result.value) <= 0) {
+                            requiedInputNumberSTS();
+                            return !1;
+                        }
+
                         if (result.value) {
                             $("#txtNumberOfCandidate").val(result.value);
                             $('#btnSaveExamResult').click();
@@ -631,6 +648,29 @@ function countdown() {
       }, 1000);
         }
     }, 1000);
+}
+
+function requiedInputNumberSTS() {
+    Swal.fire({
+        icon: 'warning',
+        title: 'Tham gia dự đoán!',
+        text: 'Vui lòng dự đoạn số thí sinh mà bạn dự đoán tham gia trong kỳ thi này',
+        input: 'number',
+        showCancelButton: false,
+        hideOnOverlayClick: false,
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+    }).then((result) => {
+        if (result.value === '' || parseInt(result.value) == NaN || parseInt(result.value) <= 0) {
+            requiedInputNumberSTS();
+            return !1;
+        }
+
+        if (result.value) {
+            $("#txtNumberOfCandidate").val(result.value);
+            $('#btnSaveExamResult').click();
+        }
+    });
 }
 
 $(document).keydown(function(e) {

@@ -235,6 +235,8 @@ function seconds2human($ss) {
     $h = floor(($ss%86400)/3600);
     $d = floor(($ss%2592000)/86400);
     $M = floor($ss/2592000);
+    $m = ($m < 10) ? '0' . $m : $m;
+    $s = ($s < 10) ? '0' . $s : $s;
     return ($h > 0) ? "$h: " : "" .  "$m:$s";
 }
 
@@ -248,11 +250,11 @@ function Top10Units()
 {
     $arr = array();
 
-    $sql = "SELECT mb.id_doituong, mb.id_doituong_chitiet, mb.province_code, mb.district_code, mb.ward_code, t1.times, mb.get_workplace, t1.member_id, count(t1.id) as tongluotthi, count(DISTINCT member_id) tongthisinh, wa.name
+    $sql = "SELECT mb.id_doituong, mb.id_doituong_chitiet, mb.province_code, mb.district_code, mb.ward_code, t1.times, mb.get_workplace, t1.member_id, count(t1.id) as tongluotthi, count(DISTINCT member_id) tongthisinh, ds.full_name as name
     FROM exam_results t1
     INNER JOIN exams as ex ON t1.exam_id = ex.id
     INNER JOIN members as mb ON t1.member_id = mb.id
-   INNER JOIN wards as wa ON wa.code = mb.ward_code
+    INNER JOIN districts as ds ON ds.code = mb.district_code
     WHERE ex.is_stat = 1 AND mb.province_code =14
     GROUP BY mb.district_code
     ORDER BY tongthisinh DESC

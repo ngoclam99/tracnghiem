@@ -26,3 +26,10 @@ if ($_POST['load_dt_chitiet']) {
     echo json_encode($data);
     exit();
 }
+
+if ($_POST['load_current_time']) {
+    $id = $_POST['id'];
+    $data = LoadCurrentTime($id);
+    echo ($data);
+    exit();
+}

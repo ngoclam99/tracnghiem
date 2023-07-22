@@ -9,12 +9,12 @@
     </div>
     <div class="panel-body">
         <div class="row">
-            <!-- <div class="col-xs-24 col-sm-24 col-md-6 col-lg-6 form-group">
+            <div class="col-xs-24 col-sm-24 col-md-6 col-lg-6 form-group">
                 <label>Chọn tỉnh thành</label>
                 <select class="form-control" id="slProvinces"></select>
             </div>
-            <div class="col-md-18 col-lg-18"></div> -->
-            <h1>Thống kê dữ liệu các huyện thuộc Tỉnh Sơn La</h1>
+            <div class="col-md-18 col-lg-18"></div>
+            <!-- <h1>Thống kê dữ liệu các huyện thuộc Tỉnh Sơn La</h1> -->
         </div>
         <div class="row text-center">
             <h2 id = "h2Notice" class="text-danger">KHÔNG CÓ DỮ LIỆU VỀ CUỘC THI CỦA TỈNH NÀY</h2>

@@ -6,7 +6,7 @@ function LoadChart() {
     $.ajax({
         url: 'controller/statistic/statistic-via-province.php',
         type: 'get',
-        data: { province_code: 14 },
+        data: { province_code: $("#slProvinces").val() },
         success: function (data) {
             if (data.statusCode == 200) {
                 if (data.content.length > 0) {
@@ -166,34 +166,28 @@ function LoadChart() {
             }
         }
     });
-
-
 }
 
 $(document).ready(function () {
-    // $.ajax({
-    //     url: 'controller/location/provinces.php',
-    //     type: 'get',
-    //     success: function (data) {
-    //         if (data.statusCode == 200) {
-    //             let defPro = '';
-    //             data.content.forEach(p => {
-    //                 if (p.default_pro == 1) {
-    //                     defPro = p.code;
-    //                 }
-    //                 $('#slProvinces').append(`<option value="${p.code}">${p.full_name}</option>`);
-    //             })
-    //             $('#slProvinces').val(defPro);
-    //             LoadChart();
-    //         }
-    //     }
-    // })
+    $.ajax({
+        url: 'controller/location/provinces.php',
+        type: 'get',
+        success: function (data) {
+            if (data.statusCode == 200) {
+                let defPro = '';
+                data.content.forEach(p => {
+                    if (p.default_pro == 1) {
+                        defPro = p.code;
+                    }
+                    $('#slProvinces').append(`<option value="${p.code}">${p.full_name}</option>`);
+                })
+                $('#slProvinces').val(defPro);
+                LoadChart();
+            }
+        }
+    })
     LoadChart();
     $('#slProvinces').change(function () {
-        // LoadChart();
+        LoadChart();
     })
-
-
-
-
 });

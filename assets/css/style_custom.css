@@ -305,6 +305,10 @@
     font-weight: 600;
 }
 
+.scrollbar {
+    overflow: none !important;
+}
+
 @media screen and (max-width: 768px){
     .search-cart .top-cart-contain .mini-cart {
         padding: 0px 12px;

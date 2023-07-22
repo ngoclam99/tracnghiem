@@ -612,3 +612,9 @@ function LoadDoiTuongChiTiet($id_dt) {
     }
     return $arr;
 }
+
+function LoadCurrentTime($id) {
+    $result = mysql_query("select (count(*) + 1) as tong from exam_results t1 INNER JOIN exams t2 ON t1.exam_id = t2.id WHERE member_id = " . $id, dbconnect());
+    $local = mysql_fetch_assoc($result);
+    return $local['tong'];
+}

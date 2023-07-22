@@ -102,6 +102,8 @@
                                         class="fa fa-chevron-right fa-fw"></i>Báo cáo thống kê</a></li>
                             <li><a href="index.php?module=exam&amp;act=history"><i
                                         class="fa fa-chevron-right fa-fw"></i>Lịch sử thi</a></li>
+                            <li><a href="index.php?module=exam&amp;act=report-statistic"><i
+                                        class="fa fa-chevron-right fa-fw"></i>Báo cáo thống kê 1</a></li>
                         </ul>
                     </li>
 
