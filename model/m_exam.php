@@ -664,7 +664,7 @@ function getDoiTuong($id) {
             ) t2 ON t1.member_id = t2.member_id AND t1.tongcaudung = t2.tongdung
             INNER JOIN exams as ex ON t1.exam_id = ex.id
             INNER JOIN members as mb ON t1.member_id = mb.id
-            WHERE ex.is_stat = 1 and mb.id_doituong_chitiet = " . $v['id'];
+            WHERE ex.is_stat = 1 and mb.id_doituong_chitiet = " . $v['id'] . " ORDER BY tong DESC";
             $row = sql_query($sql);
             $arr[$k]['tongnguoithi'] = $row['tong'];
             $sql = "SELECT COUNT(t1.member_id) as tong
@@ -676,10 +676,12 @@ function getDoiTuong($id) {
             ) t2 ON t1.member_id = t2.member_id AND t1.tongcaudung = t2.tongdung
             INNER JOIN exams as ex ON t1.exam_id = ex.id
             INNER JOIN members as mb ON t1.member_id = mb.id
-            WHERE ex.is_stat = 1 and mb.id_doituong_chitiet = " . $v['id'];
+            WHERE ex.is_stat = 1 and mb.id_doituong_chitiet = " . $v['id'] . " ORDER BY tong DESC";
             $row = sql_query($sql);
             $arr[$k]['tongluotthi'] = $row['tong'];
         }
+        usort($arr, 'compareByTongNguoiThi');
+
     } else {
         $sql = "SELECT COUNT(DISTINCT t1.member_id) as tong
         FROM exam_results t1
@@ -690,7 +692,7 @@ function getDoiTuong($id) {
         ) t2 ON t1.member_id = t2.member_id AND t1.tongcaudung = t2.tongdung
         INNER JOIN exams as ex ON t1.exam_id = ex.id
         INNER JOIN members as mb ON t1.member_id = mb.id
-        WHERE ex.is_stat = 1 and mb.id_doituong  = " . $id;
+        WHERE ex.is_stat = 1 and mb.id_doituong  = " . $id . " ORDER BY tong DESC";
         $row = sql_query($sql);
         $arr[0]['tongnguoithi'] = $row['tong'];
         $sql = "SELECT COUNT(t1.member_id) as tong
@@ -702,7 +704,7 @@ function getDoiTuong($id) {
         ) t2 ON t1.member_id = t2.member_id AND t1.tongcaudung = t2.tongdung
         INNER JOIN exams as ex ON t1.exam_id = ex.id
         INNER JOIN members as mb ON t1.member_id = mb.id
-        WHERE ex.is_stat = 1 and mb.id_doituong  = " . $id;
+        WHERE ex.is_stat = 1 and mb.id_doituong  = " . $id . " ORDER BY tong DESC";
         $row = sql_query($sql);
         $arr[0]['id'] = 1;
         $arr[0]['tongluotthi'] = $row['tong'];
@@ -712,6 +714,14 @@ function getDoiTuong($id) {
 
     return $arr;
 }
+
+function compareByTongNguoiThi($a, $b) {
+    if ($a['tongnguoithi'] == $b['tongnguoithi']) {
+        return 0;
+    }
+    return ($a['tongnguoithi'] > $b['tongnguoithi']) ? -1 : 1;
+}
+
 
 function sql_query($sql) {
     $result = mysql_query($sql, dbconnect());

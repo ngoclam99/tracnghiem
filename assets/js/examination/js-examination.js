@@ -93,6 +93,7 @@ $('#btnSaveExamResult').click(async function (e) {
                 showCloseButton: false,
                 showCancelButton: false,
                 focusConfirm: false,
+                allowOutsideClick: false
             }).then((result) => {
                 if (result.isConfirmed) {
                     submited = true;
@@ -114,7 +115,6 @@ $('#btnSaveExamResult').click(async function (e) {
                 forecast_candidates
             },
             success: function (data) {
-                console.log(data)
                 if (data.statusCode == 201) {
                     localStorage.clear();
                     clearInterval(countdownInterval);
@@ -125,123 +125,32 @@ $('#btnSaveExamResult').click(async function (e) {
                         confirmButtonText: 'Xem lại bài thi',
                         denyButtonText: `Tới trang chủ`,
                         showCloseButton: false,
-                        showCancelButton: false,
                         focusConfirm: false,
+                        allowOutsideClick: false,
+                        hideOnOverlayClick: false,
+                        allowEscapeKey: false, 
                     }).then((result) => {
                         if (result.isConfirmed) {
                             window.location.href = `index.php?module=examination&act=history-detail&id=${data.content}`;
                         } else if (result.isDenied) {
                             window.location.href = 'index.php?module=home&act=index';
                         }
-
-                        window.location.href = 'index.php?module=home&act=index';
                     })
                 }
             },
             error: function (xhr, status, error) {
                 console.log(xhr, error, status);
+                window.location.href = 'index.php?module=home&act=index';
             }
         })
+    }
+
+    // ESCAPE key pressed
+    if (e.keyCode == 27) {
+        alert(1);
+        window.location.href = 'index.php?module=home&act=index';
     }
 });
-
-function saveResult(confirm) {
-    let spent_duration = $('.ex_duration').data('duration') - localStorage.getItem('duration');
-    let forecast_candidates = 0;
-
-    if ($('#ex_title').data('forecast_candidates') == 1) {
-        let forecast = $('#txtNumberOfCandidate').val();
-        if (!isInteger(forecast) || forecast < 1) {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Tham gia dự đoán!',
-                text: 'Vui lòng nhập số thí sinh mà bạn dự đoán tham gia thi'
-            })
-            $('#txtNumberOfCandidate').select();
-            return;
-        }
-        forecast_candidates = parseInt($('#txtNumberOfCandidate').val());
-    }
-
-    let submited = true;
-
-    //chỉ kiểm tra các câu hỏi chưa làm khi thời gian làm bài chưa hết
-    if (!timeOut) {
-        let uncheckIds = $("ul#questionsPagination li a:not(.done)").map(function () {
-            return $(this).text();
-        }).get();
-        if (uncheckIds.length > 0) {
-            submited = false;
-            Swal.fire({
-                title: 'Bạn vẫn muốn nộp bài?',
-                html: "<h4>Bạn chưa trả lời hết câu hỏi [<span class='text-danger fw-bold'>" + uncheckIds.join(', ') + "]</span></h4>",
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Xác nhận nộp',
-                cancelButtonText: 'Tiếp tục làm bài'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    submited = true;
-                }
-            })
-        }
-    }
-
-    if (confirm) {
-        Swal.fire({
-            title: 'Bạn có chắc chắn muốn nộp bài không?',
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Xác nhận nộp',
-        }).then((result) => {
-            if (result.isConfirmed) {
-                submited = true;
-            }
-        })
-    }
-
-    if (submited) {
-        $.ajax({
-            url: 'controller/exam/save-result.php',
-            type: 'post',
-            data: {
-                exam_id,
-                result: questions,
-                spent_duration,
-                times: $('#btnOpenExam span.exam_times').text(),
-                exam_date,
-                forecast_candidates
-            },
-            success: function (data) {
-                console.log(data)
-                if (data.statusCode == 201) {
-                    localStorage.clear();
-                    clearInterval(countdownInterval);
-                    Swal.fire({
-                        title: `${data.title}`,
-                        showDenyButton: true,
-                        showCancelButton: false,
-                        confirmButtonText: 'Xem lại bài thi',
-                        denyButtonText: `Tới trang chủ`,
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            window.location.href = `index.php?module=examination&act=history-detail&id=${data.content}`;
-                        } else if (result.isDenied) {
-                            window.location.href = 'index.php?module=home&act=index';
-                        }
-                    })
-                }
-            },
-            error: function (xhr, status, error) {
-                console.log(xhr, error, status);
-            }
-        })
-    }
-}
 
 function LoadExamSummary(id) {
     $.ajax({
@@ -338,7 +247,6 @@ $('#btnOpenExam').click(function () {
 
 function Report(id) {
     let q = questions.find(x => x.id == id);
-    console.log(q);
     Swal.fire({
         title: `<strong>Phản hồi lỗi câu hỏi <b class="text-danger">${q.title}</b></strong>`,
         html:
@@ -698,7 +606,6 @@ function countdown() {
                         hideOnOverlayClick: false,
                         allowOutsideClick: false,
                         allowEscapeKey: false,  
-                        showCancelButton: false,   
                     }).then((result) => {
                         if (result.value) {
                             $("#txtNumberOfCandidate").val(result.value);
@@ -729,7 +636,7 @@ function countdown() {
 $(document).keydown(function(e) {
     // ESCAPE key pressed
     if (e.keyCode == 27 && localStorage.getItem('duration') <= 0) {
-        return;
+        
     }
 });
 

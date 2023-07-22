@@ -6,7 +6,7 @@ function LoadChart() {
     $.ajax({
         url: 'controller/statistic/statistic-via-province.php',
         type: 'get',
-        data: { province_code: $('#slProvinces option:selected').val() },
+        data: { province_code: 14 },
         success: function (data) {
             if (data.statusCode == 200) {
                 if (data.content.length > 0) {
@@ -26,7 +26,6 @@ function LoadChart() {
                     // Vẽ biểu đồ kết hợp
                     var combinedChartCanvas = document.getElementById('combinedChart');
                     var chart = Chart.getChart("combinedChart"); // Lấy biểu đồ hiện tại trên canvas
-
 
                     if (chart) {
                         // Cập nhật dữ liệu và cấu hình mới cho biểu đồ
@@ -145,9 +144,9 @@ function LoadChart() {
                                         data.content.forEach(tr => {
                                             let r = `<tr>
                                                 <td>${idx++}</td>
-                                                <td class="fw-bold text-primary">${tr.workplace}</td>
-                                                <td class="text-center">${tr.candidates}</td>
-                                                <td class="text-center">${tr.average_mark}</td>
+                                                <td class="fw-bold text-primary">${tr.name}</td>
+                                                <td class="text-center">${tr.tongthisinh}</td>
+                                                <td class="text-center">${tr.soluotthi}</td>
                                             </tr>`;
                                             $('#tblStat').append(r);
                                         })
@@ -171,26 +170,26 @@ function LoadChart() {
 }
 
 $(document).ready(function () {
-    $.ajax({
-        url: 'controller/location/provinces.php',
-        type: 'get',
-        success: function (data) {
-            if (data.statusCode == 200) {
-                let defPro = '';
-                data.content.forEach(p => {
-                    if (p.default_pro == 1) {
-                        defPro = p.code;
-                    }
-                    $('#slProvinces').append(`<option value="${p.code}">${p.full_name}</option>`);
-                })
-                $('#slProvinces').val(defPro);
-                LoadChart();
-            }
-        }
-    })
-
+    // $.ajax({
+    //     url: 'controller/location/provinces.php',
+    //     type: 'get',
+    //     success: function (data) {
+    //         if (data.statusCode == 200) {
+    //             let defPro = '';
+    //             data.content.forEach(p => {
+    //                 if (p.default_pro == 1) {
+    //                     defPro = p.code;
+    //                 }
+    //                 $('#slProvinces').append(`<option value="${p.code}">${p.full_name}</option>`);
+    //             })
+    //             $('#slProvinces').val(defPro);
+    //             LoadChart();
+    //         }
+    //     }
+    // })
+    LoadChart();
     $('#slProvinces').change(function () {
-        LoadChart();
+        // LoadChart();
     })
 
 

@@ -9,11 +9,12 @@
     </div>
     <div class="panel-body">
         <div class="row">
-            <div class="col-xs-24 col-sm-24 col-md-6 col-lg-6 form-group">
+            <!-- <div class="col-xs-24 col-sm-24 col-md-6 col-lg-6 form-group">
                 <label>Chọn tỉnh thành</label>
                 <select class="form-control" id="slProvinces"></select>
             </div>
-            <div class="col-md-18 col-lg-18"></div>
+            <div class="col-md-18 col-lg-18"></div> -->
+            <h1>Thống kê dữ liệu các huyện thuộc Tỉnh Sơn La</h1>
         </div>
         <div class="row text-center">
             <h2 id = "h2Notice" class="text-danger">KHÔNG CÓ DỮ LIỆU VỀ CUỘC THI CỦA TỈNH NÀY</h2>
@@ -39,9 +40,9 @@
             <thead>
             <tr>
                 <th>#</th>
-                <th>Đơn vị công tác</th>
-                <th>Số người tham gia</th>
-                <th>Điểm trung bình</th>
+                <th>Tên Xã/Phường</th>
+                <th>Tổng số người tham gia</th>
+                <th>Tổng số lượt thi</th>
             </tr>
             </thead>
             <tbody id="tblStat"></tbody>
@@ -60,4 +61,3 @@
  <script src="assets/plugins/chart/chart.js"></script>
  <script src="assets/plugins/chart/chartjs-plugin-datalabels.js"></script>
  <script src="assets/js/home/js-chart.js"></script>
- 

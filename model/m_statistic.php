@@ -2,7 +2,7 @@
 include_once('m_db.php');
 include_once('classes/m_message.php');
 
-function statDistrict($code){
+function statDistrict1($code){
     $sql = "SELECT 
         d.full_name AS district,
         w.full_name AS ward,
@@ -41,8 +41,52 @@ function statDistrict($code){
     }
     return $msg;
 }
-function statProvince($province_code)
+
+function statDistrict($code) {
+    $sql = "SELECT mb.ward_code, wa.name, COUNT( DISTINCT t1.member_id ) AS tongthisinh, COUNT( t1.member_id ) AS soluotthi
+    FROM exam_results t1
+    INNER JOIN (
+    SELECT member_id, MAX( tongcaudung ) AS tongdung
+    FROM exam_results
+    GROUP BY member_id
+    )t2 ON t1.member_id = t2.member_id
+    AND t1.tongcaudung = t2.tongdung
+    INNER JOIN exams AS ex ON t1.exam_id = ex.id
+    INNER JOIN members AS mb ON t1.member_id = mb.id
+    INNER JOIN wards AS wa ON wa.code = mb.ward_code
+    WHERE ex.is_stat =1
+    AND mb.province_code =14
+    AND mb.district_code = " . $code ."
+    GROUP BY mb.ward_code
+    ORDER BY t2.tongdung DESC , t1.spent_duration";
+
+    $result = mysql_query($sql,dbconnect());
+    $msg = new Message();
+    if($result){
+        $arr = array();
+        while ($local = mysql_fetch_assoc($result)) {
+            $arr[] = $local;
+        }
+        $msg->icon = "success";
+        $msg->title = "Thống kê dữ liệu cuộc thi theo quận, huyện thành công!";
+        $msg->statusCode = 200;
+        $msg->content = $arr;
+    }else{
+        $msg->title = "Thống kê dữ liệu thi theo quận huyện thất bại!";
+        $msg->icon = "error";
+        $msg->statusCode = 500;
+        $msg->content = mysql_error();
+    }
+    return $msg;
+}
+
+function statProvince($province_code=14)
 {
+    // $sql = "SELECT code FROM provinces WHERE code_name = 'son_la'";
+    // $res = mysql_query($sql, dbconnect());;
+    // $res = mysqli_fetch_assoc($res);
+    // $row = $res['code'];
+
     $sql = "SELECT
                 e.title,
                 d.code,
