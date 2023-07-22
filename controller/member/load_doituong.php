@@ -14,6 +14,12 @@ if ($_POST['load_dt']) {
     exit();
 }
 
+if ($_POST['load_cuocthi']) {
+    $data = LoadCuocThi();
+    echo json_encode($data);
+    exit();
+}
+
 if ($_POST['load_dt_chitiet']) {
     $id_dt = $_POST['id_doituong'];
     $data = LoadDoiTuongChiTiet($id_dt);

@@ -23,8 +23,7 @@
 		            //     <span></span>
 		            //     <span></span>
 					$(".title__center_home").html(`<div class="box1">
-		                
-		                <h2 class="title mb10" id="he_title">CUỘC THI SẼ ${bg>new Date()?'DIỄN RA':'KẾT THÚC'} TRONG</h2>
+		                <h2 class="title mb10" id="he_title">${exam.title}</h2>
 		            </div>`);
 					setTimeout(function() {
 						$(".title__center_home").fadeIn(200);

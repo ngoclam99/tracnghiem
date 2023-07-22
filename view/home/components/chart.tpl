@@ -39,10 +39,11 @@
          <table class="table table-bordered table-stripped">
             <thead>
             <tr>
-                <th>#</th>
-                <th>Tên Xã/Phường</th>
-                <th>Tổng số người tham gia</th>
-                <th>Tổng số lượt thi</th>
+                <th class="text-center">#</th>
+                <th class="text-center">Họ và tên</th>
+                <th class="text-center">Số câu đúng (số điểm)</th>
+                <th class="text-center">Tổng số lượt thi</th>
+                <th class="text-center">Điểm TB các lượt thi</th>
             </tr>
             </thead>
             <tbody id="tblStat"></tbody>

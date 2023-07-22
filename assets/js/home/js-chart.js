@@ -144,9 +144,10 @@ function LoadChart() {
                                         data.content.forEach(tr => {
                                             let r = `<tr>
                                                 <td>${idx++}</td>
-                                                <td class="fw-bold text-primary">${tr.name}</td>
-                                                <td class="text-center">${tr.tongthisinh}</td>
+                                                <td class="fw-bold text-primary">${tr.fullname}</td>
+                                                <td class="text-center">${tr.tongcaudung} (${tr.tongcaudung * tr.mark_per_question} điểm)</td>
                                                 <td class="text-center">${tr.soluotthi}</td>
+                                                <td class="text-center">${tr.tb_dung}</td>
                                             </tr>`;
                                             $('#tblStat').append(r);
                                         })

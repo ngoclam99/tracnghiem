@@ -43,23 +43,21 @@ function statDistrict1($code){
 }
 
 function statDistrict($code) {
-    $sql = "SELECT mb.ward_code, wa.name, COUNT( DISTINCT t1.member_id ) AS tongthisinh, COUNT( t1.member_id ) AS soluotthi
-    FROM exam_results t1
-    INNER JOIN (
-    SELECT member_id, MAX( tongcaudung ) AS tongdung
-    FROM exam_results
-    GROUP BY member_id
-    )t2 ON t1.member_id = t2.member_id
-    AND t1.tongcaudung = t2.tongdung
-    INNER JOIN exams AS ex ON t1.exam_id = ex.id
-    INNER JOIN members AS mb ON t1.member_id = mb.id
-    INNER JOIN wards AS wa ON wa.code = mb.ward_code
-    WHERE ex.is_stat =1
-    AND mb.province_code =14
-    AND mb.district_code = " . $code ."
-    GROUP BY mb.ward_code
-    ORDER BY t2.tongdung DESC , t1.spent_duration";
-
+    $sql = "SELECT t1.member_id, soluotthi, t1.tongcaudung, ex.mark_per_question, DATE_FORMAT( t1.started_at, '%d/%m/%Y %T' ) AS exam_date, mb.fullname, ex.number_of_questions, t1.spent_duration, sum_tongdung, (sum_tongdung*mark_per_question / soluotthi) as tb_dung
+        FROM exam_results t1
+        INNER JOIN (
+        SELECT member_id, MAX( tongcaudung ) AS tongdung, COUNT( * ) AS soluotthi, sum(tongcaudung) as sum_tongdung
+        FROM exam_results
+        GROUP BY member_id
+        )t2 ON t1.member_id = t2.member_id
+        AND t1.tongcaudung = t2.tongdung
+        INNER JOIN exams AS ex ON t1.exam_id = ex.id
+        INNER JOIN members AS mb ON t1.member_id = mb.id
+        WHERE ex.is_stat =1 
+        AND mb.province_code = 14
+        AND mb.district_code = " . $code . "
+        GROUP BY t1.member_id
+        ORDER BY t2.tongdung DESC , t1.spent_duration";
     $result = mysql_query($sql,dbconnect());
     $msg = new Message();
     if($result){

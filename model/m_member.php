@@ -597,6 +597,14 @@ function LoadDoiTuong() {
     return $arr;
 }
 
+function LoadCuocThi() {
+    $result = mysql_query("select id, title, is_stat from exams", dbconnect());
+    while ($local = mysql_fetch_assoc($result)) {
+        $arr[] = $local;
+    }
+    return $arr;
+}
+
 function LoadDoiTuongChiTiet($id_dt) {
     $result = mysql_query("select * from doituong_chitiet WHERE id_doituong = " . $id_dt, dbconnect());
     while ($local = mysql_fetch_assoc($result)) {

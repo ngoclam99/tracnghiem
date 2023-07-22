@@ -1,7 +1,8 @@
 loadDoiTuong();
+loadCuocThi();
 
 $(document).ready(function() {
-	$(".slDoiTuong").change(function() {
+	$(".slDoiTuong, .listCuocThi").change(function() {
 		loadDT();
 	});
 
@@ -14,6 +15,7 @@ $(document).ready(function() {
 			data: {
 				'load_statisc': 1,
 				'id_dt': $(".slDoiTuong").val(),
+				'id_cuocthi': $(".listCuocThi").val(),
 			},
 		})
 		.done(function(res) {
@@ -26,8 +28,8 @@ $(document).ready(function() {
 					html += `<tr>
                             <td class="text-center">${index+1}</td>
                             <td >${val['title']}</td>
-                            <td class="text-center"><span class="label label-info lb__static">${val['tongnguoithi']}</span></td>
-                            <td class="text-center"><span  class="label label-success lb__static">${val['tongluotthi']}</span></td>
+                            <td class="text-center"><span class="label label-info lb__static">${val['tongthisinh']}</span></td>
+                            <td class="text-center"><span  class="label label-success lb__static">${val['tongluotthisinh']}</span></td>
                         </tr>`;
 				});
 				$("#tbody_dt").html(html);
@@ -36,15 +38,36 @@ $(document).ready(function() {
 				$("#tbody_dt").fadeIn(500);
 				data = JSON.parse(res);
 				$("#tbody_dt").html(`<tr>
-                            <td class="text-center">${data['id']}</td>
-                            <td>${data['title']}</td>
-                            <td>${data['tongnguoithi']}</td>
-                            <td>${data['tongluotthi']}</td>
+                            <td class="text-center" colspan="4">Không có dữ liệu</td>
                         </tr>`);
 			}
 		})
 	}
 });
+
+function loadCuocThi() {
+	$.ajax({
+        url: 'controller/member/load_doituong.php',
+        type: 'POST',
+        data: {
+            load_cuocthi: 1,
+        },
+        success: function (data) {
+            if (data != '') {
+                list = JSON.parse(data);
+                html = '';
+                list.forEach(val => {
+                	selected = '';
+                	if (val['is_stat'] == '1') {
+                		selected = 'Selected';
+                	}
+                    html += '<option ' + selected + ' value="' + val['id'] + '"> ' + val['title'] + ' </option>';
+                })
+                $(".listCuocThi").html(html);
+            }
+        }
+    })
+}
 
 function loadDoiTuong() {
     $.ajax({

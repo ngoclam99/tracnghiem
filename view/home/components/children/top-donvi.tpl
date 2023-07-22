@@ -1,11 +1,15 @@
-<div class="panel panel-primary" id="static_dtdt">
+<div class="panel panel-info" id="static_dtdt">
     <div class="panel-heading">
-        <h3 class="panel-title">Thống kê theo đối tượng dự thi</h3>
+        <h3 class="panel-title text-uppercase">Thống kê theo đối tượng dự thi</h3>
     </div>
     <div class="panel-body">
         <div class="row">
             <div class="col-md-12">
                 <select class="form-control selectpicker slDoiTuong" data-live-search="true" style="width: 100%;"></select>
+            </div>
+
+            <div class="col-md-12">
+                <select class="form-control listCuocThi" data-live-search="true" style="width: 100%;"></select>
             </div>
             <div class="col-md-24">
                 <br>

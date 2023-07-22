@@ -184,7 +184,7 @@ function Top10Candidates()
     INNER JOIN members as mb ON t1.member_id = mb.id
     WHERE ex.is_stat = 1
     GROUP BY t1.member_id
-    ORDER BY t2.tongdung DESC, t1.spent_duration ASC LIMIT 10";    
+    ORDER BY t2.tongdung DESC, t1.spent_duration ASC LIMIT 10";
 
     $result = mysql_query($sql, dbconnect());
     $msg = new Message();
@@ -247,53 +247,21 @@ function secondsToTime($seconds) {
 function Top10Units()
 {
     $arr = array();
-    $result = mysql_query("SELECT id, name as workplace FROM workplaces ORDER BY name", dbconnect());
+
+    $sql = "SELECT mb.id_doituong, mb.id_doituong_chitiet, mb.province_code, mb.district_code, mb.ward_code, t1.times, mb.get_workplace, t1.member_id, count(t1.id) as tongluotthi, count(DISTINCT member_id) tongthisinh, wa.name
+    FROM exam_results t1
+    INNER JOIN exams as ex ON t1.exam_id = ex.id
+    INNER JOIN members as mb ON t1.member_id = mb.id
+   INNER JOIN wards as wa ON wa.code = mb.ward_code
+    WHERE ex.is_stat = 1 AND mb.province_code =14
+    GROUP BY mb.district_code
+    ORDER BY tongthisinh DESC
+    LIMIT 10";
+    $result = mysql_query($sql, dbconnect());
     while ($row = mysql_fetch_assoc($result)) {
-        $sql = "SELECT COUNT(DISTINCT t1.member_id) as tong
-            FROM exam_results t1
-            INNER JOIN (
-                SELECT member_id, MAX(tongcaudung) AS tongdung
-                FROM exam_results
-                GROUP BY member_id
-            ) t2 ON t1.member_id = t2.member_id AND t1.tongcaudung = t2.tongdung
-            INNER JOIN exams as ex ON t1.exam_id = ex.id
-            INNER JOIN members as mb ON t1.member_id = mb.id
-            WHERE ex.is_stat = 1 and mb.get_workplace = " . $row['id'];
-        $row['tong_thisinh'] = sql_query($sql);
-        $row['candidates'] = $row['tong_thisinh']['tong'];
-
-        $sql = "SELECT COUNT(t1.member_id) as tong
-            FROM exam_results t1
-            INNER JOIN (
-                SELECT member_id, MAX(tongcaudung) AS tongdung
-                FROM exam_results
-                GROUP BY member_id
-            ) t2 ON t1.member_id = t2.member_id AND t1.tongcaudung = t2.tongdung
-            INNER JOIN exams as ex ON t1.exam_id = ex.id
-            INNER JOIN members as mb ON t1.member_id = mb.id
-            WHERE ex.is_stat = 1 and mb.get_workplace = " . $row['id'];
-        $row['tong_luotthamgia'] = sql_query($sql);
-        $row['total_members'] = $row['tong_luotthamgia']['tong'];
-
-        $sql = "SELECT t1.tongcaudung, ex.mark_per_question, ex.number_of_questions, mb.fullname
-        FROM exam_results t1
-        INNER JOIN (
-        SELECT member_id, MAX( tongcaudung ) AS tongdung
-        FROM exam_results
-        GROUP BY member_id
-        )t2 ON t1.member_id = t2.member_id
-        AND t1.tongcaudung = t2.tongdung
-        INNER JOIN exams AS ex ON t1.exam_id = ex.id
-        INNER JOIN members AS mb ON t1.member_id = mb.id
-        WHERE ex.is_stat =1 and mb.get_workplace = " . $row['id'];
-        $row['info_max_point'] = sql_query($sql);
-        if (empty($row['info_max_point'])) {
-            $row['info_max_point'] = '';
-        }
         $arr[] = $row;
     }
 
-    $result = mysql_query($sql, dbconnect());
     $msg = new Message();
     if ($result) {
         $msg->icon = "success";
@@ -643,11 +611,16 @@ function EarliestExam()
     return mysql_fetch_array($exam);
 }
 
-function getDoiTuong($id) {
-     $sql = "SELECT *
-            FROM doituong_chitiet
-            WHERE id_doituong = '" . $id . "'    
-    ";
+function getDoiTuong($id, $id_cuocthi) {
+    $sql = "SELECT mb.id_doituong, mb.id_doituong_chitiet, ex.is_stat, t1.member_id, COUNT( DISTINCT t1.member_id ) AS tongthisinh, COUNT(t1.member_id ) AS tongluotthisinh
+    FROM exam_results t1
+    INNER JOIN exams AS ex ON t1.exam_id = ex.id
+    INNER JOIN members AS mb ON t1.member_id = mb.id
+    INNER JOIN wards AS wa ON wa.code = mb.ward_code
+    WHERE ex.id = " . $id_cuocthi . "
+    AND mb.id_doituong = " . $id ."
+    GROUP BY mb.id_doituong_chitiet ORDER BY tongthisinh DESC ";
+
     $result = mysql_query($sql, dbconnect());
     while ($row = mysql_fetch_assoc($result)) {
         $arr[] = $row;
@@ -655,61 +628,10 @@ function getDoiTuong($id) {
 
     if (!empty($arr)) {
         foreach ($arr as $k => $v) {
-            $sql = "SELECT COUNT(DISTINCT t1.member_id) as tong
-            FROM exam_results t1
-            INNER JOIN (
-                SELECT member_id, MAX(tongcaudung) AS tongdung
-                FROM exam_results
-                GROUP BY member_id
-            ) t2 ON t1.member_id = t2.member_id AND t1.tongcaudung = t2.tongdung
-            INNER JOIN exams as ex ON t1.exam_id = ex.id
-            INNER JOIN members as mb ON t1.member_id = mb.id
-            WHERE ex.is_stat = 1 and mb.id_doituong_chitiet = " . $v['id'] . " ORDER BY tong DESC";
-            $row = sql_query($sql);
-            $arr[$k]['tongnguoithi'] = $row['tong'];
-            $sql = "SELECT COUNT(t1.member_id) as tong
-            FROM exam_results t1
-            INNER JOIN (
-                SELECT member_id, MAX(tongcaudung) AS tongdung
-                FROM exam_results
-                GROUP BY member_id
-            ) t2 ON t1.member_id = t2.member_id AND t1.tongcaudung = t2.tongdung
-            INNER JOIN exams as ex ON t1.exam_id = ex.id
-            INNER JOIN members as mb ON t1.member_id = mb.id
-            WHERE ex.is_stat = 1 and mb.id_doituong_chitiet = " . $v['id'] . " ORDER BY tong DESC";
-            $row = sql_query($sql);
-            $arr[$k]['tongluotthi'] = $row['tong'];
+           $sql = "SELECT * FROM doituong_chitiet WHERE id = " . $v['id_doituong_chitiet'];
+           $row = sql_query($sql);
+           $arr[$k]['title'] = $row['title'];
         }
-        usort($arr, 'compareByTongNguoiThi');
-
-    } else {
-        $sql = "SELECT COUNT(DISTINCT t1.member_id) as tong
-        FROM exam_results t1
-        INNER JOIN (
-            SELECT member_id, MAX(tongcaudung) AS tongdung
-            FROM exam_results
-            GROUP BY member_id
-        ) t2 ON t1.member_id = t2.member_id AND t1.tongcaudung = t2.tongdung
-        INNER JOIN exams as ex ON t1.exam_id = ex.id
-        INNER JOIN members as mb ON t1.member_id = mb.id
-        WHERE ex.is_stat = 1 and mb.id_doituong  = " . $id . " ORDER BY tong DESC";
-        $row = sql_query($sql);
-        $arr[0]['tongnguoithi'] = $row['tong'];
-        $sql = "SELECT COUNT(t1.member_id) as tong
-        FROM exam_results t1
-        INNER JOIN (
-            SELECT member_id, MAX(tongcaudung) AS tongdung
-            FROM exam_results
-            GROUP BY member_id
-        ) t2 ON t1.member_id = t2.member_id AND t1.tongcaudung = t2.tongdung
-        INNER JOIN exams as ex ON t1.exam_id = ex.id
-        INNER JOIN members as mb ON t1.member_id = mb.id
-        WHERE ex.is_stat = 1 and mb.id_doituong  = " . $id . " ORDER BY tong DESC";
-        $row = sql_query($sql);
-        $arr[0]['id'] = 1;
-        $arr[0]['tongluotthi'] = $row['tong'];
-        $res = sql_query("SELECT ten_donvi FROM dm_doituong WHERE id = " . $id);
-        $arr[0]['title'] = trim($res['ten_donvi']);
     }
 
     return $arr;
