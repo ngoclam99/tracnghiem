@@ -25,10 +25,10 @@
                                 <label for="">Chọn đơn vị công tác</label>
                                 <select class="selectpicker" id="slUnits" data-live-search="true" multiple style="width:100% important;"></select>
                             </div>
-                            <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3" style="margin-top:5px">
+                            <!-- <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3" style="margin-top:5px">
                                 <label for="">Chọn đối tượng dự thi</label>
                                 <select class="form-control slDoiTuong" data-live-search="true" style="width: 100%;"></select>
-                            </div>           
+                            </div>    -->        
                             <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6" style="margin-top:5px">
                                 <div class="input-group input-group-sm" style="margin-top: 26px;" >                            
                                     <input type="text" class="form-control" id="txtSearch"

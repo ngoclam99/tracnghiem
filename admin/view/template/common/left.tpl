@@ -106,6 +106,10 @@
                                         class="fa fa-chevron-right fa-fw"></i>Báo cáo thống kê 1</a></li>
                             <li><a href="index.php?module=exam&amp;act=report-statistic-total"><i
                                         class="fa fa-chevron-right fa-fw"></i>Báo cáo thống kê 2</a></li>
+                            <li><a href="index.php?module=exam&amp;act=report-statistic-dt"><i
+                                        class="fa fa-chevron-right fa-fw"></i>Báo cáo thống kê tổng đơn vị</a></li>
+                            <li><a href="index.php?module=exam&amp;act=report-statistic-tinh"><i
+                                        class="fa fa-chevron-right fa-fw"></i>Báo cáo thống kê tổng các huyện</a></li>
                         </ul>
                     </li>
 

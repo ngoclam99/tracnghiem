@@ -416,7 +416,7 @@ function History($page, $search, $pageSize, $workplaces, $exams, $id_doituong)
             
             $sql.=" GROUP BY subquery.candidate ORDER BY subquery.mark DESC, subquery.spent_duration ASC";
 
-            $persion_number =  getTotolLuotThi($province);
+            // $persion_number =  getTotolLuotThi($province);
 
     //Tính số trang của kết quả tìm được dựa vào kích thước trang & số dòng của kết quả
             $pages = 1;
@@ -434,6 +434,7 @@ function History($page, $search, $pageSize, $workplaces, $exams, $id_doituong)
             if ($result) {
                 $arr = array();
                 while ($local = mysql_fetch_array($result)) {
+                    $persion_number += $local['times'];
                     $arr[] = $local;
                 }
 
@@ -730,22 +731,22 @@ function History($page, $search, $pageSize, $workplaces, $exams, $id_doituong)
 
 
         $result = mysql_query("INSERT INTO exams 
-         SET title='" . $title . "',
-         thumbnail = '" . $thumbnail . "',       
-         description = '" . $description . "',
-         duration = '" . $duration . "',
-         number_of_questions = '" . $number_of_questions . "',
-         mark_per_question = '" . $mark_per_question . "',
-         times = '" . $times . "',
-         begin = '" . $begin . "',
-         end = '" . $end . "',    
-         is_hot = '" . $is_hot . "',   
-         forecast_candidates = '".$forecast_candidates."',
-         random_questions = '" . $random_questions . "',
-         random_options = '" . $random_options . "',
-         regulation = '" . $regulation . "',
-         created_by='" . $created_by . "'
-         ", dbconnect());
+           SET title='" . $title . "',
+           thumbnail = '" . $thumbnail . "',       
+           description = '" . $description . "',
+           duration = '" . $duration . "',
+           number_of_questions = '" . $number_of_questions . "',
+           mark_per_question = '" . $mark_per_question . "',
+           times = '" . $times . "',
+           begin = '" . $begin . "',
+           end = '" . $end . "',    
+           is_hot = '" . $is_hot . "',   
+           forecast_candidates = '".$forecast_candidates."',
+           random_questions = '" . $random_questions . "',
+           random_options = '" . $random_options . "',
+           regulation = '" . $regulation . "',
+           created_by='" . $created_by . "'
+           ", dbconnect());
 
         $msg = new Message();
         if ($result && mysql_affected_rows() > 0) {
@@ -1049,7 +1050,7 @@ function History_NumberPersion($page, $search, $pageSize, $workplaces, $exams)
         return $arr;
     }
 
-    function getThongKeCuocThi($id, $id_dt, $id_dtct) {
+    function getThongKeCuocThi($id, $id_dt, $id_dtct, $id_tinh = 14, $id_huyen = 0, $id_xa = 0) {
         $where = array();
         if ($id != '') {
             $strID = implode(",", $id);
@@ -1063,12 +1064,25 @@ function History_NumberPersion($page, $search, $pageSize, $workplaces, $exams)
         if ($id_dtct != '') {
             $where[] = "mb.id_doituong_chitiet = " . $id_dtct;
         }
+
+        if ($id_tinh != '') {
+            $where[] = "mb.province_code = " . $id_tinh;
+        }
+
+        if ($id_huyen != '') {
+            $where[] = "mb.district_code = " . $id_huyen;
+        }
+
+        if ($id_xa != '') {
+            $where[] = "mb.ward_code = " . $id_xa;
+        }
+
         $wh = '';
         if (!empty($where)) {
             $wh = " WHERE " . implode(" and ", $where);
         }   
 
-        $sql = "SELECT COUNT( DISTINCT t1.member_id ) AS tongthisinh, COUNT( t1.member_id ) AS soluotthi, t1.tongcaudung, ex.mark_per_question, DATE_FORMAT(t1.started_at,'%d/%m/%Y %T') AS exam_date, mb.fullname, ex.number_of_questions, t1.spent_duration, max(t1.times) as tonglanthi, avg(t1.tongcaudung) as trungbinh_diem, mb.province_code, mb.district_code, mb.ward_code, mb.id_doituong_chitiet, mb.phone, mb.email, mb.birthdate, ex.title, mb.address
+        $sql = "SELECT COUNT( DISTINCT t1.member_id ) AS tongthisinh, COUNT( t1.member_id ) AS soluotthi, t1.tongcaudung, ex.mark_per_question, DATE_FORMAT(t1.started_at,'%d/%m/%Y %T') AS exam_date, mb.fullname, ex.number_of_questions, t1.spent_duration, max(t1.times) as tonglanthi, avg(t1.tongcaudung) as trungbinh_diem, mb.province_code, mb.district_code, mb.ward_code, mb.id_doituong_chitiet, mb.phone, mb.email, mb.birthdate, ex.title, mb.address, t1.created_at, t1.forecast_candidates, t1.spent_duration 
         FROM exam_results t1
         INNER JOIN (
             SELECT member_id, MAX( tongcaudung ) AS tongdung
@@ -1132,6 +1146,306 @@ function History_NumberPersion($page, $search, $pageSize, $workplaces, $exams)
             } else {
                 $row['doituong']['title'] = "";
             }
+            $tongluotthi += $row['tonglanthi'];
+            $row['spent_duration'] = seconds2human($row['spent_duration']);
+            $arr[] = $row;
+            $i++;
+        }
+        $data = array(
+            'arr' => $arr,
+            'total' => $total,
+            'tong_luotthi' => $tongluotthi,
+        );
+
+        return $data;
+    }
+
+    function getThongKeTong($id, $id_dt, $id_dtct, $id_tinh = 14, $id_huyen = 0, $id_xa = 0) {
+        $where = array();
+        $where1 = "";
+        if ($id > 0) {
+            $where[] = "ex.id = " . $id;
+        }
+
+        if ($id_dt != '') {
+            // $where[] = "mb.id_doituong = " . $id_dt;
+            $where1 = " WHERE id = " . $id_dt;
+        }
+
+        if ($id_dtct != '') {
+            $where[] = "mb.id_doituong_chitiet = " . $id_dtct;
+            $where2 = " AND id = " . $id_dtct;
+        }
+
+        $wh = '';
+        if (!empty($where)) {
+            $wh = " WHERE " . implode(" and ", $where);
+        }   
+
+        $sql = "SELECT * FROM dm_doituong " . $where1;
+        $result = mysql_query($sql, dbconnect());
+
+        while ($row = mysql_fetch_assoc($result)) {
+            $row['ten_donvi'] = trim($row['ten_donvi']);
+            $arr[] = $row;
+        }
+
+        $sql1 = "SELECT mb.id_doituong, mb.id_doituong_chitiet, ex.is_stat, t1.member_id, COUNT( DISTINCT t1.member_id ) AS tongthisinh, COUNT(t1.member_id ) AS tongluotthisinh
+        FROM exam_results t1
+        INNER JOIN exams AS ex ON t1.exam_id = ex.id
+        INNER JOIN members AS mb ON t1.member_id = mb.id
+        " . $wh . " GROUP BY mb.id_doituong_chitiet ORDER BY tongthisinh DESC ";
+
+        if (!empty($arr)) {
+            foreach ($arr as $k => $v) {
+                if ($id_dtct != '') {
+                    $where = " WHERE id_doituong = " . $v['id'] . " and id = " . $id_dtct;
+                } else {
+                    $where = " WHERE id_doituong = " . $v['id'];
+                }
+
+               $sql = "SELECT * FROM doituong_chitiet " . $where;
+               $row = sql_query_array($sql);
+               $arr[$k]['list'] = $row;
+               $arr[$k]['list_orther'] = null;
+               if (!empty($row)) {
+                   foreach ($arr[$k]['list'] as $k1 => $v1) {
+                        $sql1 = "SELECT mb.id_doituong, mb.id_doituong_chitiet, ex.is_stat, t1.member_id, COUNT( DISTINCT t1.member_id ) AS tongthisinh, COUNT(t1.member_id ) AS tongluotthisinh
+                        FROM exam_results t1
+                        INNER JOIN exams AS ex ON t1.exam_id = ex.id
+                        INNER JOIN members AS mb ON t1.member_id = mb.id
+                        WHERE mb.id_doituong_chitiet = " . $v1['id'] . " GROUP BY mb.id_doituong_chitiet ORDER BY tongthisinh DESC ";
+                        $res = sql_query($sql1);
+
+                        // lấy số người đăng ký của đơn vị đó
+                        $res1 = sql_query("SELECT COUNT(*) as tong FROM members WHERE id_doituong_chitiet = " . $v1[id]);
+                        if (!empty($res)) {
+                            $arr[$k]['list'][$k1]['thongke'] = $res;
+                        }  else {
+                            $arr[$k]['list'][$k1]['thongke']['tongthisinh'] = $arr[$k]['list'][$k1]['thongke']['tongluotthisinh'] = 0;
+                        }
+
+                        if (!empty($res1)) {
+                            $arr[$k]['list'][$k1]['thongke']['number_res'] = $res1['tong'];
+                        }  else {
+                            $arr[$k]['list'][$k1]['thongke']['number_res'] = 0;
+                        }
+                   }
+               } else {
+                    $sql1 = "SELECT mb.id_doituong, mb.id_doituong_chitiet, ex.is_stat, t1.member_id, COUNT( DISTINCT t1.member_id ) AS tongthisinh, COUNT(t1.member_id ) AS tongluotthisinh
+                    FROM exam_results t1
+                    INNER JOIN exams AS ex ON t1.exam_id = ex.id
+                    INNER JOIN members AS mb ON t1.member_id = mb.id
+                    WHERE mb.id_doituong = " . $v['id'] . " GROUP BY mb.id_doituong_chitiet ORDER BY tongthisinh DESC ";
+                    $res = sql_query($sql1);
+
+                    // lấy số người đăng ký của đơn vị đó
+                    $res1 = sql_query("SELECT COUNT(*) as tong FROM members WHERE id_doituong = " . $v['id']);
+                    if (!empty($res)) {
+                        $arr[$k]['list_orther'] = $res;
+                    }  else {
+                        $arr[$k]['list_orther']['tongthisinh'] = $arr[$k]['list_orther']['tongluotthisinh'] = 0;
+                    }
+
+                    if (!empty($res1)) {
+                        $arr[$k]['list_orther']['number_res'] = $res1['tong'];
+                    }  else {
+                        $arr[$k]['list_orther']['number_res'] = 0;
+                    }
+               }
+            }
+        }
+        return $arr;
+    }
+
+     function getThongKeTongTinh($id, $id_dt, $id_dtct, $id_tinh = 14, $id_huyen = 0, $id_xa = 0) {
+        $where = array();
+        $where1 = "";
+        if ($id > 0) {
+            $where[] = "ex.id = " . $id;
+        }
+
+        if ($id_dt != '') {
+            $where[] = "mb.id_doituong = " . $id_dt;
+        }
+
+        if ($id_dtct != '') {
+            $where[] = "mb.id_doituong_chitiet = " . $id_dtct;
+        }
+
+        $id_tinh = ($id_tinh == 0) ? 14 : $id_tinh;
+        if ($id_tinh > 0) {
+            $where[] = "mb.province_code = " . $id_tinh;
+        }
+
+        if ($id_huyen != '') {
+            $where[] = "mb.district_code = " . $id_huyen;
+        }
+
+        if ($id_xa != '') {
+            $where[] = "mb.ward_code = " . $id_xa;
+        }
+
+        $wh = '';
+        if (!empty($where)) {
+            $wh = " WHERE " . implode(" and ", $where);
+        }   
+
+        $sql1 = "SELECT ex.is_stat,  COUNT( DISTINCT t1.member_id ) AS tongthisinh, COUNT(t1.member_id) AS tongluotthisinh, mb.province_code, mb.district_code, mb.ward_code, t1.spent_duration, mb.id_doituong_chitiet
+        FROM exam_results t1
+        INNER JOIN exams AS ex ON t1.exam_id = ex.id
+        INNER JOIN members AS mb ON t1.member_id = mb.id
+       " . $wh . " GROUP BY mb.ward_code  ORDER BY tongthisinh DESC ";
+        $cnn = mysql_query($sql1, dbconnect());
+        while ($row = mysql_fetch_assoc($cnn)) {
+            $arrTinh = getTinh();
+            $arrHuyen = getHuyen();
+            $arrXa = getXa();
+            $arrdt = doituongchitiet();
+            $row['tinh'] = $arrTinh[$row['province_code']];
+            $row['huyen'] = $arrHuyen[$row['district_code']];
+            $row['xa'] = $arrXa[$row['ward_code']];
+            if ($row['id_doituong_chitiet'] > 0) {
+                $row['doituong'] = $arrdt[$row['id_doituong_chitiet']];
+            } else {
+                $row['doituong']['title'] = "";
+            }
+            $row['spent_duration'] = seconds2human($row['spent_duration']);
+            // lấy số người đăng ký của đơn vị đó
+            $res1 = sql_query("SELECT COUNT(*) as tong FROM members WHERE ward_code = " . $row['ward_code']);
+            if (!empty($res1)) {
+                $row['number_res'] = $res1['tong'];
+            }  else {
+                $row['number_res'] = 0;
+            }
+            $arr[] = $row;
+        }
+        return $arr;
+    }
+
+    function sql_query($sql) {
+        $result = mysql_query($sql, dbconnect());
+        $row = mysql_fetch_assoc($result);
+        return $row;
+    }
+
+    function sql_query_array($sql) {
+        $result = mysql_query($sql, dbconnect());
+        while ($row = mysql_fetch_assoc($result)) {
+            $arr[] = $row;
+        }
+        return $arr;
+    }
+
+    function seconds2human($ss) {
+        $s = $ss%60;
+        $m = floor(($ss%3600)/60);
+        $h = floor(($ss%86400)/3600);
+        $d = floor(($ss%2592000)/86400);
+        $M = floor($ss/2592000);
+        $m = ($m < 10) ? '0' . $m : $m;
+        $s = ($s < 10) ? '0' . $s : $s;
+        return ($h > 0) ? "$h: " : "" .  "$m:$s";
+    }
+
+
+    function getThongKeCuocThiThongKe($id, $id_dt, $id_dtct, $id_tinh = 14, $id_huyen = 0, $id_xa = 0) {
+        $where = array();
+        if ($id != '') {
+            $strID = implode(",", $id);
+            $where[] = "ex.id IN (" . $strID . ")";
+        }
+
+        if ($id_dt != '') {
+            $where[] = "mb.id_doituong = " . $id_dt;
+        }
+
+        if ($id_dtct != '') {
+            $where[] = "mb.id_doituong_chitiet = " . $id_dtct;
+        }
+
+        if ($id_tinh != '') {
+            $where[] = "mb.province_code = " . $id_tinh;
+        }
+
+        if ($id_huyen != '') {
+            $where[] = "mb.district_code = " . $id_huyen;
+        }
+
+        if ($id_xa != '') {
+            $where[] = "mb.ward_code = " . $id_xa;
+        }
+
+        $wh = '';
+        if (!empty($where)) {
+            $wh = " WHERE " . implode(" and ", $where);
+        }   
+
+        $sql = "SELECT COUNT( DISTINCT t1.member_id ) AS tongthisinh, COUNT( t1.member_id ) AS soluotthi, t1.tongcaudung, ex.mark_per_question, DATE_FORMAT(t1.started_at,'%d/%m/%Y %T') AS exam_date, mb.fullname, ex.number_of_questions, t1.spent_duration, max(t1.times) as tonglanthi, avg(t1.tongcaudung) as trungbinh_diem, mb.province_code, mb.district_code, mb.ward_code, mb.id_doituong_chitiet, mb.phone, mb.email, mb.birthdate, ex.title, mb.address, mb.email, mb.phone, mb.birthdate, t1.spent_duration, t1.created_by, t1.forecast_candidates
+        FROM exam_results t1
+        INNER JOIN (
+            SELECT member_id, MAX( tongcaudung ) AS tongdung
+            FROM exam_results
+            GROUP BY member_id
+            )t2 ON t1.member_id = t2.member_id
+        AND t1.tongcaudung = t2.tongdung
+        INNER JOIN exams AS ex ON t1.exam_id = ex.id
+        INNER JOIN members AS mb ON t1.member_id = mb.id
+        " . $wh . "
+        GROUP BY T1.member_id 
+        ORDER BY (t2.tongdung*ex.mark_per_question) DESC , t1.spent_duration LIMIT 50";
+        $result = mysql_query($sql, dbconnect());
+
+        $sql1 = "SELECT COUNT( DISTINCT t1.member_id )
+        FROM exam_results t1
+        INNER JOIN (
+            SELECT member_id, MAX( tongcaudung ) AS tongdung
+            FROM exam_results
+            GROUP BY member_id
+            )t2 ON t1.member_id = t2.member_id
+        AND t1.tongcaudung = t2.tongdung
+        INNER JOIN exams AS ex ON t1.exam_id = ex.id
+        INNER JOIN members AS mb ON t1.member_id = mb.id
+        " . $wh . "
+        GROUP BY T1.member_id 
+        ORDER BY (t2.tongdung*ex.mark_per_question) DESC , t1.spent_duration";
+        $total_sql = mysql_query($sql1, dbconnect());
+        $total = mysql_num_rows($total_sql);
+        $arr = array();
+        $i = 0;
+
+        $tongluotthi = 0;
+        while ($row = mysql_fetch_assoc($result)) {
+            switch ($i) {
+                case 0:
+                $row['logo'] = 'hcvang.png';
+                break;
+
+                case 1:
+                $row['logo'] = 'hcbac.png';
+                break;
+
+                case 2:
+                $row['logo'] = 'hcdong.png';
+                break;    
+
+                default:
+                $row['logo'] = 'hc.png';
+                break;
+            }
+            $arrTinh = getTinh();
+            $arrHuyen = getHuyen();
+            $arrXa = getXa();
+            $arrdt = doituongchitiet();
+            $row['tinh'] = $arrTinh[$row['province_code']];
+            $row['huyen'] = $arrHuyen[$row['district_code']];
+            $row['xa'] = $arrXa[$row['ward_code']];
+            if ($row['id_doituong_chitiet'] > 0) {
+                $row['doituong'] = $arrdt[$row['id_doituong_chitiet']];
+            } else {
+                $row['doituong']['title'] = "";
+            }
+            $row['spent_duration'] = seconds2human($row['spent_duration']);
             $tongluotthi += $row['tonglanthi'];
             $arr[] = $row;
             $i++;
@@ -1202,7 +1516,7 @@ function History_NumberPersion($page, $search, $pageSize, $workplaces, $exams)
             // Căn giữa ngang
             $canngang= array();
             foreach($canngang as $cell){
-                $objPHPExcel->getActiveSheet()->getStyle($cell)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+                $objPHPExcel->getActiveSheet('G' . $dem . ':I' . $dem, 'L' . $dem . ':M' . $dem)->getStyle($cell)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
             }
 
             // Căn giữa dọc
@@ -1237,10 +1551,10 @@ function History_NumberPersion($page, $search, $pageSize, $workplaces, $exams)
                 'C' => 12,
                 'D' => 11,
                 'E' => 13,
-                'F' => 12,
-                'G' => 8,
-                'H' => 11,
-                'J'=> 10,
+                'F' => 45,
+                'G' => 15,
+                'H' => 15,
+                'J'=> 15,
                 'I'=>12,
                 'J'=>12,
                 'K'=>12,
@@ -1255,7 +1569,7 @@ function History_NumberPersion($page, $search, $pageSize, $workplaces, $exams)
             }
             //Chỉnh cỡ hàng fix cứng
             $array_row = array(
-
+                1 => 50
 
             );
             foreach($array_row as $key => $value){

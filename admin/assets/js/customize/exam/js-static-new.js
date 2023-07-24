@@ -3,22 +3,22 @@ loadCuocThi();
 loadDoiTuong();
 
 $(function() {
-	let dBegin = new Date();
-	let ngayBD = new Date(dBegin.getFullYear() - 1, dBegin.getMonth()  + 1, dBegin.getDate());
-	dBegin.addDays(-10);
-	$('#dtpBegin').datetimepicker({
-	    defaultDate: ngayBD,
-	    format: 'DD/MM/YYYY HH:mm',
-	});
-	$('#dtpEnd').datetimepicker({
-	    defaultDate: dBegin,
-	    format: 'DD/MM/YYYY HH:mm'
-	});
+	// let dBegin = new Date();
+	// let ngayBD = new Date(dBegin.getFullYear() - 1, dBegin.getMonth()  + 1, dBegin.getDate());
+	// dBegin.addDays(-10);
+	// $('#dtpBegin').datetimepicker({
+	//     defaultDate: ngayBD,
+	//     format: 'DD/MM/YYYY HH:mm',
+	// });
+	// $('#dtpEnd').datetimepicker({
+	//     defaultDate: dBegin,
+	//     format: 'DD/MM/YYYY HH:mm'
+	// });
 	
     $('.listTinh').change(function() {
         if ($('.listTinh').val() == '') {
-        	$('.listHuyen').html('<option value="0">--- Chọn huyện --- </option>');
-        	$('.listXa').html('<option value="0">--- Chọn xã --- </option>');
+        	$('.listHuyen').html('<option value="0">--- Tất cả --- </option>');
+        	$('.listXa').html('<option value="0">--- Tất cả --- </option>');
         }
         LoadDistrictsByPro($(this).val());
     });
@@ -46,6 +46,9 @@ function loadThongKe() {
             'id_cuocthi': $('.listCuocThi').selectpicker('val'),
             'id_dt' : $(".slDoiTuong").val(),
             'id_dtct' : $(".slDoiTuongChiTiet").val(),
+            'id_tinh' : $(".listTinh").val(),
+            'id_huyen' : $(".listHuyen").val(),
+            'id_xa' : $(".listXa").val(),
         },
         success: function(res) {
             html = ``;
@@ -61,14 +64,18 @@ function loadThongKe() {
                             </span></td>
                         <td class="text-center">${index['fullname']}</td>
                         <td class="text-center">${index['tinh']['full_name']}</td>
+                        <td class="text-center">${index['huyen']['full_name']}</td>
+                        <td class="text-center">${index['xa']['full_name']}</td>
                         <td class="text-center">${index['doituong']['title']}</td>
                         <td class="text-center"><strong> ${index['tonglanthi']}</strong></td>
                         <td class="text-center"><span>${index['tongcaudung'] * index['mark_per_question']} điểm</span></td>
+                        <td class="text-center"><strong> ${index['created_at']} (<span>${index['spent_duration']}</span>)</strong></td>
+                            <td class="text-center"><strong> ${index['forecast_candidates']} thí sinh</strong></td>
                     </tr>`;
                 });
                 $("#tong").html(data['total']);
                 $("#tongluothi").html(data['tong_luotthi']);
-                // $("#tbody").html(html);
+                $("#tbody").html(html);
             } else {
                 $("#tbody").html("Không có dữ liệu");
             }
@@ -132,18 +139,18 @@ function LoadProvinces() {
         	'loadtinh': 1
         },
         success: function (data) {
-        	data      
             let default_pro = -1;
             $('.listTinh').empty();
             $('.listTinh').append(`<option value="" selected>--- Tất cả --- </option>`);
             data.forEach(p => {
-                if (p.default_pro == 1) {
+                if (p.default_pro == 14) {
                     default_pro = p.code;
                 }
                 $('.listTinh').append(`<option value="${p.code}">${p.full_name}</option>`);
             })
-
             $(`.listTinh option[value=${default_pro}]`);
+            $(`.listTinh`).val(14).trigger('change');
+            loadThongKe();
         }
     })
 }
@@ -165,6 +172,7 @@ function LoadDistrictsByPro(province_code) {
             $('.listHuyen').change(function() {
 		        LoadWardsByDist($(this).val());
 		    });
+            loadThongKe();
         }
     });
 }
@@ -181,7 +189,7 @@ function LoadWardsByDist(district_code) {
             	html += `<option value="${w.code}">${w.full_name}</option>`;
             })
             $('.listXa').html(html);
-
+            loadThongKe();
         }
     })
 }
@@ -194,6 +202,7 @@ function loadCuocThi() {
             load_cuocthi: 1,
         },
         success: function (data) {
+            $(".listCuocThi").empty();
             if (data != '') {
                 list = JSON.parse(data);
                 html = '<option>--- Chọn cuộc thi ---</option>';
@@ -201,7 +210,6 @@ function loadCuocThi() {
                     html += '<option value="' + val['id'] + '"> ' + val['title'] + ' </option>';
                 })
                 $(".listCuocThi").html(html);
-           		$('.listCuocThi').selectpicker('refresh');
                 loadThongKe();
             }
         }

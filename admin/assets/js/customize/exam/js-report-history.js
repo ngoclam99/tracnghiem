@@ -102,7 +102,7 @@ function LoadHistory() {
                 }
 				
 				document.getElementById("soluotthi").innerText = data.soluotthi;
-				document.getElementById("songuoithi").innerText = data.songuoithi;
+				document.getElementById("songuoithi").innerText = data.content.length;
 
             }
         }

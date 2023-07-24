@@ -653,15 +653,18 @@ function getDoiTuong($id, $id_cuocthi) {
     while ($row = mysql_fetch_assoc($result)) {
         $arr[] = $row;
     }
-
     if (!empty($arr)) {
         foreach ($arr as $k => $v) {
            $sql = "SELECT * FROM doituong_chitiet WHERE id = " . $v['id_doituong_chitiet'];
            $row = sql_query($sql);
            $arr[$k]['title'] = $row['title'];
+           if (empty($row)) {
+                $sql = "SELECT * FROM dm_doituong WHERE id = " . $v['id_doituong'];
+                $row = sql_query($sql);
+                $arr[$k]['title'] = trim($row['ten_donvi']);
+           }
         }
     }
-
     return $arr;
 }
 

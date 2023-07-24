@@ -4,11 +4,11 @@
 <div class="content-wrapper" style="clear: both; min-height: 864px;" id="content">
     <section class="content-header">
         <h1 style="font-size: 20px; font-family: Roboto Condensed">
-            Báo cáo & thống kê
+            Thống kê các đối tượng trong cuộc thi thuộc Tỉnh
         </h1>
         <ol class="breadcrumb">
             <li><a href="index.php?module=home">Trang Chủ</a></li>
-            <li class="active">Báo cáo & thống kê</li>
+            <li class="active">Báo cáo & thống kê tổng</li>
         </ol>
     </section>
     <section class="content animated fadeIn">
@@ -19,13 +19,27 @@
 
                         <div class="panel panel-success" style="margin-top:5px">
                             <div class="panel-body">
-                                <h3>Thống kê cuộc thi</h3>
+                                <h3>Thống kê các đối tượng trong cuộc thi thuộc Tỉnh</h3>
                                 <hr style=" border: 1px solid #ccc; border-top: none">
                                 <div class="row">
                                     <form method="post">
                                         <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-4">
+                                            <label>Chọn tỉnh</label>
+                                            <select name="id_tinh" class="form-control selectpicker listTinh"style="width: 100%;" data-live-search="true"></select>
+                                        </div>
+
+                                        <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-4">
+                                            <label>Chọn huyện</label>
+                                            <select class="form-control listHuyen" name="id_huyen"></select>
+                                        </div>
+
+                                        <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-4">
+                                            <label>Chọn xã</label>
+                                            <select class="form-control listXa" name="id_xa"></select>
+                                        </div>
+                                        <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-4">
                                             <label>Chọn cuộc thi</label>
-                                            <select name="selectpicker" class="form-control selectpicker listCuocThi" data-live-search="true" multiple style="width: 100%;"></select>
+                                            <select name="selectpicker" class="form-control listCuocThi"></select>
                                         </div>
                                         <div class="form-group col-md-3 col-lg-4">
                                             <label>Đối tượng dự thi <span class="red">(*)</span></label>
@@ -42,29 +56,25 @@
                                         </div>
 
                                         <div class="form-group col-md-3 col-lg-4">
-                                            <button class="btn btn-primary" value="1" name="xuatexcel">Xuất excel</button>
+                                            <button type="button" id="xuatexcel" class="btn btn-primary" value="1" name="xuatexcel">Xuất excel</button>
                                         </div>
 
-                                        <div class="form-group col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                                            <p class="alert alert-primary"><span>Tổng số thí sinh: <label id="tong"></label> <span>Tổng lượt thi: <label id="tongluothi"></label></span></span></p>
-                                        </div>
                                     </form>
 
                                     <div class="boxStatic">
                                     </div>
                                 </div>
-                                <table class="table table-bordered table-hover">
+                                <table class="table table-bordered table-hover" id="tbEx">
                                     <thead>
                                         <tr>
                                             <th class="text-center">STT</th>
-                                            <th class="text-center">Họ và tên</th>
                                             <th class="text-center">Tỉnh</th>
                                             <th class="text-center">Huyện</th>
-                                            <th class="text-center">Đơn vị</th>
-                                            <th class="text-center">Tổng lần thi</th>
-                                            <th class="text-center">Số điểm</th>
-                                            <th class="text-center">Thời gian kết thúc thi</th>
-                                            <th class="text-center">Dự đoán</th>
+                                            <th class="text-center">Xã</th>
+                                            <th class="text-center">Đối tượng</th>
+                                            <th class="text-center">Số người tham gia cuộc thi</th>
+                                            <th class="text-center">Số lượt tham gia cuộc thi</th>
+                                            <th class="text-center">Số người đăng ký cuộc thi</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tbody">
@@ -81,6 +91,8 @@
     </section>
 </div>
 <?php include('view/template/common/footer.tpl'); ?>
+<script src="assets/dist/js/xlsx.full.min.js"></script>
+<script src="assets/dist/js/jquery.table2excel.min.js"></script>
 <style>
   table {
     border-collapse: collapse;
@@ -110,6 +122,10 @@ th, td {
     border-radius: 2px;
     color: #fff;
 }
+
+.lb__static {
+    font-size: 16px;
+}
 </style>
 
 
@@ -119,7 +135,80 @@ th, td {
     }
 </style>
 <script>
+    LoadProvinces();
     loadCuocThi();
+    $('.listTinh').change(function() {
+        if ($('.listTinh').val() == '') {
+            $('.listHuyen').html('<option value="0">--- Tất cả --- </option>');
+            $('.listXa').html('<option value="0">--- Tất cả --- </option>');
+        }
+        LoadDistrictsByPro($(this).val());
+         loadDT();
+    });
+
+    function LoadProvinces() {
+        $.ajax({
+            url: 'controller/exam/report-statistic-new.php',
+            type: 'POST',
+            data: {
+                'loadtinh': 1
+            },
+            success: function (data) {
+                let default_pro = -1;
+                $('.listTinh').empty();
+                data.forEach(p => {
+                    if (p.default_pro == 14) {
+                        default_pro = p.code;
+                    }
+                    $('.listTinh').append(`<option value="${p.code}">${p.full_name}</option>`);
+                })
+                $(`.listTinh option[value=${default_pro}]`);
+                $(`.listTinh`).val(14).trigger('change');
+            }
+        })
+    }
+
+    function LoadDistrictsByPro(province_code) {
+        $.ajax({
+            url: 'controller/location/districts.php',
+            type: 'get',
+            data: { province_code },
+            success: function (data) {
+                if (parseInt(province_code) > 0) {   
+                    $('.listHuyen').empty();
+                    html = `<option value="0">--- Chọn huyện --- </option>`;
+                    data.forEach(d => {
+                        html += `<option value="${d.code}">${d.full_name}</option>`;
+                    })
+                    $('.listHuyen').append(html);
+                }
+                $('.listHuyen').change(function() {
+                    LoadWardsByDist($(this).val());
+                });
+
+                $('.listXa').change(function() {
+                    loadDT();
+                });
+            }
+        });
+    }
+
+    function LoadWardsByDist(district_code) {
+        $.ajax({
+            url: 'controller/location/wards.php',
+            type: 'get',
+            data: { district_code },
+            success: function (data) {
+                $('.listXa').empty();
+                html = `<option value="0">--- Chọn xã --- </option>`;
+                data.forEach(w => {
+                    html += `<option value="${w.code}">${w.full_name}</option>`;
+                })
+                $('.listXa').html(html);
+                loadDT();
+            }
+        })
+    }
 
     function loadCuocThi() {
         $.ajax({
@@ -130,10 +219,11 @@ th, td {
             },
             success: function (data) {
                 if (data != '') {
+                    html = '<option value="0">--- Chọn cuộc thi ---</option>';
                     list = JSON.parse(data);
-                    html = '<option>--- Chọn cuộc thi ---</option>';
                     list.forEach(val => {
-                        html += '<option value="' + val['id'] + '"> ' + val['title'] + ' </option>';
+                        selected = (val['is_stat']) ? 'selected' : '';
+                        html += '<option ' + selected + ' value="' + val['id'] + '"> ' + val['title'] + ' </option>';
                     })
                     $(".listCuocThi").html(html);
 
@@ -144,57 +234,61 @@ th, td {
     }
 
     $(".listCuocThi").change(function() {
-        loadThongKe();
+        loadDT();
     })
 
     function loadThongKe() {
+        loadDT();
+    }
+
+    function loadDT() {
         $.ajax({
-             url: 'controller/exam/report-statistic-new.php',
-             type: 'POST',
-             data: {
-                'load_thongke': 1,
+            url: 'controller/exam/report-statistic-new.php',
+            type: 'POST',
+            data: {
+                'load_thongke_tong_tinh': 1,
                 'id_cuocthi': $('.listCuocThi').selectpicker('val'),
                 'id_dt' : $(".slDoiTuong").val(),
                 'id_dtct' : $(".slDoiTuongChiTiet").val(),
+                'id_tinh' : $(".listTinh").val(),
+                'id_huyen' : $(".listHuyen").val(),
+                'id_xa' : $(".listXa").val(),
             },
-            success: function(res) {
+        })
+        .done(function(res) {
+            $("#tbody").html("");
+            $("#tbody").hide();
+            if (res != 'null') {
+                data = JSON.parse(res);
                 html = ``;
-                if (res != '') {
-                    $("#tong").html("0");
-                    $("#tbody").html("Không có dữ liệu");
-                    data = JSON.parse(res);
-                    data['arr'].map(function(index, elem) {
-                        html += `<tr>
-                            <td class="text-center"><span class="img_logo_rank">
-                                    <span class="rank__flex_left_number">${elem+1}</span>
-                                    <img src="../assets/images/${index['logo']}" width="50px">
-                                </span></td>
-                            <td class="text-center">${index['fullname']}</td>
-                            <td class="text-center">${index['tinh']['full_name']}</td>
-                            <td class="text-center">${index['huyen']['full_name']}</td>
-                            <td class="text-center">${index['doituong']['title']}</td>
-                            <td class="text-center"><strong> ${index['tonglanthi']}</strong></td>
-                            <td class="text-center"><span>${index['tongcaudung'] * index['mark_per_question']} điểm</span></td>
-                            <td class="text-center"><strong> ${index['created_at']} (<span>${index['spent_duration']}</span>)</strong></td>
-                            <td class="text-center"><strong> ${index['forecast_candidates']} thí sinh</strong></td>
-                        </tr>`;
-                    });
-                    $("#tong").html(data['total']);
-                    $("#tongluothi").html(data['tong_luotthi']);
-                    $("#tbody").html(html);
-                } else {
-                    $("#tbody").html("Không có dữ liệu");
-                }
-
+                data.map(function(val, index) {
+                    html += `<tr>
+                        <td class="text-center">${index+1}</td>
+                        <td  class="text-center"><span class="">${val['tinh']['full_name']} </span></td>
+                        <td  class="text-center"><span class="">${val['huyen']['full_name']} </span></td>
+                        <td  class="text-center"><span class="">${val['xa']['full_name']}</span></td>
+                        <td  class="text-center"><span class="">${val['doituong']['title']}</span></td>
+                        <td  class="text-center"><span class="label label-info lb__static">${val['tongthisinh']} thí sinh</span></td>
+                        <td  class="text-center"><span class="label label-success lb__static">${val['tongluotthisinh']} lượt thi</span></td>
+                        <td  class="text-center"><span class="label label-warning lb__static">${val['number_res']} thí sinh</span></td>
+                    </tr>`;
+                });
+                $("#tbody").html(html);
+                $("#tbody").fadeIn(500);
+            } else {
+                $("#tbody").fadeIn(500);
+                $("#tbody").html(`<tr>
+                            <td class="text-center" colspan="4">Không có dữ liệu</td>
+                        </tr>`);
             }
         })
     }
 
     $(".slDoiTuong").change(function() {
         loadDoiTuongChiTiet($(this).val());
-        loadThongKe();
+        loadDT();
         $(".slDoiTuongChiTiet").change(function() {
-            loadThongKe();
+            loadDT();
         });
     });
 
@@ -215,7 +309,7 @@ th, td {
                         html += '<option value="' + val['id'] + '"> ' + val['ten_donvi'] + ' </option>';
                     })
                     $(".slDoiTuong").html(html);
-                    loadThongKe();
+                    loadDT();
                 }
             }
         })
@@ -248,6 +342,26 @@ th, td {
             });
         }
     }
+
+    $('#xuatexcel').click(function () {
+        $("#tbEx").table2excel({
+            name: "Sheet1",
+            filename: "ThongKeCacDoiTuongTrongCuocThi",
+            fileext: ".xlsx",
+            exclude_rows: false,
+            exclude_cols: false,
+            preserveColors: false,
+            exportOptions: {
+                format: {
+                  date: {
+                    display: function (data, format) {
+                      // Modify this function to remove date formatting
+                      return data;
+                    }
+                }
+            }
+          }});
+    })
 </script>
 <style>
     .rank__flex_left_number {

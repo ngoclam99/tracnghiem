@@ -182,18 +182,18 @@ $('.btnSubmitRegister').click(function () {
         return !1;
     }
 
-    if ($("#txtPosition").val() == '') {
-        Swal.fire({
-            title: 'Thông báo',
-            icon: 'error',
-            html: 'Chức vụ không được để trống',
-            customClass: 'swal-wide',
-            showCloseButton: false,
-            showCancelButton: false,
-            focusConfirm: false,
-        });
-        return !1;
-    }
+    // if ($("#txtPosition").val() == '') {
+    //     Swal.fire({
+    //         title: 'Thông báo',
+    //         icon: 'error',
+    //         html: 'Chức vụ không được để trống',
+    //         customClass: 'swal-wide',
+    //         showCloseButton: false,
+    //         showCancelButton: false,
+    //         focusConfirm: false,
+    //     });
+    //     return !1;
+    // }
 
     if ($(".slDoiTuong").val() == '') {
         Swal.fire({
@@ -398,6 +398,7 @@ function LoadJobs() {
         url: 'controller/job/list.php',
         type: 'get',
         success: function (jobs) {
+            $('.slJobs').append(`<option value="0">--- Chọn nghề nghiệp ---</option>`)
             jobs.forEach(j => {
                 $('.slJobs').append(`<option value="${j.id}">${j.name}</option>`)
             })

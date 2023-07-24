@@ -23,7 +23,7 @@
                                 <hr style=" border: 1px solid #ccc; border-top: none">
                                 <div class="row">
                                     <form method="post">
-                                        <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-4"> 
+                                        <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-4 hidden"> 
                                             <label>Từ ngày<span class="style2">(*)</span></label>                    
                                             <div class='input-group date' style="z-index:20000000000000;">
                                             <input type='text' class="form-control" id='dtpBegin'/>
@@ -33,7 +33,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-4">
+                                        <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-4 hidden">
                                             <label>Tới ngày<span class="style2">(*)</span></label>                    
                                             <div class='input-group date' style="z-index:20000000000000;">
                                             <input type='text' class="form-control" id='dtpEnd'/>
@@ -44,34 +44,34 @@
                                         </div>
                                         <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-4">
                                             <label>Chọn tỉnh</label>
-                                            <select name="selectpicker" class="form-control selectpicker listTinh"style="width: 100%;" data-live-search="true"></select>
+                                            <select name="id_tinh" class="form-control selectpicker listTinh"style="width: 100%;" data-live-search="true"></select>
                                         </div>
 
                                         <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-4">
                                             <label>Chọn huyện</label>
-                                            <select class="form-control listHuyen"></select>
+                                            <select class="form-control listHuyen" name="id_huyen"></select>
                                         </div>
 
                                         <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-4">
                                             <label>Chọn xã</label>
-                                            <select class="form-control listXa" name="listXa"></select>
+                                            <select class="form-control listXa" name="id_xa"></select>
                                         </div>
 
                                         <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-4">
                                             <label>Chọn cuộc thi</label>
-                                            <select name="selectpicker" class="form-control listCuocThi" data-live-search="true" multiple></select>
+                                            <select name="selectpicker" class="selectpicker form-control listCuocThi" data-live-search="true" multiple></select>
                                         </div>
                                         <div class="form-group col-md-3 col-lg-4">
                                             <label>Đối tượng dự thi <span class="red">(*)</span></label>
                                             <select name="id_dt" class="form-control selectpicker slDoiTuong" style="width: 100%;">
-                                                <option value="">---Chọn đối tượng ---</option>
+                                                <option value="">---Tất cả ---</option>
                                             </select>
                                         </div>
 
                                         <div class="form-group col-md-3 col-lg-4">
                                             <label>Đối tượng dự thi <span class="red">(*)</span></label>
                                             <select name="id_dtct" class="form-control slDoiTuongChiTiet" name="slDoiTuongChiTiet" style="width: 100%; display: block !important;">
-                                                <option value="">---Chọn đơn vị ---</option>
+                                                <option value="">---Tất cả ---</option>
                                             </select>
                                         </div>
 
@@ -90,8 +90,12 @@
                                             <th class="text-center">STT</th>
                                             <th class="text-center">Họ và tên</th>
                                             <th class="text-center">Tỉnh</th>
+                                            <th class="text-center">Huyện</th>
+                                            <th class="text-center">Xã</th>
                                             <th class="text-center">Đơn vị</th>
                                             <th class="text-center">Tổng lần thi</th>
+                                            <th class="text-center">Số điểm</th>
+                                            <th class="text-center">Thời gian kết thúc thi</th>
                                             <th class="text-center">Số điểm</th>
                                         </tr>
                                     </thead>
@@ -139,9 +143,9 @@ th, td {
     color: #fff;
 }
 </style>
-<link href="assets/plugins/datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet">
-<script src="assets/plugins/datetimepicker/moment.min.js"></script>
-<script src="assets/plugins/datetimepicker/bootstrap-datetimepicker.min.js"></script>
+<!-- <link href="assets/plugins/datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet"> -->
+<!-- <script src="assets/plugins/datetimepicker/moment.min.js"></script> -->
+<!-- <script src="assets/plugins/datetimepicker/bootstrap-datetimepicker.min.js"></script> -->
 <script src="assets/js/customize/exam/js-static-new.js?time=<?= time() ?>"></script>
 <style>
     .textPoint {
