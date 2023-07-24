@@ -1,6 +1,7 @@
 var page = 1,
     pageSize = 10;
 $(function () {
+    loadDoiTuong();
     $('#btnSearch').click();
     $(document).on('click', 'a.btnDelete', function (e) {
         e.preventDefault();
@@ -57,11 +58,11 @@ function LoadHistory() {
             pageSize,
             search: $('#txtSearch').val(),
             exams: $('#slExams').selectpicker('val'),
+            id_doituong: $('.slDoiTuong').val(),
             workplaces: $('#slUnits').selectpicker('val')
         },
         success: function (data) {
             $('#tblData').empty();
-            console.log(data);
             if (data.statusCode == 200) {
                 let idx = pageSize != 'All' ? (page - 1) * pageSize : 0;
                 data.content.forEach(t => {
@@ -69,7 +70,7 @@ function LoadHistory() {
                               <td>${++idx}</td>
                                 <td class="text-nowrap fw-bold text-primary">${t.username}</td>
                                 <td class="text-nowrap">${t.fullname}</td>
-                                <td class="text-nowrap">${t.gender}</td>
+                                <td class="text-nowrap">${t.id_doituong}</td>
                                 <td class="text-nowrap">${t.get_birthdate == 1 ? t.birthdate : ''}</td>
                                 <td class="text-nowrap">${t.phone}</td>
                                 <td class="text-nowrap">${t.email}</td>
@@ -139,3 +140,23 @@ $('#btnExportExcel').click(function () {
         }
       }});
 })
+
+function loadDoiTuong() {
+    $.ajax({
+        url: 'controller/exam/report-history.php',
+        type: 'POST',
+        data: {
+            load_dt: 1,
+        },
+        success: function (data) {
+            if (data != '') {
+                list = JSON.parse(data);
+                html = '<option>---Tất cả đơn vị---</option>';
+                list.forEach(val => {
+                    html += '<option value="' + val['id'] + '"> ' + val['ten_donvi'] + ' </option>';
+                })
+                $(".slDoiTuong").html(html);
+            }
+        }
+    })
+}

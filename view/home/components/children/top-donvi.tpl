@@ -31,4 +31,4 @@
     </div>
 </div>
 
-<script src="assets/js/home/js-doituongdt.js?time=<?= time() ?>"></script>
+<script src="assets/js/home/js-doituongdt.js"></script>

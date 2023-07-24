@@ -173,7 +173,7 @@ function Top10Candidates()
     //         ORDER BY mark_ratio DESC, spent_duration DESC
     //         LIMIT 10
     //         ";
-    $sql = "SELECT t1.tongcaudung, ex.mark_per_question, DATE_FORMAT(t1.started_at,'%d/%m/%Y %T') AS exam_date, mb.fullname, ex.number_of_questions, t1.spent_duration
+    $sql = "SELECT t1.tongcaudung, ex.mark_per_question, DATE_FORMAT(t1.started_at,'%d/%m/%Y %T') AS exam_date, mb.fullname, ex.number_of_questions, t1.spent_duration, mb.province_code, mb.district_code, mb.ward_code, mb.id_doituong_chitiet
     FROM exam_results t1
     INNER JOIN (
         SELECT member_id, MAX(tongcaudung) AS tongdung
@@ -212,7 +212,6 @@ function Top10Candidates()
                     $local['logo'] = 'hc.png';
                     break;
             }
-            
             $arr[] = $local;
             $i++;
         }
@@ -227,6 +226,33 @@ function Top10Candidates()
         $msg->content = mysql_error();
     }
     return $msg;
+}
+
+function getTinh() {
+    $sql = "SELECT * FROM provinces";
+    $result = mysql_query($sql, dbconnect());
+    while ($row = mysql_fetch_assoc($result)) {
+        $arr[$row['code']] = $row;
+    }
+    return $arr;
+}
+
+function getHuyen() {
+    $sql = "SELECT * FROM districts";
+    $result = mysql_query($sql, dbconnect());
+    while ($row = mysql_fetch_assoc($result)) {
+        $arr[$row['code']] = $row;
+    }
+    return $arr;
+}
+
+function getXa() {
+    $sql = "SELECT * FROM districts";
+    $result = mysql_query($sql, dbconnect());
+    while ($row = mysql_fetch_assoc($result)) {
+        $arr[$row['code']] = $row;
+    }
+    return $arr;
 }
 
 function seconds2human($ss) {

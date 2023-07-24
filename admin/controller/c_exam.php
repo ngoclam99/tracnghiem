@@ -24,4 +24,49 @@ switch ($page) {
 	case 'report-statistic':
 		require('view/template/exam/report-statistic.tpl');
 		break;
+	case 'report-statistic-new':
+		if ($_POST['xuatexcel']) {
+			$id = $_POST['selectpicker'];
+			$id_dt = $_POST['id_dt'];
+			$id_dtct = $_POST['id_dtct'];
+			$data = getThongKeCuocThi($id, $id_dt, $id_dtct);
+			xuatExcelCuocThi($data);
+		}
+
+		if ($_POST['load_dt']) {
+		    $data = LoadDoiTuong();
+		    echo json_encode($data);
+		    exit();
+		}
+		if ($_POST['load_dt_chitiet']) {
+		    $id_dt = $_POST['id_doituong'];
+		    $data = LoadDoiTuongChiTiet($id_dt);
+		    echo json_encode($data);
+		    exit();
+		}
+		require('view/template/exam/report-statistic-new.tpl');
+		break;
+
+	case 'report-statistic-total':
+		if ($_POST['xuatexcel']) {
+			$id = $_POST['selectpicker'];
+			$id_dt = $_POST['id_dt'];
+			$id_dtct = $_POST['id_dtct'];
+			$data = getThongKeCuocThi($id, $id_dt, $id_dtct);
+			xuatExcelCuocThi($data);
+		}
+
+		if ($_POST['load_dt']) {
+		    $data = LoadDoiTuong();
+		    echo json_encode($data);
+		    exit();
+		}
+		if ($_POST['load_dt_chitiet']) {
+		    $id_dt = $_POST['id_doituong'];
+		    $data = LoadDoiTuongChiTiet($id_dt);
+		    echo json_encode($data);
+		    exit();
+		}
+		require('view/template/exam/report-statistic-total.tpl');
+		break;
 }

@@ -11,45 +11,26 @@ include_once('m_db.php');
 function LoadProvinces()
 {  
 
-    // Number of seconds a page should remain cached for
-    $cache_expires = 3600;
-
-    // Path to the cache folder
-    $cache_folder = "../assets/cache/";
-
-    // Let's begin, first work out the cached filename
-    $cache_file = md5($_SERVER['REQUEST_URI']) . ".cache";
-
-    // Check if it has already been cached and not expired
-    // If true then we output the cached file contents and finish
-    // if (is_cached($cache_file)) {
-    //     echo read_cache($cache_file);
-    //     exit();
-    // } else {
-        // Ok so the page needs to be cached
-        // Turn on output buffering
-        // ob_start();
-        $local_list = mysql_query("SELECT code,full_name,default_pro
-        FROM provinces  ORDER BY name", dbconnect());
-        $msg = new Message();
-        if($local_list){
-            $result = array();
-            while ($local = mysql_fetch_array($local_list)) {
-                $result[] = $local;
-            }
-            $msg->icon = "success";
-            $msg->title = "Load danh sách tỉnh thành thành công!";
-            $msg->statusCode = 200;
-            $msg->content = $result;
-        }else{
-            $msg->icon = "error";
-            $msg->title = "Load danh sách tỉnh thành thất bại!";
-            $msg->statusCode = 500;
-            $msg->content = mysql_error();
+    $local_list = mysql_query("SELECT code,full_name,default_pro
+    FROM provinces  ORDER BY name", dbconnect());
+    $msg = new Message();
+    if($local_list){
+        $result = array();
+        while ($local = mysql_fetch_array($local_list)) {
+            $result[] = $local;
         }
-        // write_cache($cache_file, $msg);
+        $msg->icon = "success";
+        $msg->title = "Load danh sách tỉnh thành thành công!";
+        $msg->statusCode = 200;
+        $msg->content = $result;
+    }else{
+        $msg->icon = "error";
+        $msg->title = "Load danh sách tỉnh thành thất bại!";
+        $msg->statusCode = 500;
+        $msg->content = mysql_error();
+    }
+    // write_cache($cache_file, $msg);
         return $msg;
-    // }
 }
 
 // Checks whether the page has been cached or not

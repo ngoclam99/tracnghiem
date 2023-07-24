@@ -28,9 +28,9 @@
             </p>
            
         </div>
-        <div class="list-question-number  toggle_list_q">
+        <div class="list-question-number toggle_list_q">
             <p class="mg-0 color-blue text-center title-list-q"><b>CÂU HỎI</b></p>
-            <div class="scrollbar">
+            <div class="">
                 <ul id="questionsPagination"></ul>
             </div>
             
@@ -40,7 +40,13 @@
                 </button>
             </p>
         </div>
-        <div id="countxyx" style="font-size: 12px;font-weight:bold"></div>
+        <div id="countxyx" style="font-size: 1px;font-weight:bold"></div>
 
     </div>
 </div>
+<style>
+    .list-question-number {
+        overflow: hidden !important;
+    }
+ 
+</style>

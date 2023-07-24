@@ -339,8 +339,8 @@ a.canDelete i.fa-spinner{display:none}
 
 .list-question-number {
     background-color: #fafafa;
-    max-height: 500px;
-    overflow: auto;
+/*    max-height: 500px;*/
+    overflow: hidden !important;
 }
 .list-question-number .title-list-q {
     font-size: 18px;
@@ -1419,7 +1419,7 @@ h2.titles{
     padding: 6px;
     /* height: 300px; */
     border-radius: 3px;
-    overflow-y: auto
+/*    overflow-y: auto*/
 }
 .scrollbar::-webkit-scrollbar-track
 {
