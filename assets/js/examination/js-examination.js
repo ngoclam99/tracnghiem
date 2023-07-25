@@ -209,6 +209,25 @@ function getCurrentTime() {
         },
         success: function (res) {
             $('#current_times').text(res);
+            if (total_times != 0 && res > total_times) {
+                localStorage.clear();
+                Swal.fire({
+                    title: 'Số lần làm bài của bạn đã đạt mức tối đa',
+                    html: "Bạn không thể làm lại bài thi này!",
+                    icon: 'error',
+                    denyButtonText: `Quay trở lại`,
+                    focusConfirm: false,
+                    allowOutsideClick: false,
+                    hideOnOverlayClick: false,
+                    allowEscapeKey: false, 
+                }).then((result) => {
+                    window.location.href = 'index.php?module=examination&act=index';
+                });
+
+                setTimeout(function() {
+                    window.location.href = 'index.php?module=examination&act=index';
+                }, 3000);
+            }
         }
     });
 }
@@ -233,16 +252,6 @@ $('#btnOpenExam').click(function () {
 })
 
 function loadbtnOpenExam(current_times = 0) {
-    if (total_times != 0 && current_times > total_times) {
-        Swal.fire(
-            'Số lần làm bài của bạn đã đạt mức tối đa',
-            'Bạn không thể làm lại bài thi này!',
-            'error'
-            )
-        return;
-    }
-
-
     exam_date = ExamDate();
     $('#ex_summary').slideUp(500);
     $('#showQuestion').slideDown(500);
@@ -255,8 +264,8 @@ function loadbtnOpenExam(current_times = 0) {
     isForeCast ? $('#NumberOfCandidates').show() : $('#NumberOfCandidates').hide();
     let id = $('#ex_title').attr('data-exam');
     LoadQuestionsByExam(id);
-    getCurrentTime();
     countdown();
+    getCurrentTime();
 }
 
 function Report(id) {
@@ -352,7 +361,6 @@ function LoadQuestionsByExam(exam_id) {
         })
     }
 }
-
 
 //hiển thị nội dung của câu hỏi dựa vào id câu hỏi
 function ShowQuestion(id) {
@@ -500,8 +508,6 @@ function ShowMultiQuestions() {
     })
 }
 
-
-
 $(document).on('change', "#switchMode", function (e) {
     single = $(this).is(':checked');
     $('#modeName').text(`${single ? 'Single' : 'Multi'}`);
@@ -515,8 +521,6 @@ $(document).on('change', "#switchMode", function (e) {
     }
 
 })
-
-
 
 
 //sự kiện click của 2 button câu hỏi trước và tiếp theo

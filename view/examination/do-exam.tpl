@@ -32,7 +32,7 @@
 
 <?php include('view/common/footer.tpl'); ?>
 
-<link rel="stylesheet" href="assets/css/examination/style.css">
+<link rel="stylesheet" href="assets/css/examination/style.css?v=1.1">
 <link rel="stylesheet" href="assets/css/examination/onlinetest.css">
 <link rel="stylesheet" href="assets/css/pretty-switch.css">
 <script src="assets/js/examination/js-examination.js"></script>

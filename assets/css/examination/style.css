@@ -368,7 +368,6 @@ a.canDelete i.fa-spinner{display:none}
 
 .list-question-number {
     background-color: #fafafa;
-    max-height: 500px;
     overflow: auto;
 }
 .list-question-number .title-list-q {
