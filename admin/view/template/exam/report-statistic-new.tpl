@@ -58,8 +58,6 @@
                                         <tr>
                                             <th class="text-center">STT</th>
                                             <th class="text-center">Họ và tên</th>
-                                            <th class="text-center">Tỉnh</th>
-                                            <th class="text-center">Huyện</th>
                                             <th class="text-center">Đơn vị</th>
                                             <th class="text-center">Tổng lần thi</th>
                                             <th class="text-center">Số điểm</th>
@@ -170,8 +168,6 @@ th, td {
                                     <img src="../assets/images/${index['logo']}" width="50px">
                                 </span></td>
                             <td class="text-center">${index['fullname']}</td>
-                            <td class="text-center">${index['tinh']['full_name']}</td>
-                            <td class="text-center">${index['huyen']['full_name']}</td>
                             <td class="text-center">${index['doituong']['title']}</td>
                             <td class="text-center"><strong> ${index['tonglanthi']}</strong></td>
                             <td class="text-center"><span>${index['tongcaudung'] * index['mark_per_question']} điểm</span></td>

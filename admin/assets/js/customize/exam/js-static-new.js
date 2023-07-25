@@ -1,4 +1,4 @@
-LoadProvinces();
+// LoadProvinces();
 loadCuocThi();
 loadDoiTuong();
 
@@ -15,25 +15,25 @@ $(function() {
 	//     format: 'DD/MM/YYYY HH:mm'
 	// });
 	
-    $('.listTinh').change(function() {
-        if ($('.listTinh').val() == '') {
-        	$('.listHuyen').html('<option value="0">--- Tất cả --- </option>');
-        	$('.listXa').html('<option value="0">--- Tất cả --- </option>');
-        }
-        LoadDistrictsByPro($(this).val());
-    });
+    // $('.listTinh').change(function() {
+    //     if ($('.listTinh').val() == '') {
+    //     	$('.listHuyen').html('<option value="0">--- Tất cả --- </option>');
+    //     	$('.listXa').html('<option value="0">--- Tất cả --- </option>');
+    //     }
+    //     LoadDistrictsByPro($(this).val());
+    // });
 
-    $(".listCuocThi").change(function() {
-        loadThongKe();
-    })
+    // $(".listCuocThi").change(function() {
+    //     loadThongKe();
+    // })
 
-    $(".slDoiTuong").change(function() {
-        loadDoiTuongChiTiet($(this).val());
-        loadThongKe();
-        $(".slDoiTuongChiTiet").change(function() {
-            loadThongKe();
-        });
-    });
+    // $(".slDoiTuong").change(function() {
+    //     loadDoiTuongChiTiet($(this).val());
+    //     loadThongKe();
+    //     $(".slDoiTuongChiTiet").change(function() {
+    //         loadThongKe();
+    //     });
+    // });
 
 });
 
@@ -63,9 +63,6 @@ function loadThongKe() {
                                 <img src="../assets/images/${index['logo']}" width="50px">
                             </span></td>
                         <td class="text-center">${index['fullname']}</td>
-                        <td class="text-center">${index['tinh']['full_name']}</td>
-                        <td class="text-center">${index['huyen']['full_name']}</td>
-                        <td class="text-center">${index['xa']['full_name']}</td>
                         <td class="text-center">${index['doituong']['title']}</td>
                         <td class="text-center"><strong> ${index['tonglanthi']}</strong></td>
                         <td class="text-center"><span>${index['tongcaudung'] * index['mark_per_question']} điểm</span></td>

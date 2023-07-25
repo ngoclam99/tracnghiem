@@ -42,7 +42,7 @@
                                             </span>
                                             </div>
                                         </div>
-                                        <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-4">
+                                        <!-- <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-4">
                                             <label>Chọn tỉnh</label>
                                             <select name="id_tinh" class="form-control selectpicker listTinh"style="width: 100%;" data-live-search="true"></select>
                                         </div>
@@ -55,7 +55,7 @@
                                         <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-4">
                                             <label>Chọn xã</label>
                                             <select class="form-control listXa" name="id_xa"></select>
-                                        </div>
+                                        </div> -->
 
                                         <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-4">
                                             <label>Chọn cuộc thi</label>
@@ -89,9 +89,6 @@
                                         <tr>
                                             <th class="text-center">STT</th>
                                             <th class="text-center">Họ và tên</th>
-                                            <th class="text-center">Tỉnh</th>
-                                            <th class="text-center">Huyện</th>
-                                            <th class="text-center">Xã</th>
                                             <th class="text-center">Đơn vị</th>
                                             <th class="text-center">Tổng lần thi</th>
                                             <th class="text-center">Số điểm</th>

@@ -645,15 +645,14 @@ function getDoiTuong($id, $id_cuocthi) {
     FROM exam_results t1
     INNER JOIN exams AS ex ON t1.exam_id = ex.id
     INNER JOIN members AS mb ON t1.member_id = mb.id
-    INNER JOIN wards AS wa ON wa.code = mb.ward_code
     WHERE ex.id = " . $id_cuocthi . "
     AND mb.id_doituong = " . $id ."
     GROUP BY mb.id_doituong_chitiet ORDER BY tongthisinh DESC ";
-
     $result = mysql_query($sql, dbconnect());
     while ($row = mysql_fetch_assoc($result)) {
         $arr[] = $row;
     }
+
     if (!empty($arr)) {
         foreach ($arr as $k => $v) {
            $sql = "SELECT * FROM doituong_chitiet WHERE id = " . $v['id_doituong_chitiet'];

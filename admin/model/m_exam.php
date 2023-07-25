@@ -1065,17 +1065,17 @@ function History_NumberPersion($page, $search, $pageSize, $workplaces, $exams)
             $where[] = "mb.id_doituong_chitiet = " . $id_dtct;
         }
 
-        if ($id_tinh != '') {
-            $where[] = "mb.province_code = " . $id_tinh;
-        }
+        // if ($id_tinh != '') {
+        //     $where[] = "mb.province_code = " . $id_tinh;
+        // }
 
-        if ($id_huyen != '') {
-            $where[] = "mb.district_code = " . $id_huyen;
-        }
+        // if ($id_huyen != '') {
+        //     $where[] = "mb.district_code = " . $id_huyen;
+        // }
 
-        if ($id_xa != '') {
-            $where[] = "mb.ward_code = " . $id_xa;
-        }
+        // if ($id_xa != '') {
+        //     $where[] = "mb.ward_code = " . $id_xa;
+        // }
 
         $wh = '';
         if (!empty($where)) {
@@ -1095,6 +1095,7 @@ function History_NumberPersion($page, $search, $pageSize, $workplaces, $exams)
         " . $wh . "
         GROUP BY T1.member_id 
         ORDER BY (t2.tongdung*ex.mark_per_question) DESC , t1.spent_duration LIMIT 50";
+
         $result = mysql_query($sql, dbconnect());
 
         $sql1 = "SELECT COUNT( DISTINCT t1.member_id )
@@ -1273,18 +1274,18 @@ function History_NumberPersion($page, $search, $pageSize, $workplaces, $exams)
             $where[] = "mb.id_doituong_chitiet = " . $id_dtct;
         }
 
-        $id_tinh = ($id_tinh == 0) ? 14 : $id_tinh;
-        if ($id_tinh > 0) {
-            $where[] = "mb.province_code = " . $id_tinh;
-        }
+        // $id_tinh = ($id_tinh == 0) ? 14 : $id_tinh;
+        // if ($id_tinh > 0) {
+        //     $where[] = "mb.province_code = " . $id_tinh;
+        // }
 
-        if ($id_huyen != '') {
-            $where[] = "mb.district_code = " . $id_huyen;
-        }
+        // if ($id_huyen != '') {
+        //     $where[] = "mb.district_code = " . $id_huyen;
+        // }
 
-        if ($id_xa != '') {
-            $where[] = "mb.ward_code = " . $id_xa;
-        }
+        // if ($id_xa != '') {
+        //     $where[] = "mb.ward_code = " . $id_xa;
+        // }
 
         $wh = '';
         if (!empty($where)) {

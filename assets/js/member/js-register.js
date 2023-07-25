@@ -169,19 +169,6 @@ $('.btnSubmitRegister').click(function () {
         return;
     }
 
-    if ($(".txtAddress").val() == '') {
-        Swal.fire({
-            title: 'Thông báo',
-            icon: 'error',
-            html: 'Địa chỉ không được để trống',
-            customClass: 'swal-wide',
-            showCloseButton: false,
-            showCancelButton: false,
-            focusConfirm: false,
-        });
-        return !1;
-    }
-
     // if ($("#txtPosition").val() == '') {
     //     Swal.fire({
     //         title: 'Thông báo',

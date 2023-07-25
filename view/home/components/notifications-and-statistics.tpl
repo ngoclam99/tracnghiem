@@ -7,7 +7,7 @@
     ?>
 </div>
 <div class="row mt-5">
-    <?php include('children/top-units.tpl'); ?>
+    <!-- <?php include('children/top-units.tpl'); ?> -->
 </div>
 
 <!--/end notifications and statistics-->

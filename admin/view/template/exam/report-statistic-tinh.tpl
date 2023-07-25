@@ -23,7 +23,7 @@
                                 <hr style=" border: 1px solid #ccc; border-top: none">
                                 <div class="row">
                                     <form method="post">
-                                        <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-4">
+                                        <!-- <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-4">
                                             <label>Chọn tỉnh</label>
                                             <select name="id_tinh" class="form-control selectpicker listTinh"style="width: 100%;" data-live-search="true"></select>
                                         </div>
@@ -36,7 +36,7 @@
                                         <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-4">
                                             <label>Chọn xã</label>
                                             <select class="form-control listXa" name="id_xa"></select>
-                                        </div>
+                                        </div> -->
                                         <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-4">
                                             <label>Chọn cuộc thi</label>
                                             <select name="selectpicker" class="form-control listCuocThi"></select>
@@ -135,16 +135,16 @@ th, td {
     }
 </style>
 <script>
-    LoadProvinces();
+    // LoadProvinces();
     loadCuocThi();
-    $('.listTinh').change(function() {
-        if ($('.listTinh').val() == '') {
-            $('.listHuyen').html('<option value="0">--- Tất cả --- </option>');
-            $('.listXa').html('<option value="0">--- Tất cả --- </option>');
-        }
-        LoadDistrictsByPro($(this).val());
-         loadDT();
-    });
+    // $('.listTinh').change(function() {
+    //     if ($('.listTinh').val() == '') {
+    //         $('.listHuyen').html('<option value="0">--- Tất cả --- </option>');
+    //         $('.listXa').html('<option value="0">--- Tất cả --- </option>');
+    //     }
+    //     LoadDistrictsByPro($(this).val());
+    //      loadDT();
+    // });
 
     function LoadProvinces() {
         $.ajax({
