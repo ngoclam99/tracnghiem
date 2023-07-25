@@ -306,19 +306,20 @@ function Top10Units()
 }
 function exResultPagination($id)
 {
-    $sql = "SELECT q.id,q.title,erd.question_answer,erd.option_id
+    $sql = "SELECT q.id,q.title,erd.question_answer,erd.option_id, erd.stt
             FROM exam_result_details erd   
             INNER JOIN questions q ON erd.question_id = q.id         
-            WHERE exam_result_id = '" . $id . "'    
-    ";
+            WHERE exam_result_id = " . $id . " ORDER BY erd.stt ASC";
+
     $result = mysql_query($sql, dbconnect());
     $msg = new Message();
     if ($result && mysql_num_rows($result)) {
 
         $arr = array();
-        while ($local = mysql_fetch_array($result)) {
+        while ($local = mysql_fetch_assoc($result)) {
             $arr[] = $local;
         }
+
         $msg->icon = "success";
         $msg->statusCode = 200;
         $msg->title = "Lấy thông tin phân trang thành công!";
@@ -428,14 +429,14 @@ function save($exam_id,$result,$times,$spent_duration,$exam_date,$forecast_candi
         return $er;
     }
    
-    foreach ($result as $r) {
+    foreach ($result as $k => $r) {
 
         $option = getCorrectOption($r['id']);
         if ($option->statusCode != 200) {
             return $option;
         }
 
-        $is = erdSave($er->content, $r['id'], $option->content['id'], $r['checked'], $p['id']);
+        $is = erdSave($er->content, $r['id'], $option->content['id'], $r['checked'], $p['id'], $k+1);
         if ($is->statusCode != 201) {
             return $is;
         }

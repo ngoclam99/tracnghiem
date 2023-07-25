@@ -8,11 +8,11 @@
 include_once('m_db.php');
 include_once('classes/m_message.php');
 
-function erdSave($exam_result_id,$question_id,$question_answer,$option_id,$created_by)
+function erdSave($exam_result_id,$question_id,$question_answer,$option_id,$created_by, $stt=1)
 {
 
-    $sql = "INSERT INTO exam_result_details(exam_result_id,question_id,question_answer,option_id,created_by)
-            VALUES('".$exam_result_id."','".$question_id."','".$question_answer."','".$option_id."','".$created_by."')";
+    $sql = "INSERT INTO exam_result_details(exam_result_id,question_id,question_answer,option_id,created_by, stt)
+            VALUES('".$exam_result_id."','".$question_id."','".$question_answer."','".$option_id."','".$created_by."'," . $stt . " )";
     $result = mysql_query($sql,dbconnect());
     $msg= new Message();
     if($result && mysql_affected_rows()>0){      
@@ -27,4 +27,3 @@ function erdSave($exam_result_id,$question_id,$question_answer,$option_id,$creat
     }
     return $msg;
 }
-
