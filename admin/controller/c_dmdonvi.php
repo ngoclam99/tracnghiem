@@ -27,7 +27,11 @@ switch($page) {
 
     if ($_POST['addDVDT']) {
         $ten_donvi= $_POST['ten_donvi'];
-        insertdmdt($ten_donvi);
+        if ($_POST['addDVDT'] != 'themmoi') {
+            capnhatdonvi($_POST['addDVDT'], $ten_donvi);
+        } else {
+            insertdmdt($ten_donvi);
+        }
         header('LOCATION: ' . $url);  
         exit();
     }
@@ -41,8 +45,12 @@ switch($page) {
     if ($_POST['addDetail']) {
         $title = $_POST['title'];
         $id_doituong = $_POST['id_doituong'];
-        insertdmdt_detail($title, $id_doituong);
-        $data = getListDVDetail($id_doituong );
+        if ($_POST['id_edit'] != 'themmoi') {
+            capnhatdmdt_detail($title, $_POST['id_edit']);
+        } else {
+            insertdmdt_detail($title, $id_doituong);
+        }
+        $data = getListDVDetail($id_doituong);
         echo json_encode($data);
         exit();
     }

@@ -21,7 +21,7 @@
                                 <label for="">Chọn cuộc thi</label>
                                 <select class="selectpicker" id="slExams" data-live-search="true" multiple style="width:100% important;"></select>
                             </div>
-                            <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3" style="margin-top:5px">
+                            <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 hidden" style="margin-top:5px">
                                 <label for="">Chọn đơn vị công tác</label>
                                 <select class="selectpicker" id="slUnits" data-live-search="true" multiple style="width:100% important;"></select>
                             </div>
@@ -110,15 +110,6 @@
                                                 </th>
                                                 <th class="text-center">
                                                     Chức vụ
-                                                </th>
-												 <th class="text-center">
-													Tỉnh thành
-                                                </th>
-												<th class="text-center">
-                                                    Huyện thị
-                                                </th>
-												<th class="text-center">
-                                                   Xã phường
                                                 </th>
 												<th class="text-center">
                                                     Dự đoán

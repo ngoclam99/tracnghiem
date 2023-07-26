@@ -1041,6 +1041,15 @@ function History_NumberPersion($page, $search, $pageSize, $workplaces, $exams)
         return $arr;
     }
 
+    function dmdoituong() {
+        $sql = "SELECT * FROM dm_doituong";
+        $result = mysql_query($sql, dbconnect());
+        while ($row = mysql_fetch_assoc($result)) {
+            $arr[$row['id']] = $row;
+        }
+        return $arr;
+    }
+
     function doituongchitiet() {
         $sql = "SELECT * FROM doituong_chitiet";
         $result = mysql_query($sql, dbconnect());
@@ -1164,10 +1173,11 @@ function History_NumberPersion($page, $search, $pageSize, $workplaces, $exams)
     function getThongKeTong($id, $id_dt, $id_dtct, $id_tinh = 14, $id_huyen = 0, $id_xa = 0) {
         $where = array();
         $where1 = "";
-        if ($id > 0) {
-            $where[] = "ex.id = " . $id;
-        }
 
+        if (!empty($id)) {
+            $where[] = "ex.id IN (" . implode(",", $id) . ")";
+        }
+ 
         if ($id_dt != '') {
             // $where[] = "mb.id_doituong = " . $id_dt;
             $where1 = " WHERE id = " . $id_dt;
@@ -1191,12 +1201,6 @@ function History_NumberPersion($page, $search, $pageSize, $workplaces, $exams)
             $arr[] = $row;
         }
 
-        $sql1 = "SELECT mb.id_doituong, mb.id_doituong_chitiet, ex.is_stat, t1.member_id, COUNT( DISTINCT t1.member_id ) AS tongthisinh, COUNT(t1.member_id ) AS tongluotthisinh
-        FROM exam_results t1
-        INNER JOIN exams AS ex ON t1.exam_id = ex.id
-        INNER JOIN members AS mb ON t1.member_id = mb.id
-        " . $wh . " GROUP BY mb.id_doituong_chitiet ORDER BY tongthisinh DESC ";
-
         if (!empty($arr)) {
             foreach ($arr as $k => $v) {
                 if ($id_dtct != '') {
@@ -1215,7 +1219,7 @@ function History_NumberPersion($page, $search, $pageSize, $workplaces, $exams)
                         FROM exam_results t1
                         INNER JOIN exams AS ex ON t1.exam_id = ex.id
                         INNER JOIN members AS mb ON t1.member_id = mb.id
-                        WHERE mb.id_doituong_chitiet = " . $v1['id'] . " GROUP BY mb.id_doituong_chitiet ORDER BY tongthisinh DESC ";
+                        " . $wh .  " AND mb.id_doituong_chitiet = " . $v1['id'] . " GROUP BY mb.id_doituong_chitiet ORDER BY tongthisinh DESC ";
                         $res = sql_query($sql1);
 
                         // lấy số người đăng ký của đơn vị đó
@@ -1322,6 +1326,202 @@ function History_NumberPersion($page, $search, $pageSize, $workplaces, $exams)
             $arr[] = $row;
         }
         return $arr;
+    }
+
+    function getLichSuThi($id, $id_dt, $id_dtct, $username, $page, $perpage, $total_page, $start) {
+        $where = array();
+
+        if (!empty($id)) {
+            $where[] = "ex.id IN (" . implode(",", $id) . ")";
+        }
+
+        if ($id_dt != '') {
+            $where[] = "mb.id_doituong = " . $id_dt;
+        }
+
+        if ($username != '') {
+            $where[] = "(mb.username like '%" . $username . "%' OR mb.fullname like '%" . $username . "%')";
+        }
+
+        if ($id_dtct != '') {
+            $where[] = "mb.id_doituong_chitiet = " . $id_dtct;
+        }
+        $wh = "";
+        if (!empty($where)) {
+            $wh = " WHERE " . implode(" AND ", $where);
+        }
+
+        $sql = "SELECT er.member_id, er.times, er.spent_duration, er.forecast_candidates, er.started_at, er.created_at, er.tongcaudung, ex.title, mb.fullname, mb.birthdate, mb.phone, mb.email, mb.id_doituong, mb.id_doituong_chitiet, mb.get_job, mb.position, mb.username, ex.mark_per_question, (ex.mark_per_question*er.tongcaudung) as tongdiem, ex.number_of_questions, er.id as id_result
+            FROM exam_results er
+            INNER JOIN exams ex ON ex.id = er.exam_id
+            INNER JOIN members mb ON mb.id = er.member_id " . $wh . "
+            ORDER BY tongdiem DESC, er.spent_duration asc, er.member_id
+            LIMIT " . $start . " , " . $perpage;
+
+        $arr = sql_query_array($sql);
+        if (!empty($arr)) {
+            $arrdtct = doituongchitiet();
+            $arrdt = dmdoituong();
+            $stt = $start + 1;
+            foreach ($arr as $k => $v) {
+                $arr[$k]['stt'] = $stt++;
+                if ($v['id_doituong_chitiet'] > 0) {
+                    $arr[$k]['doituongct'] = $arrdtct[$v['id_doituong_chitiet']];
+                    $arr[$k]['doituong'] = $arrdt[$v['id_doituong']];
+                } else {
+                    $arr[$k]['doituongct']['title'] = "";
+                    $arr[$k]['doituong']['ten_donvi'] = "";
+                }
+                $arr[$k]['spent_duration'] = seconds2human($v['spent_duration']);
+            }
+        }
+
+        $phantrang = listPhanTrang($total_page, $page);
+        return array(
+            'data' => $arr,
+            'pagination' => $phantrang,
+        );
+    }
+
+    function CountToalgetLichSuThi($id, $id_dt, $id_dtct, $username, $page, $perpage) {
+        $tong = 0;
+        $where = array();
+        if (!empty($id)) {
+            $where[] = "ex.id IN (" . implode(",", $id) . ")";
+        }
+
+        if ($id_dt != '') {
+            $where[] = "mb.id_doituong = " . $id_dt;
+        }
+
+        if ($username != '') {
+            $where[] = "(mb.username like '%" . $username . "%' OR mb.fullname like '%" . $username . "%')";
+        }
+
+        if ($id_dtct != '') {
+            $where[] = "mb.id_doituong_chitiet = " . $id_dtct;
+        }
+        $wh = "";
+        if (!empty($where)) {
+            $wh = " WHERE " . implode(" AND ", $where);
+        }
+
+        $sql = "SELECT COUNT(*) AS tong, count(er.id) as tongluothi, count(DISTINCT member_id) as tongthisinh
+            FROM exam_results er
+            INNER JOIN exams ex ON ex.id = er.exam_id
+            INNER JOIN members mb ON mb.id = er.member_id " . $wh;
+        $result = mysql_query($sql, dbconnect());
+        $row = mysql_fetch_assoc($result);
+        return $row;
+    }
+
+    function getLichSuThi_Tong($id, $id_dt, $id_dtct, $username, $page, $perpage, $total_page, $start) {
+        $where = array();
+        if (!empty($id)) {
+            $where[] = "ex.id IN (" . implode(",", $id) . ")";
+        }
+
+        if ($id_dt != '') {
+            $where[] = "mb.id_doituong = " . $id_dt;
+        }
+
+        if ($username != '') {
+            $where[] = "(mb.username like '%" . $username . "%' OR mb.fullname like '%" . $username . "%')";
+        }
+
+        if ($id_dtct != '') {
+            $where[] = "mb.id_doituong_chitiet = " . $id_dtct;
+        }
+        $wh = "";
+        if (!empty($where)) {
+            $wh = " WHERE " . implode(" AND ", $where);
+        }
+        
+        $sql = "SELECT mb.id, er.member_id, er.times, er.spent_duration, er.forecast_candidates, er.started_at, er.created_at, ex.title, mb.fullname, mb.birthdate, mb.phone, mb.email, mb.id_doituong, mb.id_doituong_chitiet, mb.get_job, mb.position, mb.username, ex.mark_per_question, ex.number_of_questions, SUM( tongcaudung ) AS tongdung, MAX(er.tongcaudung) as max_dung, (MAX(er.tongcaudung) * mark_per_question) as tongdiem, MAX( er.times ) AS tong_lan_thi, mb.username
+            FROM exam_results er
+            INNER JOIN exams ex ON ex.id = er.exam_id
+            INNER JOIN members mb ON mb.id = er.member_id " . $wh . "
+            GROUP BY er.member_id
+            ORDER BY tongdiem DESC, spent_duration ASC
+            LIMIT " . $start . " , " . $perpage;
+        $arr = sql_query_array($sql);
+
+        if (!empty($arr)) {
+            $arrdtct = doituongchitiet();
+            $arrdt = dmdoituong();
+            $stt = $start + 1;
+            foreach ($arr as $k => $v) {
+                $arr[$k]['stt'] = $stt++;
+                if ($v['id_doituong_chitiet'] > 0) {
+                    $arr[$k]['doituongct'] = $arrdtct[$v['id_doituong_chitiet']];
+                    $arr[$k]['doituong'] = $arrdt[$v['id_doituong']];
+                } else {
+                    $arr[$k]['doituongct']['title'] = "";
+                    $arr[$k]['doituong']['ten_donvi'] = "";
+                }
+                $arr[$k]['spent_duration'] = seconds2human($v['spent_duration']);
+            }
+        }
+
+        $phantrang = listPhanTrang($total_page, $page);
+        return array(
+            'data' => $arr,
+            'pagination' => $phantrang,
+        );
+    }
+
+    function CountToalgetLichSuThi_Tong($id, $id_dt, $id_dtct, $username, $page, $perpage) {
+        $tong = 0;
+        $where = array();
+        if (!empty($id)) {
+            $where[] = "ex.id IN (" . implode(",", $id) . ")";
+        }
+
+        if ($id_dt != '') {
+            $where[] = "mb.id_doituong = " . $id_dt;
+        }
+
+        if ($username != '') {
+            $where[] = "(mb.username like '%" . $username . "%' OR mb.fullname like '%" . $username . "%')";
+        }
+
+        if ($id_dtct != '') {
+            $where[] = "mb.id_doituong_chitiet = " . $id_dtct;
+        }
+        $wh = "";
+        if (!empty($where)) {
+            $wh = " WHERE " . implode(" AND ", $where);
+        }
+        $sql = "SELECT count(DISTINCT er.member_id) as tong, COUNT(er.id) AS tongluothi, count(DISTINCT er.member_id) as tongthisinh
+            FROM exam_results er
+            INNER JOIN exams ex ON ex.id = er.exam_id
+            INNER JOIN members mb ON mb.id = er.member_id " . $wh;
+        $result = mysql_query($sql, dbconnect());
+        $row = mysql_fetch_assoc($result);
+        return $row;
+    }
+
+    function listPhanTrang($total_page, $page) {
+        $html = '';
+        if ($total_page > 1) {
+            if ($page > 1) {
+                $html .= '<li><a href="javascript:void(0)" data-page="' . ($page-1) . '"><i class="fa fa-angle-double-left" aria-hidden="true"></i></a></li>';
+            }
+
+            for ($i = 1; $i <= $total_page; $i++) {
+                if ($i == $page) {
+                    $html .= '<li class="active"><span class="page active">' . $i . '</span></li>';
+                } else {
+                    $html .= '<li><a class="page gradient" href="javascript:void(0)" data-page="' . $i . '">' . $i . '</a></li>';
+                }
+
+            }
+
+            if ($page < $total_page) {
+                $html .= '<li><a class="page gradient" href="javascript:void(0)" data-page="' . ($page+1) . '"><i class="fa fa-angle-double-right" aria-hidden="true"></i></a></li>';
+            }
+        }
+        return $html;
     }
 
     function sql_query($sql) {

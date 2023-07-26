@@ -21,9 +21,45 @@ switch ($page) {
 	case 'history-detail':
 		require('view/template/exam/history-detail.tpl');
 		break;
+
+	case 'history-sum':
+		if ($_POST['load_dt']) {
+		    $data = LoadDoiTuong();
+		    echo json_encode($data);
+		    exit();
+		}
+
+
+		if ($_POST['load_dt_chitiet']) {
+		    $id_dt = $_POST['id_doituong'];
+		    $data = LoadDoiTuongChiTiet($id_dt);
+		    echo json_encode($data);
+		    exit();
+		}
+		require('view/template/exam/history-sum.tpl');
+		break;
+
 	case 'report-statistic':
 		require('view/template/exam/report-statistic.tpl');
 		break;
+
+	case 'history-total':
+		if ($_POST['load_dt']) {
+		    $data = LoadDoiTuong();
+		    echo json_encode($data);
+		    exit();
+		}
+
+
+		if ($_POST['load_dt_chitiet']) {
+		    $id_dt = $_POST['id_doituong'];
+		    $data = LoadDoiTuongChiTiet($id_dt);
+		    echo json_encode($data);
+		    exit();
+		}
+		require('view/template/exam/history-total.tpl');
+		break;
+		
 	case 'report-statistic-new':
 		if ($_POST['xuatexcel']) {
 			$id = $_POST['selectpicker'];

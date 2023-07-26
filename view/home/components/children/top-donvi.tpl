@@ -34,7 +34,7 @@
     </div>
 </div>
 
-<div class="panel panel-info" id="static_dtdt">
+<!-- <div class="panel panel-info" id="static_dtdt">
     <div class="panel-heading">
         <h3 class="panel-title text-uppercase">Thống kê theo đối tượng dự thi</h3>
     </div>
@@ -66,5 +66,5 @@
         </div>
     </div>
 </div>
-
+ -->
 <script src="assets/js/home/js-doituongdt.js"></script>

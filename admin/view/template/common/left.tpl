@@ -100,12 +100,15 @@
                                         class="fa fa-chevron-right fa-fw"></i>Quản lý câu hỏi</a></li>
                             <li><a href="index.php?module=exam&amp;act=report-statistic"><i
                                         class="fa fa-chevron-right fa-fw"></i>Báo cáo thống kê</a></li>
+                            <li><a href="index.php?module=exam&amp;act=history-sum"><i
+                                        class="fa fa-chevron-right fa-fw"></i>Báo cáo thống kê NEW</a></li>
                             <li><a href="index.php?module=exam&amp;act=history"><i
                                         class="fa fa-chevron-right fa-fw"></i>Lịch sử thi</a></li>
+                            <li><a href="index.php?module=exam&amp;act=history-total"><i
+                                        class="fa fa-chevron-right fa-fw"></i>Báo cáo lịch sử thi NEW</a></li>
                             <li><a href="index.php?module=exam&amp;act=report-statistic-new"><i
-                                        class="fa fa-chevron-right fa-fw"></i>Báo cáo thống kê 1</a></li>
-                            <li><a href="index.php?module=exam&amp;act=report-statistic-total"><i
-                                        class="fa fa-chevron-right fa-fw"></i>Báo cáo thống kê 2</a></li>
+                                        class="fa fa-chevron-right fa-fw"></i>Báo cáo thống kê tổng</a></li>
+                            <!-- <li><a href="index.php?module=exam&amp;act=report-statistic-total"><i class="fa fa-chevron-right fa-fw"></i>Báo cáo thống kê 2</a></li> -->
                             <li><a href="index.php?module=exam&amp;act=report-statistic-dt"><i
                                         class="fa fa-chevron-right fa-fw"></i>Báo cáo thống kê tổng đơn vị</a></li>
                             <li><a href="index.php?module=exam&amp;act=report-statistic-tinh"><i

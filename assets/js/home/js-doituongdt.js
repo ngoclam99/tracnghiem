@@ -2,10 +2,11 @@ loadDoiTuong();
 loadCuocThi();
 
 $(document).ready(function() {
-	$(".slDoiTuong, .listCuocThi").change(function() {
-		loadDT();
-	});
+	// $(".slDoiTuong, .listCuocThi").change(function() {
+	// 	loadDT();
+	// });
 
+	loadTop10();
 	$(".listCuocThiTop").change(function() {
 		loadTop10();
 	});

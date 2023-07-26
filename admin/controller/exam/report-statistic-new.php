@@ -62,4 +62,73 @@ if ($_POST['loadtinh']) {
 	echo json_encode($provinces); 
 }
 
+if ($_GET['load_lichsuthi']) {
+	$page = intval($_GET['page']);
+	$perpage = 200;
+	$start = 0;
+    if ($page > 0) {
+        $start = ($page-1) * $perpage;
+        if($start == 0){
+            $stt = 1;
+        } else{
+            $stt = $page + 1;
+        }
+    } else {
+        $page = 1;
+        $stt = 1;
+    }
+
+	$id = $_GET['id_cuocthi'];
+	$id_dt = $_GET['id_dt'];
+	$id_dtct = $_GET['id_dtct'];
+	$username = $_GET['username'];
+	$row_total = CountToalgetLichSuThi($id, $id_dt, $id_dtct, $username, $start, $perpage);
+    $sum_record = $row_total['tong'];
+    $total_page = CEIL($sum_record/$perpage);
+	$data = getLichSuThi($id, $id_dt, $id_dtct, $username, $page, $perpage, $total_page, $start);
+	$data['tongnguoithi'] = $row_total['tongthisinh'];
+	$data['tongluotthi'] = $row_total['tongluothi'];
+	if (sizeof($data) > 0) {
+		echo json_encode($data); 
+	} else {
+		echo (""); 
+	}
+	exit();
+}
+
+if ($_GET['load_lichsuthi_tong']) {
+	$page = intval($_GET['page']);
+	$perpage = 200;
+	$start = 0;
+    if ($page > 0) {
+        $start = ($page-1) * $perpage;
+        if($start == 0){
+            $stt = 1;
+        } else{
+            $stt = $page + 1;
+        }
+    } else {
+        $page = 1;
+        $stt = 1;
+    }
+
+	$id = $_GET['id_cuocthi'];
+	$id_dt = $_GET['id_dt'];
+	$id_dtct = $_GET['id_dtct'];
+	$username = $_GET['username'];
+	$row_total = CountToalgetLichSuThi_Tong($id, $id_dt, $id_dtct, $username, $start, $perpage);
+    $sum_record = $row_total['tong'];
+    $total_page = CEIL($sum_record/$perpage);
+	$data = getLichSuThi_Tong($id, $id_dt, $id_dtct, $username, $page, $perpage, $total_page, $start);
+	$data['tongnguoithi'] = $row_total['tongthisinh'];
+	$data['tongluotthi'] = $row_total['tongluothi'];
+	if (sizeof($data) > 0) {
+		echo json_encode($data); 
+	} else {
+		echo (""); 
+	}
+	exit();
+}
+
+
 ?>

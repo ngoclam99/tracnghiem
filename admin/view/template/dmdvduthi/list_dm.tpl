@@ -53,7 +53,7 @@
                                                         </div> 
                                                         
                                                         <div class="form-group col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                                                            <button type="submit" name="addDVDT" value="1" class="btn btn-primary" style="margin-top: 25px;">Thêm mới</button>
+                                                            <button type="submit" name="addDVDT" value="themmoi" class="btn btn-primary" style="margin-top: 25px;">Thêm mới</button>
                                                             <button  style="margin-top: 25px;" type="button" class="btn btn-default" id="close">Huỷ</button>
                                                         </div>
                                                     </div>
@@ -74,9 +74,9 @@
                                                                     <td><?php echo $danhmuc['ten_donvi']; ?></td>
 
                                                                     <td class="text-center" style="white-space:nowrap; width: 10%;">
-                                                                        <button type="button" class="btn btn-success btn-flat btn-sm view_detail" data-detail='<?= json_encode($danhmuc) ?>' data-toggle="modal" data-target="#myModal"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;&nbsp;View</button>
-                                                                        <button type="button" class="btn btn-flat btn-primary btn-sm editdv" data-title="<?= $danhmuc['ten_donvi'] ?>" value="<?= $danhmuc['id'] ?>"><i class="fa fa-pencil-square-o"></i></button>
-                                                                        <a href="<?= $url ?>&deleteid=<?= $danhmuc['id'] ?>" class="btn btn-flat btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xoá không?')"><i class="fa fa-trash-o"></i></a>
+                                                                        <button type="button" class="btn btn-success btn-sm view_detail" data-detail='<?= json_encode($danhmuc) ?>' data-toggle="modal" data-target="#myModal"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;&nbsp;View</button>
+                                                                        <button type="button" class="btn btn-primary  editdv" data-title="<?= $danhmuc['ten_donvi'] ?>" value="<?= $danhmuc['id'] ?>"><i class="fa fa-pencil-square-o"></i></button>
+                                                                        <a href="<?= $url ?>&deleteid=<?= $danhmuc['id'] ?>" class="btn btn-danger " onclick="return confirm('Bạn có chắc chắn muốn xoá không?')"><i class="fa fa-trash-o"></i></a>
 
                                                                         <!-- Modal -->
 
@@ -130,14 +130,15 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-md-10">
+                        <div class="col-md-8">
                             <div class="form-group">
                                 <label>Tiêu đề <span class="style2">(*)</span></label>
                                 <input type:text="" class="form-control" id="txtName">
                             </div>
                         </div>
-                        <div class="col-md-2">
-                            <button type="submit" name="addDVDTCT" value="1" class="btn btn-primary" style="margin-top: 25px;">Thêm mới</button>
+                        <div class="col-md-4">
+                            <button class="btn btn-default" id="huy_detail" style="margin-top: 25px;">Huỷ</button>
+                            <button type="submit" name="addDVDTCT" value="themmoi" class="btn btn-primary" style="margin-top: 25px;">Thêm mới</button>
                         </div>
                     </div>
 
@@ -188,11 +189,15 @@
             id = $(this).val();
             $("input[name='ten_donvi']").val($(this).attr('data-title'));
             $("#close").show();
+            $("button[name='addDVDT']").val(id);
+            $("button[name='addDVDT']").text("Cập nhật");
         });
 
         $("#close").click(function() {
             $("input[name='ten_donvi']").val("");
             $("#close").hide();
+            $("button[name='addDVDT']").val('themmoi');
+            $("button[name='addDVDT']").text("Thêm mới");
         })
 
         $(".view_detail").click(function() {
@@ -205,6 +210,7 @@
                         <td class="text-center">${val['id']}</td>
                         <td>${val['title']}</td>
                         <td class="text-center">
+                            <a class="btn btn-flat btn-primary btn-sm edit_detail_view" data-id="${val['id']}" data-val="${val['title']}"><i class="fa fa-pencil-square-o"></i></a>
                             <a class="btn btn-flat btn-danger btn-sm delete_detail" data-id="${val['id']}"><i class="fa fa-trash-o"></i></a>
                         </td>
                     </tr>
@@ -213,7 +219,9 @@
 
             $("button[name='addDVDTCT']").val(detail['id']);
             $("#tbody").html(html);
+            
             $("button[name='addDVDTCT']").click(function() {
+                id = $(this).val();
                 if ($("#txtName").val()=='') {
                    Swal.fire({
                         title: 'Thông báo',
@@ -233,9 +241,10 @@
                     url: location.href,
                     type: 'POST',
                     data: {
-                        'addDetail': 1,
+                        'addDetail': id,
                         'title': $("#txtName").val(),
                         'id_doituong': $(this).val(),
+                        'id_edit': $(this).attr('data-val'),
                     },
                 })
                 .done(function(data) {
@@ -247,23 +256,41 @@
                                 <td class="text-center">${val['id']}</td>
                                 <td>${val['title']}</td>
                                 <td class="text-center">
+                                    <a class="btn btn-flat btn-primary btn-sm edit_detail_view" data-id="${val['id']}" data-val="${val['title']}"><i class="fa fa-pencil-square-o"></i></a>
                                     <a class="btn btn-flat btn-danger btn-sm delete_detail" data-id="${val['id']}"><i class="fa fa-trash-o"></i></a>
                                 </td>
                             </tr>
                          `;
                     });
                     $("#tbody").html(html);
+                    if (id != 'themmoi') {
                     Swal.fire({
-                        title: 'Thông báo',
-                        icon: 'success',
-                        html: 'Thêm dữ liệu thành công',
-                        customClass: 'swal-wide',
-                        showCloseButton: false,
-                        showCancelButton: false,
-                        focusConfirm: false,
-                    });
+                            title: 'Thông báo',
+                            icon: 'success',
+                            html: 'Cập nhật dữ liệu thành công',
+                            customClass: 'swal-wide',
+                            showCloseButton: false,
+                            showCancelButton: false,
+                            focusConfirm: false,
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'Thông báo',
+                            icon: 'success',
+                            html: 'Thêm dữ liệu thành công',
+                            customClass: 'swal-wide',
+                            showCloseButton: false,
+                            showCancelButton: false,
+                            focusConfirm: false,
+                        });
+                    }
 
                     $("#txtName").val("");
+
+                    $("#huy_detail").hide();
+                    $("#txtName").val(); 
+                    $("button[name='addDVDTCT']").text('Thêm mới'); 
+                    $("button[name='addDVDTCT']").attr('data-val', 'themmoi');
 
                     $(".delete_detail").click(function() {
                         if(confirm("Bạn có chắc chắn muốn xoá không?")) {
@@ -290,6 +317,21 @@
                             })
                         }
                     });
+
+                    $(".edit_detail_view").click(function() {
+                        id = $(this).attr('data-id');
+                        $("#huy_detail").show();
+                        $("#txtName").val($(this).attr('data-val')); 
+                        $("button[name='addDVDTCT']").text('Cập nhật'); 
+                        $("button[name='addDVDTCT']").attr('data-val', id);
+                    });
+
+                    $("#huy_detail").click(function() {
+                        $("#huy_detail").hide();
+                        $("#txtName").val(); 
+                        $("button[name='addDVDTCT']").text('Thêm mới'); 
+                        $("button[name='addDVDTCT']").attr('data-val', 'themmoi');
+                    })
                 })
             });
             $(".title__modal").html(detail['ten_donvi']);
@@ -318,7 +360,23 @@
                     })
                 }
             });
-        });
 
+            $(".edit_detail_view").click(function() {
+                id = $(this).attr('data-id');
+                $("#huy_detail").show();
+                $("#txtName").val($(this).attr('data-val')); 
+                $("button[name='addDVDTCT']").text('Cập nhật'); 
+                $("button[name='addDVDTCT']").attr('data-val', id);
+            });
+
+            $("#huy_detail").click(function() {
+                $("#huy_detail").hide();
+                $("#txtName").val(); 
+                $("button[name='addDVDTCT']").text('Thêm mới'); 
+                $("button[name='addDVDTCT']").attr('data-val', 'themmoi');
+            })
+        });
+        
+        $("#huy_detail").hide();
 
     </script>

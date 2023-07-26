@@ -77,9 +77,6 @@ function LoadHistory() {
                                 <td class="text-nowrap">${t.get_job == 1 ? t.job : ''}</td>
                                 <td class="text-nowrap">${t.get_workplace == 1 ? t.workplace: ''}</td>
                                 <td class="text-nowrap">${t.get_position == 1 ? t.position : ''}</td>
-								<td class="text-nowrap">${t.province}</td> // tinh
-								<td class="text-nowrap">${t.district}</td> // tinh
-								<td class="text-nowrap">${t.ward}</td> // tinh
 								<td class="text-nowrap">${t.forecast}</td> // tinh
                                 <td class="text-nowrap text-warning fw-bold">${t.exam}</td>
                                 <td class="text-center fw-bold text-info">${t.times}</td>

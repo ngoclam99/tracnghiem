@@ -68,6 +68,13 @@ function insertdmdt($ten_donvi) {
     dbconnect());
 }
 
+//add can bo
+function capnhatdonvi($id, $ten_donvi) {
+    mysql_query("update dm_doituong set 
+    ten_donvi = '".$ten_donvi."' WHERE id = " . $id,
+    dbconnect());
+}
+
  function deldmdonvi_detail($id){
     mysql_query("delete from doituong_chitiet where id= '".(int)$id."'", dbconnect());
 }
@@ -76,6 +83,12 @@ function insertdmdt_detail($title, $id){
     mysql_query("insert doituong_chitiet set 
     title = '".$title."',
     id_doituong = '".$id."'",
+    dbconnect());
+}
+
+function capnhatdmdt_detail($title, $id){
+    mysql_query("UPDATE doituong_chitiet set 
+    title = '".$title."' WHERE id = " . $id,
     dbconnect());
 }
 

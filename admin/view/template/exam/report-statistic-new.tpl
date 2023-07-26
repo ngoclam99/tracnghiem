@@ -25,7 +25,7 @@
                                     <form method="post">
                                         <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-4">
                                             <label>Chọn cuộc thi</label>
-                                            <select name="selectpicker" class="form-control selectpicker listCuocThi" data-live-search="true" multiple style="width: 100%;"></select>
+                                            <select name="selectpicker" class="form-control selectpicker listCuocThi" data-live-search="true" multiple style="width:100% !important;"></select>
                                         </div>
                                         <div class="form-group col-md-3 col-lg-4">
                                             <label>Đối tượng dự thi <span class="red">(*)</span></label>
