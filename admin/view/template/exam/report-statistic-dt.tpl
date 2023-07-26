@@ -128,7 +128,7 @@ th, td {
             },
             success: function (data) {
                 if (data != '') {
-                    html = '<option value="0">--- Chọn cuộc thi ---</option>';
+                    html = '';
                     list = JSON.parse(data);
                     list.forEach(val => {
                         selected = (val['is_stat']) ? 'selected' : '';

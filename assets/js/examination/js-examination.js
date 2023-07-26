@@ -205,7 +205,8 @@ function getCurrentTime() {
         type: 'POST',
         data: {
             'load_current_time': 1,
-            'id' : localStorage.getItem('candidate')
+            'id' : localStorage.getItem('candidate'),
+            'id_exam': exam_id
         },
         success: function (res) {
             $('#current_times').text(res);

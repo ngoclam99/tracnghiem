@@ -29,7 +29,8 @@ if ($_POST['load_dt_chitiet']) {
 
 if ($_POST['load_current_time']) {
     $id = $_POST['id'];
-    $data = LoadCurrentTime($id);
+    $id_exam = $_POST['id_exam'];
+    $data = LoadCurrentTime($id, $id_exam);
     echo ($data);
     exit();
 }
