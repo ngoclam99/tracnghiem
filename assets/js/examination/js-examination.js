@@ -614,26 +614,28 @@ function countdown() {
                 allowEscapeKey: false,
             }).then((result) => {
                 if (result.isConfirmed) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Tham gia dự đoán!',
-                        text: 'Vui lòng dự đoạn số thí sinh mà bạn dự đoán tham gia trong kỳ thi này',
-                        input: 'number',
-                        showCancelButton: false,
-                        hideOnOverlayClick: false,
-                        allowOutsideClick: false,
-                        allowEscapeKey: false,
-                    }).then((result) => {
-                        if (result.value === '' || parseInt(result.value) == NaN || parseInt(result.value) <= 0) {
-                            requiedInputNumberSTS();
-                            return !1;
-                        }
+                    if (parseInt($("#txtNumberOfCandidate").val()) < 0 || $("#txtNumberOfCandidate").val() == NaN) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Tham gia dự đoán!',
+                            text: 'Vui lòng dự đoạn số thí sinh mà bạn dự đoán tham gia trong kỳ thi này',
+                            input: 'number',
+                            showCancelButton: false,
+                            hideOnOverlayClick: false,
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                        }).then((result) => {
+                            if (result.value === '' || parseInt(result.value) == NaN || parseInt(result.value) <= 0) {
+                                requiedInputNumberSTS();
+                                return !1;
+                            }
 
-                        if (result.value) {
-                            $("#txtNumberOfCandidate").val(result.value);
-                            $('#btnSaveExamResult').click();
-                        }
-                    });
+                            if (result.value) {
+                                $("#txtNumberOfCandidate").val(result.value);
+                                $('#btnSaveExamResult').click();
+                            }
+                        });
+                    }
                 } else {
                     localStorage.clear();
                     window.location.href = 'index.php?module=home&act=index';
