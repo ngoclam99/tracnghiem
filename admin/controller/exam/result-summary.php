@@ -10,8 +10,6 @@ include('../../model/m_exam.php');
 
 $id = $_GET["id"];
 $candidate = $_GET["candidate"];
-
 $result = exResultSummary($id,$candidate);
-
 header("Content-Type: application/json");
 echo json_encode($result);

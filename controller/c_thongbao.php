@@ -36,12 +36,12 @@ $page = $_GET['act'];
         $luotxemmoi = $luotxem +1;
         luotxem($luotxemmoi,$id);
         
-    	require('view/theme/default/template/home/header.tpl'); 
+    	require('view/common/header.tpl'); 
 
-		    	require('view/theme/default/template/thongbao/detail.tpl');
-    	require('view/theme/default/template/home/right.tpl'); 
+		    	require('view/default/thongbao/detail.tpl');
+    	 
 
-    	require('view/theme/default/template/home/footer.tpl');    
+    	require('view/common/footer.tpl');    
         break;
      
        // casse lisst

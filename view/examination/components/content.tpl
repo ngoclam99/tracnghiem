@@ -9,10 +9,37 @@
         </nav>
         <div class="form-inline mb-5" style="margin-bottom:10px;" id="NumberOfCandidates">
             <div class="form-group">
-                <p for="candidate">Theo bạn có bao nhiêu người tham gia thi trong kỳ này?</p>
+                <p for="candidate"><span style="color:red;">Theo bạn có bao nhiêu người tham gia cuộc thi tuần này?</span></p>
                 <input type="text" class="form-control required ml-5" style="text-align:right; padding-right:20px;" id="txtNumberOfCandidate">
                 <span id="msgNumberOfCandidates"></span>
             </div>
         </div>
     </div>
 </div>
+<style>
+     body{
+          -webkit-touch-callout: none;
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          -o-user-select: none;
+           user-select: none;
+         }
+</style>
+        
+<script>
+     function killCopy(e){
+           return false;
+     }
+
+     function reEnable(){
+           return true;
+     }
+
+     document.onselectstart=new Function ("return false");
+
+     if (window.sidebar){
+           document.onmousedown=killCopy;
+           document.onclick=reEnable;
+     }
+</script>

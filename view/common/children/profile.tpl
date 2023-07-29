@@ -10,8 +10,8 @@
 
             <div class="row margin-bottom-lg">
                 <div class="col-xs-8 text-center">
-                    <a title="" href="javascript:void(0);"
-                        onclick="changeAvatar('/vi/users/avatar/upd/')">
+                    <!--<a title="" href="javascript:void(0);"
+                        onclick="changeAvatar('#')">-->
                         <img
                             src="" 
                             alt=""

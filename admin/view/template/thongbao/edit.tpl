@@ -136,6 +136,13 @@ Hủy
 <?php include('view/template/common/footer.tpl'); ?>
 
 <script type="text/javascript">
+	var editor = CKEDITOR.replace( 'test1');
+ 
+   	CKFinder.setupCKEditor( editor, '../assets/plugins/ckfinder' ) ;
+   
+</script>
+
+<script type="text/javascript">
 
 function BrowseServer()
 {

@@ -1,7 +1,7 @@
 <div class="col-xs-24 col-sm-24 col-md-16 col-lg-16">
     <section class="timeline-cuocthi">
         <div class="timeline-title">
-            <h3>10 Cuộc thi gần đây</h3>
+            <h3>Cuộc thi gần đây</h3>
         </div>
         <div id="recent_exams_list">
             <div class="slider" id="top10exams"></div>

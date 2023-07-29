@@ -7,6 +7,19 @@
  
 //defined('DSVH') or die('Restricted access');
 
+function getlistthongbao12($start, $limit)
+    {
+        $local_list = mysql_query("SELECT * FROM thong_bao
+        order by
+        id_thongbao ASC
+         ", dbconnect());
+        $result = array();
+        while ($local = mysql_fetch_array($local_list)){
+            $result []= $local;
+        }
+        return $result;
+    }
+
 function getlistnoibanhanh1($start, $limit)
     {
         $local_list = mysql_query("SELECT * FROM noi_ban_hanh

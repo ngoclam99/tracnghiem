@@ -28,7 +28,11 @@
                 <!-- /.search form -->
                 <!-- sidebar menu: : style can be found in sidebar.less -->
                 <ul class="sidebar-menu tree" data-widget="tree">
-                    <li class="header">Hệ Thống Menu</li>
+                    <li class="header">Hệ Thống Menu
+					 <?php
+                $mDL = $_GET['module'];
+                ?>
+					</li>
                     <li class="">
                         <a href="index.php?module=home">
                             <i class="fa fa-dashboard"></i> <span>Trang Chủ</span>
@@ -45,7 +49,12 @@
                         </a>
                     </li>
 
-                    <li class="treeview">
+                    <li class="<?php if($mDL == 'danhba' || $mDL == 'workplace' || $mDL == 'dmdonvi'){
+                    echo 'active treeview';
+                }else{
+                    echo 'treeview';
+                }
+           ?>">
                         <a href="#">
                             <i class="fa fa-address-book" aria-hidden="true"></i> <span>Danh Bạ</span>
                             <span class="pull-right-container">
@@ -75,15 +84,20 @@
 
                     </li>
 
-                    <li class="">
+                    <!--<li class="">
                         <a href="index.php?module=khuyenhoc&amp;act=list">
                             <i class="fa fa-bullhorn"></i> <span>Khuyến học</span>
 
                         </a>
 
-                    </li>
+                    </li>-->
 
-                    <li class="  treeview">
+                    <li class="<?php if($mDL == 'exam' || $mDL == 'topic' || $mDL == 'question' || $mDL == 'exam&amp'){
+                    echo 'active treeview';
+                }else{
+                    echo 'treeview';
+                }
+           ?>">
                         <a href="#">
                             <i class="fa fa-newspaper-o fa-fw"></i>
                             <span> Trắc nghiệm</span>
@@ -116,7 +130,7 @@
                         </ul>
                     </li>
 
-                    <li class="  treeview">
+                   <!-- <li class="  treeview">
                         <a href="#">
                             <i class="fa fa-newspaper-o fa-fw"></i>
                             <span> Tin Tức</span>
@@ -175,7 +189,7 @@
 
                         </a>
 
-                    </li>
+                    </li>-->
 
                     <li class="treeview">
                         <a href="#">

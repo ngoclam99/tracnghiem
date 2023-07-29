@@ -108,6 +108,8 @@ $list_dmabout = getListdmabout(0,8);
 
 $list_khuyenhoc1 = getListkhuyenhoc1(0,20);
 
+$list_thongbao12 = getlistthongbao12(0,10);
+
 
 //cau hinh website
 $hethong = gethethong();

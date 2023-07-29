@@ -423,6 +423,16 @@ function save($exam_id,$result,$times,$spent_duration,$exam_date,$forecast_candi
     $query_times = mysql_query($sql,dbconnect());
     $countimes = mysql_fetch_assoc($query_times);
     $times = $countimes['tong'] + 1;
+    // Không có session thì k cho lưu câu hỏi
+    if (!isset($p['id']) || empty($p['id'])) {
+        return '';
+    }
+    // Kiểm tra số lần thi có vượt quá số lần kỳ thi cho phép thi không?
+    $number_exam = LoadCurrentTime($p['id'], $exam_id);
+    if ($times > $number_exam) {
+        return '';
+    }
+
     // Lưu bảng result
     $er = erSave($exam_id, $p['id'], $times, $spent_duration, $exam_date,$forecast_candidates);
     if ($er->statusCode != 201) {
@@ -456,6 +466,13 @@ function save($exam_id,$result,$times,$spent_duration,$exam_date,$forecast_candi
     $msg->title = "Lưu kết quả bài thi thành công!";
     $msg->content = $er->content;
     return $msg;
+}
+
+
+function LoadCurrentTime($id, $id_exam) {
+    $result = mysql_query("select (count(*) + 1) as tong from exam_results t1 INNER JOIN exams t2 ON t1.exam_id = t2.id WHERE member_id = " . $id . " AND t2.id = " . $id_exam, dbconnect());
+    $local = mysql_fetch_assoc($result);
+    return $local['tong'];
 }
 
 

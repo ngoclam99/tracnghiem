@@ -16,6 +16,8 @@ function Summary(id,candidate) {
         type: 'get',
         data: { id,candidate },
         success: function (data) {
+                console.log(data);
+            
             if (data.statusCode == 200) {
                 let exam = data.content;
                 $('.exTitle').html(`[<span class="text-danger">${exam.exam_code}</span>] - <span class="text-info">${exam.title}</span>`);

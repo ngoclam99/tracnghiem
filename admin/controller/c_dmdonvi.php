@@ -16,47 +16,53 @@ $page = $_GET['act'];
 
 switch($page) {
     case 'list':
-    $url ='index.php?module=dmdonvi&act=list';
-    $list_dm = getListdmDT();
-    // Xoá bài viết
-    if ($id = $_GET['deleteid']) {
-        deldmdonvi($id);
-        header('LOCATION: ' . $url);  
-        exit();
-    }
-
-    if ($_POST['addDVDT']) {
-        $ten_donvi= $_POST['ten_donvi'];
-        if ($_POST['addDVDT'] != 'themmoi') {
-            capnhatdonvi($_POST['addDVDT'], $ten_donvi);
-        } else {
-            insertdmdt($ten_donvi);
+        $url ='index.php?module=dmdonvi&act=list';
+        $list_dm = getListdmDT();
+        // Xoá bài viết
+        if ($id = $_GET['deleteid']) {
+            deldmdonvi($id);
+            header('LOCATION: ' . $url);  
+            exit();
         }
-        header('LOCATION: ' . $url);  
-        exit();
-    }
 
-    if ($_POST['delete_detail']) {
-        $id = $_POST['id'];
-        deldmdonvi_detail($id);
-        exit();
-    }
-
-    if ($_POST['addDetail']) {
-        $title = $_POST['title'];
-        $id_doituong = $_POST['id_doituong'];
-        if ($_POST['id_edit'] != 'themmoi') {
-            capnhatdmdt_detail($title, $_POST['id_edit']);
-        } else {
-            insertdmdt_detail($title, $id_doituong);
+        if ($_POST['addDVDT']) {
+            $ten_donvi= $_POST['ten_donvi'];
+            if ($_POST['addDVDT'] != 'themmoi') {
+                capnhatdonvi($_POST['addDVDT'], $ten_donvi);
+            } else {
+                insertdmdt($ten_donvi);
+            }
+            header('LOCATION: ' . $url);  
+            exit();
         }
-        $data = getListDVDetail($id_doituong);
-        echo json_encode($data);
-        exit();
-    }
 
-    require('view/template/dmdvduthi/list_dm.tpl');
-    break;
+        if ($_POST['delete_detail']) {
+            $id = $_POST['id'];
+            deldmdonvi_detail($id);
+            exit();
+        }
+
+        if ($_POST['addDetail']) {
+            $title = $_POST['title'];
+            $id_doituong = $_POST['id_doituong'];
+            if ($_POST['id_edit'] != 'themmoi') {
+                capnhatdmdt_detail($title, $_POST['id_edit']);
+            } else {
+                insertdmdt_detail($title, $id_doituong);
+            }
+            $data = getListDVDetail($id_doituong);
+            echo json_encode($data);
+            exit();
+        }
+
+        if ($_POST['change_height']) {
+            $id_new = $_POST['id_new'];
+            $id_old = $_POST['id_old'];
+            changeHeight($id_new, $id_old);
+        }
+
+        require('view/template/dmdvduthi/list_dm.tpl');
+        break;
 
     case 'add':
     require('view/template/dmdvduthi/list_dm.tpl');  

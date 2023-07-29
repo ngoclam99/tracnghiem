@@ -54,8 +54,8 @@
                                     <thead>
                                         <tr>
                                             <th class="text-center">Cơ quan đơn vị</th>
-                                            <th class="text-center">Số lượt tham gia cuộc thi</th>
                                             <th class="text-center">Số người tham gia cuộc thi</th>
+                                            <th class="text-center">Số lượt tham gia cuộc thi</th>
                                             <th class="text-center">Số người đăng ký cuộc thi</th>
                                         </tr>
                                     </thead>
@@ -176,8 +176,8 @@ th, td {
                             if (val1['thongke'] != false) {
                                 html += `<tr>
                                     <td>${index1+1}. ${val1['title']}</td>
-                                    <td  class="text-center"><span class="label label-success lb__static">${val1['thongke']['tongthisinh']} lượt</span></td>
-                                    <td  class="text-center"><span class="label label-info lb__static">${val1['thongke']['tongluotthisinh']} thí sinh</span></td>
+                                    <td  class="text-center"><span class="label label-success lb__static">${val1['thongke']['tongthisinh']} thi sinh</span></td>
+                                    <td  class="text-center"><span class="label label-info lb__static">${val1['thongke']['tongluotthisinh']} thí lượt </span></td>
                                     <td  class="text-center"><span class="label label-warning lb__static">${val1['thongke']['number_res']} thi sinh</span></td>
                                 </tr>`;
                             } else {

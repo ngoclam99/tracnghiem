@@ -9,31 +9,25 @@
                 <div class="col-xs-24 col-sm-24 col-md-24" style="text-align:center;">
                     <div class="panel-body">
                         <div class="footer-widget">
-                                    <h4><span>ĐOÀN TNCS HỒ CHÍ MINH TỈNH SƠN LA</span></h4>
+                                    <h4><span>BAN TỔ CHỨC CUỘC THI TÌM HIỂU VỀ CHUYỂN ĐỔI SỐ TỈNH SƠN LA NĂM 2023<br><span style="font-size: 12px;">(Quyết định số 16-QĐ/BCĐ ngày 20/6/2023 của Ban Chỉ đạo Chuyển đổi số tỉnh Sơn La)</span></span></h4><span></span>
                                     <ul class="company_info" itemscope itemtype="http://schema.org/LocalBusiness">
                                         <li class="hide hidden">
                                             <span
-                                                itemprop="image">https://tinhdoan.thionline.com.vn/uploads/logo-tinhdoan.png</span>
+                                                itemprop="image">https://tinhdoan.thionline.com.vn/uploads/sonla.png</span>
                                             <span itemprop="priceRange">N/A</span>
                                         </li>
-                                        <li><a class="pointer" data-toggle="modal"
-                                                data-target="#company-map-modal-186"><em
-                                                    class="fa fa-map-marker"></em><span>Địa chỉ: <span
-                                                        itemprop="address" itemscope
-                                                        itemtype="http://schema.org/PostalAddress"><span
-                                                            itemprop="addressLocality" class="company-address">Đồi Khau
-                                                            Cả - Tổ 8 phường Tô Hiệu - TP Sơn
-                                                            La</span></span></span></a></li>
+  
+                                 
                                         <li><em class="fa fa-phone"></em><span>Điện thoại: <span
-                                                    itemprop="telephone">0212.3850.041</span></span></li>
-                                        <li><em class="fa fa-fax"></em><span>Fax: <span
-                                                    itemprop="faxNumber">0212.3850.041</span></span></li>
+                                                    itemprop="telephone">02123.750.983</span></span></li>
+                                        <li><em class="fa fa-fax"></em><span>Kỹ thuật: 0916020488 - 0916600056<span
+                                                    itemprop="faxNumber"></span></span></li>
                                         <li><em class="fa fa-envelope"></em><span>Email: <a
-                                                    href="mailto:bantcxdd.tdsl@gmail.com"><span
-                                                        itemprop="email">bantcxdd.tdsl@gmail.com</span></a></span></li>
-                                        <li><em class="fa fa-globe"></em><span>Website: <a
-                                                    href="https://tinhdoan.thionline.com.vn" target="_blank"><span
-                                                        itemprop="url">https://tinhdoan.thionline.com.vn</span></a></span>
+                                                    href="sotttt@sonla.gov.vn"><span
+                                                        itemprop="email">sotttt@sonla.gov.vn</span></a></span></li>
+                                        <li><em class="fa fa-globe"></em><span>Website:<a
+                                                    href="https://thitructuyenchuyendoiso.sonla.gov.vn" target="_blank"><span
+                                                        itemprop="url">https://thitructuyenchuyendoiso.sonla.gov.vn</span></a></span>
                                         </li>
                                     </ul>
                                 </div>

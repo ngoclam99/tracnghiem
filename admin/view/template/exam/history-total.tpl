@@ -249,7 +249,9 @@ th, td {
                 data['data'].map(function(val, k) {
                     html += `<tr>
                         <td class="text-center">${val['stt']}</td>
-                        <td class="text-center text-nowrap fw-bold text-primary">${val['username']}</td>
+                        <td class="text-center text-nowrap fw-bold text-primary" data-id="${val['id_user']}">
+                        <a href="index.php?module=exam&amp;act=history-detail&amp;id=${val['id_result']}&amp;candidate=${val['member_id']}">${val['username']}</a>
+                        </td>
                         <td class="text-center">${val['fullname']}</td>
                         <td class="text-center text-nowrap text-warning fw-bold">${val['title']} (${val['mark_per_question']} điểm)</td>
                         <td class="text-center text-nowrap fw-bold text-primary">${val['times']}</td>
@@ -266,7 +268,7 @@ th, td {
                         <td class="text-center">${val['get_job']}</td>
                         <td class="text-center">${val['position']}</td>
                         <td class="text-nowrap">
-                            <a href="index.php?module=exam&amp;act=history-detail&amp;id=${val['id_result']}&amp;candidate=${val['member_id']}" target="blank">Xem <i class="fa fa-eye text-info"></i></a>
+                            <a href="index.php?module=exam&amp;act=history-detail&amp;id=${val['id_result']}&amp;candidate=${val['member_id']}">Xem <i class="fa fa-eye text-info"></i></a>
                         </td>
 
                     </tr>`;

@@ -119,7 +119,7 @@
                 <div class="form-group">
                   <label>Địa chỉ <span class="style2">(*)</span></label>
                   <textarea name="dia_chi" class="form-control" id="site_address"
-                    style="height:70px; max-height:137px; max-width:100%">Số 06, ngõ 2A, phố Xuân Thủy, tổ 8, phường Chiềng Lề, thành phố Sơn La, tỉnh Sơn La</textarea>
+                    style="height:70px; max-height:137px; max-width:100%"></textarea>
                 </div>                
               </div>
             </div>

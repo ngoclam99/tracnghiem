@@ -205,7 +205,7 @@ function mbList($wp,$search, $page, $pageSize)
             OR  m.fullname LIKE '%" . $search . "%'
             OR  m.phone LIKE '%" . $search . "%'
             OR  m.email LIKE '%" . $search . "%')";
-            $sql.= $wp!=null?" AND m.workplace_id ='".$wp."'":"";
+            // $sql.= $wp!=null?" AND m.workplace_id ='".$wp."'":"";
             $sql .=" LIMIT " . ($page - 1) * $pageSize . "," . $pageSize ;
 
     $local_list = mysql_query($sql, dbconnect());

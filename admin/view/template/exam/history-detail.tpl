@@ -105,6 +105,6 @@
      </section>
 </div>
 <?php include('view/template/common/footer.tpl'); ?>
-<link rel="stylesheet" href="assets/css/examination/onlinetest.css">
-<script src ="assets/js/customize/exam/js-history-detail.js"></script>
-<script src="assets/js/customize/exam/onlinetest.js?t=1683896486"></script>
+<link rel="stylesheet" href="assets/css/examination/onlinetest.css?v=2222">
+<script src ="assets/js/customize/exam/js-history-detail.js?v=2222"></script>
+<script src="assets/js/customize/exam/onlinetest.js?t=22323"></script>

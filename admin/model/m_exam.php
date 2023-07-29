@@ -8,6 +8,8 @@
 include_once('m_db.php');
 include('classes/m_message.php');
 
+
+
 function delete_result($result_id)
 {
     $msg = new Message();
@@ -116,7 +118,7 @@ function exResultSummary($result_id, $candidate)
         $msg->statusCode = 200;
         $msg->title = "Lấy thông tin tổng quan kết quả thi thành công!";
         $msg->icon = "success";
-        $msg->content = mysql_fetch_array($result);
+        $msg->content = mysql_fetch_assoc($result);
     } else {
         $msg->statusCode = 500;
         $msg->title = "Lấy lịch sử thi thất bại!";
@@ -1102,7 +1104,7 @@ function History_NumberPersion($page, $search, $pageSize, $workplaces, $exams)
         INNER JOIN exams AS ex ON t1.exam_id = ex.id
         INNER JOIN members AS mb ON t1.member_id = mb.id
         " . $wh . "
-        GROUP BY T1.member_id 
+        GROUP BY t1.member_id 
         ORDER BY (t2.tongdung*ex.mark_per_question) DESC , t1.spent_duration LIMIT 50";
 
         $result = mysql_query($sql, dbconnect());
@@ -1118,13 +1120,12 @@ function History_NumberPersion($page, $search, $pageSize, $workplaces, $exams)
         INNER JOIN exams AS ex ON t1.exam_id = ex.id
         INNER JOIN members AS mb ON t1.member_id = mb.id
         " . $wh . "
-        GROUP BY T1.member_id 
+        GROUP BY t1.member_id 
         ORDER BY (t2.tongdung*ex.mark_per_question) DESC , t1.spent_duration";
         $total_sql = mysql_query($sql1, dbconnect());
         $total = mysql_num_rows($total_sql);
         $arr = array();
         $i = 0;
-
         $tongluotthi = 0;
         while ($row = mysql_fetch_assoc($result)) {
             switch ($i) {
@@ -1151,7 +1152,7 @@ function History_NumberPersion($page, $search, $pageSize, $workplaces, $exams)
             $row['tinh'] = $arrTinh[$row['province_code']];
             $row['huyen'] = $arrHuyen[$row['district_code']];
             $row['xa'] = $arrXa[$row['ward_code']];
-            if ($row['id_doituong_chitiet'] > 0) {
+            if (isset($arrdt[$row['id_doituong_chitiet']])) {
                 $row['doituong'] = $arrdt[$row['id_doituong_chitiet']];
             } else {
                 $row['doituong']['title'] = "";
@@ -1310,11 +1311,19 @@ function History_NumberPersion($page, $search, $pageSize, $workplaces, $exams)
             $row['tinh'] = $arrTinh[$row['province_code']];
             $row['huyen'] = $arrHuyen[$row['district_code']];
             $row['xa'] = $arrXa[$row['ward_code']];
-            if ($row['id_doituong_chitiet'] > 0) {
-                $row['doituong'] = $arrdt[$row['id_doituong_chitiet']];
+
+            if ($arrdtct[trim($row['id_doituong_chitiet'])]) {
+                $row['doituongct'] = $arrdtct[trim($row['id_doituong_chitiet'])];
             } else {
-                $row['doituong']['title'] = "";
+                $row['doituongct']['title'] = trim($row['id_doituong_chitiet']);
             }
+
+            // if (isset($arrdt[trim($v['id_doituong'])])) {
+            //     $row['doituong'] = $arrdt[trim($v['id_doituong'])];
+            // } else {
+            //     $row['doituong']['ten_donvi'] = 'N/A';
+            // }
+
             $row['spent_duration'] = seconds2human($row['spent_duration']);
             // lấy số người đăng ký của đơn vị đó
             $res1 = sql_query("SELECT COUNT(*) as tong FROM members WHERE ward_code = " . $row['ward_code']);
@@ -1329,6 +1338,17 @@ function History_NumberPersion($page, $search, $pageSize, $workplaces, $exams)
     }
 
     function getLichSuThi($id, $id_dt, $id_dtct, $username, $page, $perpage, $total_page, $start) {
+
+        // $sql = "SELECT * FROM members";
+        // $result = sql_query_array($sql);
+        // foreach ($result as $v) {
+        //     $sql = "UPDATE members 
+        //             SET id_doituong_chitiet = " . trim($v['id_doituong_chitiet']) 
+        //             . " WHERE id = " . $v['id'];
+        //     $result = mysql_query($sql,dbconnect());
+        // }
+        // pr(11);
+
         $where = array();
 
         if (!empty($id)) {
@@ -1351,7 +1371,7 @@ function History_NumberPersion($page, $search, $pageSize, $workplaces, $exams)
             $wh = " WHERE " . implode(" AND ", $where);
         }
 
-        $sql = "SELECT er.member_id, er.times, er.spent_duration, er.forecast_candidates, er.started_at, er.created_at, er.tongcaudung, ex.title, mb.fullname, mb.birthdate, mb.phone, mb.email, mb.id_doituong, mb.id_doituong_chitiet, mb.get_job, mb.position, mb.username, ex.mark_per_question, (ex.mark_per_question*er.tongcaudung) as tongdiem, ex.number_of_questions, er.id as id_result
+        $sql = "SELECT er.member_id, er.times, er.spent_duration, er.forecast_candidates, er.started_at, er.created_at, er.tongcaudung, ex.title, mb.fullname, mb.birthdate, mb.phone, mb.email, mb.id_doituong, mb.id_doituong_chitiet, mb.get_job, mb.position, mb.username, ex.mark_per_question, (ex.mark_per_question*er.tongcaudung) as tongdiem, ex.number_of_questions, er.id as id_result, mb.id as id_user
             FROM exam_results er
             INNER JOIN exams ex ON ex.id = er.exam_id
             INNER JOIN members mb ON mb.id = er.member_id " . $wh . "
@@ -1365,12 +1385,16 @@ function History_NumberPersion($page, $search, $pageSize, $workplaces, $exams)
             $stt = $start + 1;
             foreach ($arr as $k => $v) {
                 $arr[$k]['stt'] = $stt++;
-                if ($v['id_doituong_chitiet'] > 0) {
-                    $arr[$k]['doituongct'] = $arrdtct[$v['id_doituong_chitiet']];
-                    $arr[$k]['doituong'] = $arrdt[$v['id_doituong']];
+                if ($arrdtct[trim($v['id_doituong_chitiet'])]) {
+                    $arr[$k]['doituongct'] = $arrdtct[trim($v['id_doituong_chitiet'])];
                 } else {
-                    $arr[$k]['doituongct']['title'] = "";
-                    $arr[$k]['doituong']['ten_donvi'] = "";
+                    $arr[$k]['doituongct']['title'] = trim($v['id_doituong_chitiet']);
+                }
+
+                if (isset($arrdt[trim($v['id_doituong'])])) {
+                    $arr[$k]['doituong'] = $arrdt[trim($v['id_doituong'])];
+                } else {
+                    $arr[$k]['doituong']['ten_donvi'] = 'N/A';
                 }
                 $arr[$k]['spent_duration'] = seconds2human($v['spent_duration']);
             }
@@ -1452,12 +1476,16 @@ function History_NumberPersion($page, $search, $pageSize, $workplaces, $exams)
             $stt = $start + 1;
             foreach ($arr as $k => $v) {
                 $arr[$k]['stt'] = $stt++;
-                if ($v['id_doituong_chitiet'] > 0) {
-                    $arr[$k]['doituongct'] = $arrdtct[$v['id_doituong_chitiet']];
-                    $arr[$k]['doituong'] = $arrdt[$v['id_doituong']];
+                if ($arrdtct[trim($v['id_doituong_chitiet'])]) {
+                    $arr[$k]['doituongct'] = $arrdtct[trim($v['id_doituong_chitiet'])];
                 } else {
-                    $arr[$k]['doituongct']['title'] = "";
-                    $arr[$k]['doituong']['ten_donvi'] = "";
+                    $arr[$k]['doituongct']['title'] = trim($v['id_doituong_chitiet']);
+                }
+
+                if (isset($arrdt[trim($v['id_doituong'])])) {
+                    $arr[$k]['doituong'] = $arrdt[trim($v['id_doituong'])];
+                } else {
+                    $arr[$k]['doituong']['ten_donvi'] = 'N/A';
                 }
                 $arr[$k]['spent_duration'] = seconds2human($v['spent_duration']);
             }
@@ -1595,6 +1623,7 @@ function History_NumberPersion($page, $search, $pageSize, $workplaces, $exams)
         " . $wh . "
         GROUP BY T1.member_id 
         ORDER BY (t2.tongdung*ex.mark_per_question) DESC , t1.spent_duration LIMIT 50";
+
         $result = mysql_query($sql, dbconnect());
 
         $sql1 = "SELECT COUNT( DISTINCT t1.member_id )
@@ -1641,11 +1670,17 @@ function History_NumberPersion($page, $search, $pageSize, $workplaces, $exams)
             $row['tinh'] = $arrTinh[$row['province_code']];
             $row['huyen'] = $arrHuyen[$row['district_code']];
             $row['xa'] = $arrXa[$row['ward_code']];
-            if ($row['id_doituong_chitiet'] > 0) {
-                $row['doituong'] = $arrdt[$row['id_doituong_chitiet']];
+            if ($arrdtct[trim($row['id_doituong_chitiet'])]) {
+                $row['doituongct'] = $arrdtct[trim($row['id_doituong_chitiet'])];
             } else {
-                $row['doituong']['title'] = "";
+                $row['doituongct']['title'] = trim($row['id_doituong_chitiet']);
             }
+
+            // if (isset($arrdt[trim($v['id_doituong'])])) {
+            //     $row['doituong'] = $arrdt[trim($v['id_doituong'])];
+            // } else {
+            //     $row['doituong']['ten_donvi'] = 'N/A';
+            // }
             $row['spent_duration'] = seconds2human($row['spent_duration']);
             $tongluotthi += $row['tonglanthi'];
             $arr[] = $row;

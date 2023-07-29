@@ -112,8 +112,8 @@ function mChangeProfile(
 
             $avatar['name'] = clean_text($avatar['name']);
             if (isset($avatar['name'])) {
-                $avatardir = 'assets/images/upload/avatar/';
-                $storeddir = '../../' . $avatardir;
+                $avatardir = '/avatar/';
+                $storeddir = realpath(__DIR__) . '/avata/';
                 $filename = time() . '_' . basename($avatar["name"]);
                 $uploadfile = $storeddir . $filename;
                 $isupload = move_uploaded_file($avatar['tmp_name'], $uploadfile);
@@ -211,6 +211,12 @@ function mChangeProfile(
     return $msg;
 }
 
+function checkPerms($path)
+{
+    clearstatcache(null, $path);
+    return decoct( fileperms($path) & 0777 );
+}
+
 function mDetail($id)
 {
     $sql = "SELECT *,  DATE_FORMAT(birthdate,'%d/%m/%Y') as mBirthdate FROM members WHERE id = '" . $id . "'";
@@ -237,7 +243,7 @@ function login($username_or_email, $login_password, $ip_address)
     $sql = "SELECT * from members WHERE (username ='" . $username_or_email . "' OR email = '" . $username_or_email . "') ";
     $result = mysql_query($sql, dbconnect());
     $count = mysql_num_rows($result);
-
+    $ip_address = getRealIPAddress();
     $msg = new Message();
 
     if ($count == 0) {
@@ -408,6 +414,26 @@ function CheckEmailExists($email)
     return mysql_num_rows($result);
 }
 
+function getRemoteIPAddress(){
+    $ip = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR']: '';
+    return $ip;
+}
+
+/* If your visitor comes from proxy server you have use another function
+to get a real IP address: */
+
+function getRealIPAddress(){
+    if(!empty($_SERVER['HTTP_CLIENT_IP'])){
+        //check ip from share internet
+        $ip = $_SERVER['HTTP_CLIENT_IP'];
+    }else if(!empty($_SERVER['HTTP_X_FORWARDED_FOR'])){
+        //to check ip is pass from proxy
+        $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+    }else{
+        $ip = $_SERVER['REMOTE_ADDR'];
+    }
+    return $ip;
+}
 
 //insert new member
 function Register(
@@ -440,7 +466,8 @@ function Register(
     $avatarurl = '';
     $isupload = true;
     $msg = new Message();
-
+    $doituong = trim($doituong);
+    $doituong_chitiet = trim($doituong_chitiet);
     if (isset($avatar['name'])) {
         $avatardir = 'assets/images/upload/avatar/';
         $storeddir = '../../' . $avatardir;
@@ -617,4 +644,30 @@ function LoadCurrentTime($id, $id_exam) {
     $result = mysql_query("select (count(*) + 1) as tong from exam_results t1 INNER JOIN exams t2 ON t1.exam_id = t2.id WHERE member_id = " . $id . " AND t2.id = " . $id_exam, dbconnect());
     $local = mysql_fetch_assoc($result);
     return $local['tong'];
+}
+
+function dmdoituong() {
+    $sql = "SELECT * FROM dm_doituong";
+    $result = mysql_query($sql, dbconnect());
+    while ($row = mysql_fetch_assoc($result)) {
+        $arr[$row['id']] = $row;
+    }
+    return $arr;
+}
+
+function doituongchitiet() {
+    $sql = "SELECT * FROM doituong_chitiet";
+    $result = mysql_query($sql, dbconnect());
+    while ($row = mysql_fetch_assoc($result)) {
+        $arr[$row['id']] = $row;
+    }
+    return $arr;
+}
+
+function getUser($id, $select)
+{
+    $sql = "SELECT " . $select . " FROM members WHERE id = " . $id;
+    $result = mysql_query($sql, dbconnect());
+    $row = mysql_fetch_assoc($result);
+    return $row;
 }

@@ -17,9 +17,9 @@
                     <div class="avatar">
                         <div class="content">
                             <img src="http://placehold.it/175x180" style="width:100%; height:auto; max-height:175px;"/>
-                            <button class="btn btn-xs btn-warning btnImportAvatar">
+                            <!-- <button class="btn btn-xs btn-warning btnImportAvatar">
                                 <i class="fa fa-camera" aria-hidden="true"></i>
-                            </button>
+                            </button> -->
                         </div>
                     </div>
                 </div>

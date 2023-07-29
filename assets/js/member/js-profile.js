@@ -20,11 +20,14 @@ $(document).ready(function(){
                 $('.pf_role').text(`${p.role_id==1?'Đăng nhập bằng với vai trò Quản trị viên':p.role_id==2?'Đăng nhập với vai trò là Quản trị module':'Đăng nhập với vai trò người dùng'}`);
                 let l = new Date(p.newest_login);
                 
-                $('.pf_newest_login').text(`${l.getDate()<10?'0'+l.getDate():l.getDate()}/${l.getMonth()+1<10?'0'+(l.getMonth()+1):l.getMonth()+1}/${l.getFullYear()}
-                    ${l.getHours()<10?'0'+l.getHours():l.getHours()}:${l.getMinutes()<10?'0'+l.getMinutes():l.getMinutes()}
-                `)
+                $('.pf_newest_login').text(`${p.lasttime_login}`);
                 $('.pf_current_ip_address').text(p.current_ip_address);
-
+                $('.pf_dt').text(p.dt);
+                if (p.dtct != null) {
+                    $('.pf_dtct').text(p.dtct.title);
+                } else {
+                    $('.pf_dtct').text('N/A');
+                }
 
                 $('.pf_fullname').text(p.fullname);
                 $('.pf_fullname').attr('data-userid',p.id);

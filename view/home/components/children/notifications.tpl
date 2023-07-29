@@ -9,7 +9,7 @@
                     </span>
                     <div class="right-action pull-right">
                         <a class="text-uppercase" style="color:#fff" title="Xem thêm"
-                            href="/vi/news/">
+                            href="#">
                             Xem thêm
                         </a>
                     </div>
@@ -17,16 +17,18 @@
             </div>
             <div class="clearfix"></div>
             <div class="notification-list">
-                <div class="list-item">
+                <?php foreach($list_thongbao12 as $thongbao) { ?>
+			   <div class="list-item">
                     <p class="date">
-                        19/03/2023
+                    <?php echo date_format(date_create($thongbao['time']),'d/m/Y');?>
                     </p>
                     <p class="title">
-                        <a href="/vi/news/chuyen-muc-1/the-le-65.html">
-                            Thể Lệ
+                        <a href="thong-bao-<?php echo $thongbao['id_thongbao'];?>-<?php echo seoTitle($thongbao['tieu_de']); ?>">
+                            <?php echo $thongbao['tieu_de'];?>
                         </a>
                     </p>
                 </div>
+				<?php } ?>
             </div>
         </div>
     </div>

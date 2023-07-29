@@ -61,7 +61,7 @@
                                                 <table class="table table-bordered">
                                                     <tbody>
                                                         <tr>
-                                                            <th style="width: 10px">#</th>
+                                                            <th width="10%">#</th>
                                                             <th>Tên đối tượng dự thi</th>
                                                             <th class="text-center" style="width: 100px">Thao Tác</th>
                                                         </tr>
@@ -69,7 +69,13 @@
                                                             <?php foreach ($list_dm as $k => $danhmuc) { ?>
                                                                 <tr>
                                                                     <td style="text-align: center;">
-                                                                        <?= $danhmuc['id'] ?>
+                                                                        <select name="change_height" data-old="<?= $danhmuc['id'] . '_' . $danhmuc['stt'] ?>" class="form-control">
+                                                                            <?php 
+                                                                            for ($i = 1; $i <= sizeof($list_dm); $i++) {
+                                                                            ?>
+                                                                            <option value="<?= $i ?>" <?= ($danhmuc['stt'] == $i) ? 'selected' : '' ?> ><?= $i ?></option>
+                                                                            <?php } ?>
+                                                                        </select>
                                                                     </td>
                                                                     <td><?php echo $danhmuc['ten_donvi']; ?></td>
 
@@ -205,9 +211,22 @@
             detail = JSON.parse(detail);
             html = '';
             detail['detail'].forEach(val => {
+                option = '';
+                for (i = 1; i <= detail['detail'].length; i++) {
+                    selected = '';
+                    if (i==val['stt']) {
+                        selected = 'selected';
+                    }
+                    option += '<option ' + selected + ' value="' + i + '">' + i + '</option>';
+                }
+
                 html += ` 
                     <tr>
-                        <td class="text-center">${val['id']}</td>
+                        <td class="text-center">
+                            <select name="change_height" class="form-control">
+                                ${option}
+                            </select>
+                        </td>
                         <td>${val['title']}</td>
                         <td class="text-center">
                             <a class="btn btn-flat btn-primary btn-sm edit_detail_view" data-id="${val['id']}" data-val="${val['title']}"><i class="fa fa-pencil-square-o"></i></a>
@@ -253,7 +272,15 @@
                     detail.forEach(val => {
                         html += ` 
                             <tr>
-                                <td class="text-center">${val['id']}</td>
+                                <td class="text-center">
+                                    <select name="change_height" class="form-control">
+                                        <?php 
+                                        for ($i = 1; $i <= sizeof($detail); $i++) {
+                                        ?>
+                                        <option value="<?= $i ?>" <?= ($val['stt'] == $i) ? 'selected' : '' ?> ><?= $i ?></option>
+                                        <?php } ?>
+                                    </select>
+                                </td>
                                 <td>${val['title']}</td>
                                 <td class="text-center">
                                     <a class="btn btn-flat btn-primary btn-sm edit_detail_view" data-id="${val['id']}" data-val="${val['title']}"><i class="fa fa-pencil-square-o"></i></a>
@@ -371,12 +398,29 @@
 
             $("#huy_detail").click(function() {
                 $("#huy_detail").hide();
-                $("#txtName").val(); 
+                $("#txtName").val(""); 
                 $("button[name='addDVDTCT']").text('Thêm mới'); 
                 $("button[name='addDVDTCT']").attr('data-val', 'themmoi');
             })
         });
         
         $("#huy_detail").hide();
+
+        $("select[name='change_height']").change(function() {
+            id_new = $(this).val();
+            id_old = $(this).attr('data-old');
+            $.ajax({
+                url: location.href,
+                type: 'POST',
+                data: {
+                    'change_height': 1,
+                    'id_new': id_new,
+                    'id_old': id_old,
+                },
+            })
+            .done(function() {
+                console.log("success");
+            })
+        });
 
     </script>

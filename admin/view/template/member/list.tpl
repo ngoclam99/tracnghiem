@@ -18,7 +18,7 @@
                 <div class="box box-warning">
                     <div class="box-body">
                         <div class="row">
-                            <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8" style="margin-top:5px">
+                            <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 hidden" style="margin-top:5px">
                                 <select class="form-control selectpicker" id="slProvincesWorkplaces" data-live-search="true"></select>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" style="margin-top:5px">
@@ -37,7 +37,7 @@
                         <div class="panel panel-success" style="margin-top:5px">
                             <div class="panel-body">
                                 <div id="result" class="table-responsive"
-                                    style="display:block; height:370px; overflow-y:scroll;">
+                                    style="display:block; overflow-y:scroll;">
                                     <table class="table table-bordered table-striped table-hover"
                                         style="margin-bottom: 0;">
                                         <thead>

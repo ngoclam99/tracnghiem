@@ -1,17 +1,17 @@
 <head>
-    <title>TỈNH ĐOÀN SƠN LA - THI TRỰC TUYẾN</title>
+    <title>Cuộc thi tìm hiểu về Chuyển đổi số tỉnh Sơn La năm 2023</title>
     <meta name="description" content="thi truc tuyen, online, truc tuyen">
-    <meta name="author" content="TỈNH ĐOÀN SƠN LA - THI TRỰC TUYẾN">
-    <meta name="copyright" content="TỈNH ĐOÀN SƠN LA - THI TRỰC TUYẾN [sopcop@sonla.gov.vn]">
+    <meta name="author" content="Cuộc thi tìm hiểu về Chuyển đổi số tỉnh Sơn La năm 2023">
+    <meta name="copyright" content="Cuộc thi tìm hiểu về Chuyển đổi số tỉnh Sơn La năm 2023 [sopcop@sonla.gov.vn]">
     <meta name="generator" content="NukeViet v4.3">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta property="og:title" content="TỈNH ĐOÀN SƠN LA - THI TRỰC TUYẾN">
+    <meta property="og:title" content="Cuộc thi tìm hiểu về Chuyển đổi số tỉnh Sơn La năm 2023">
     <meta property="og:type" content="website">
     <meta property="og:description" content="thi truc tuyen, online, truc tuyen">
-    <meta property="og:site_name" content="TỈNH ĐOÀN SƠN LA - THI TRỰC TUYẾN">
+    <meta property="og:site_name" content="Cuộc thi tìm hiểu về Chuyển đổi số tỉnh Sơn La năm 2023">
     <meta property="og:url" content="#">
-    <link rel="shortcut icon" href="assets/images/logo-doan.png">
+    <link rel="shortcut icon" href="assets/images/sonla.png">
     <link rel="canonical" href="#">
     
     <!-- <link rel="preload" as="script" href="assets/js/vi.js?t=1683896486">-->

@@ -1,12 +1,11 @@
 <div class="row summury-info">
-    <div class="col-xs-20 col-sm-20 col-md-20 col-lg-20" id="ex_title" data-exam="">
+    <div class="col-xs-24 col-sm-20 col-md-20 col-lg-20" id="ex_title" data-exam="">
     </div>
-    <div class="TriSea-technologies-Switch pull-right col-xs-4 col-sm-4 col-md-4 col-lg-4">
+    <div class="TriSea-technologies-Switch pull-right col-xs-4 col-sm-4 col-md-4 col-lg-4 hidden">
         <input id="switchMode" name="switchMode" type="checkbox" checked />
         <label for="switchMode" class="label-warning"></label>
     </div>
-    <p><span style="" id="modeName">Single</span></p>
-
+   <!-- <p class="hidden"><span style="" id="modeName">Single</span></p>-->
 </div>
 <div id="ex_summary">
     <div class="second-info">
@@ -14,7 +13,7 @@
             <div class="col-xs-24 col-sm-24 col-md-20 col-lg-20">
                 <div class="row">
                     <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                        Bắt đầu
+                        Cuộc thi tuần Bắt đầu
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 fw-bold ex_begin">
                         
@@ -28,7 +27,7 @@
                 </div>
                 <div class="row mt-5">
                     <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                        Thời lượng
+                        Thời gian làm bài
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 fw-bold ex_duration">
                        
@@ -42,7 +41,7 @@
                 </div>
                 <div class="row mt-5">
                     <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                        Số lần thi
+                        Số lần thi tối đa
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 fw-bold ex_times" data-times="" id="totalTimes">
                         
@@ -70,7 +69,7 @@
                 </div>
             </div>
             <div class="col-xs-24 col-sm-24 col-md-4 col-lg-4">
-                <img src="" class="img-responsive ex_thumbnail" style="width: 100%; height:auto;">
+                <img class="img-responsive ex_thumbnail" style="width: 100%; height:auto;">
             </div>
         </div>
 

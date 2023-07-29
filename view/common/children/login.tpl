@@ -54,7 +54,7 @@
 
             <div class="form-group">
                 <div class="text-right clearfix">
-                    <a href="index.php?module=member&act=register">
+                    <a href="dang-ky-tai-khoan.html">
                         Đăng ký tài khoản
                     </a>
                 </div>

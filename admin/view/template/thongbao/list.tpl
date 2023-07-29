@@ -113,18 +113,11 @@
 			
 				 <td class="text-center" style="white-space:nowrap; width: 10%;">
 				 
-				  <?php if(($_SESSION['phan_quyen']=='1')) {?>
+			
                          [ <a href="index.php?module=thongbao&act=<?php echo "edit";?>&id=<?php echo $thongbao['id_thongbao']; ?>" title="Sửa bài viết"><i class="fa fa-pencil-square-o"></i></a> ]
 				
 						[ <a href="javascript:confirmDelete('index.php?module=thongbao&act=del&id=<?=$thongbao['id_thongbao']?>')" title="Xóa bài viết"><i class="fa fa-trash-o" style="color: red;"></i></a> ]
-							<?php } ?>
-				   <?php if(($_SESSION['phan_quyen']=='2')) {?>
-				 	<?php if($tb_edit){ ?>
-                         [ <a href="index.php?module=thongbao&act=<?php echo "edit";?>&id=<?php echo $thongbao['id_thongbao']; ?>" title="Sửa bài viết"><i class="fa fa-pencil-square-o"></i></a> ]
-					<?php } ?>
-							<?php if($tb_del) { ?>
-						[ <a href="javascript:confirmDelete('index.php?module=thongbao&act=del&id=<?=$thongbao['id_thongbao']?>')" title="Xóa bài viết"><i class="fa fa-trash-o" style="color: red;"></i></a> ]
-				   <?php }} ?>
+							
                 </td>
 				
 

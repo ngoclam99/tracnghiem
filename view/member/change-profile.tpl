@@ -76,7 +76,7 @@
                 </div>
             </div>
 
-             <div class="row">
+             <div class="row hidden">
                         <div class="col-xs-24 col-sm-24 col-md-12 col-lg-12 form-group">
                             <label>Tỉnh, thành phố</label>
                             <select class="form-control slProvinces" id="slProvinces"></select>
@@ -87,7 +87,7 @@
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="row hidden">
                         <div class="col-xs-24 col-sm-24 col-md-12 col-lg-12 form-group">
                             <label>Xã, phường</label>
                             <select class="form-control slWards" id="slWards"></select>
@@ -103,7 +103,7 @@
                     <label>Nghề nghiệp</label>
                     <select class="form-control" id="slJobs"></select>
                 </div>
-                <div class="col-xs-24 col-sm-12 col-md-8 col-lg-8 form-group">
+                <div class="col-xs-24 col-sm-12 col-md-8 col-lg-8 form-group hidden">
                     <label>Đơn vị</label>
                     <select class="form-control" id="slWorkplaces"></select>
                 </div>

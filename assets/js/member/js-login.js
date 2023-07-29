@@ -38,7 +38,7 @@ $('#btnLoginWithUsernameOrEmail').on('click', function () {
                     showConfirmButton: false,
                     timer: 1500
                 })
-                window.location.href = "index.php?module=home&act=index";
+                window.location.href = "index.html";
             } else {
                 $.toast({
                     heading: data.title,

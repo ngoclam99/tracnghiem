@@ -69,9 +69,17 @@
                         <td>Điện thoại</td>
                         <td class="pf_phone"></td>
                     </tr>
-                    <tr>
+                    <tr class="hidden">
                         <td>Địa chỉ</td>
                         <td class="pf_address"></td>
+                    </tr>
+                    <tr>
+                        <td>Đối tượng dự thi</td>
+                        <td class="pf_dt"></td>
+                    </tr>
+                    <tr>
+                        <td>Đơn vị dự thi</td>
+                        <td class="pf_dtct"></td>
                     </tr>
                     <tr>
                         <td>Nghề nghiệp</td>
@@ -105,4 +113,4 @@
     
 <?php   include('view/common/footer.tpl'); ?>
 
-<script src="assets/js/member/js_profile.js"></script>
+<script src="assets/js/member/js_profile.js?v=22222"></script>
