@@ -223,7 +223,7 @@
                 html += ` 
                     <tr>
                         <td class="text-center">
-                            <select name="change_height" class="form-control">
+                            <select name="change_height_ct" data-dm="${val['id_doituong']}" data-old="${val['id']}_${val['stt']}" class="form-control">
                                 ${option}
                             </select>
                         </td>
@@ -238,6 +238,7 @@
 
             $("button[name='addDVDTCT']").val(detail['id']);
             $("#tbody").html(html);
+            changeHeighCT();
             
             $("button[name='addDVDTCT']").click(function() {
                 id = $(this).val();
@@ -270,15 +271,20 @@
                     detail = JSON.parse(data);
                     html = '';
                     detail.forEach(val => {
+                        option = '';
+                        for (i = 1; i <= detail.length; i++) {
+                            selected = '';
+                            if (i==val['stt']) {
+                                selected = 'selected';
+                            }
+                            option += '<option ' + selected + ' value="' + i + '">' + i + '</option>';
+                        }
+
                         html += ` 
                             <tr>
                                 <td class="text-center">
-                                    <select name="change_height" class="form-control">
-                                        <?php 
-                                        for ($i = 1; $i <= sizeof($detail); $i++) {
-                                        ?>
-                                        <option value="<?= $i ?>" <?= ($val['stt'] == $i) ? 'selected' : '' ?> ><?= $i ?></option>
-                                        <?php } ?>
+                                    <select name="change_height_ct" data-old="${val['id']}_${val['stt']}" class="form-control">
+                                        ${option}
                                     </select>
                                 </td>
                                 <td>${val['title']}</td>
@@ -290,6 +296,7 @@
                          `;
                     });
                     $("#tbody").html(html);
+                    changeHeighCT();
                     if (id != 'themmoi') {
                     Swal.fire({
                             title: 'Thông báo',
@@ -398,7 +405,7 @@
 
             $("#huy_detail").click(function() {
                 $("#huy_detail").hide();
-                $("#txtName").val(""); 
+                $("#txtName").val("");
                 $("button[name='addDVDTCT']").text('Thêm mới'); 
                 $("button[name='addDVDTCT']").attr('data-val', 'themmoi');
             })
@@ -407,20 +414,67 @@
         $("#huy_detail").hide();
 
         $("select[name='change_height']").change(function() {
-            id_new = $(this).val();
+            height = $(this).val();
             id_old = $(this).attr('data-old');
             $.ajax({
                 url: location.href,
                 type: 'POST',
                 data: {
                     'change_height': 1,
-                    'id_new': id_new,
+                    'new_height': height,
                     'id_old': id_old,
                 },
             })
             .done(function() {
-                console.log("success");
+                location.reload();
             })
         });
 
+        function changeHeighCT() {
+            $("select[name='change_height_ct']").change(function() {
+                height = $(this).val();
+                id_old = $(this).attr('data-old');
+                $.ajax({
+                    url: location.href,
+                    type: 'POST',
+                    data: {
+                        'change_height_ct': 1,
+                        'new_height': height,
+                        'id_old': id_old,
+                        'id_dm': $(this).attr('data-dm')
+                    },
+                })
+                .done(function(data) {
+                    $("#tbody").html("");
+                    html = '';
+                    data.forEach(val => {
+                        option = '';
+                        for (i = 1; i <= data.length; i++) {
+                            selected = '';
+                            if (i==val['stt']) {
+                                selected = 'selected';
+                            }
+                            option += '<option ' + selected + ' value="' + i + '">' + i + '</option>';
+                        }
+
+                        html += ` 
+                            <tr>
+                                <td class="text-center">
+                                    <select name="change_height_ct" data-dm="${val['id_doituong']}" data-old="${val['id']}_${val['stt']}" class="form-control">
+                                        ${option}
+                                    </select>
+                                </td>
+                                <td>${val['title']}</td>
+                                <td class="text-center">
+                                    <a class="btn btn-flat btn-primary btn-sm edit_detail_view" data-id="${val['id']}" data-val="${val['title']}"><i class="fa fa-pencil-square-o"></i></a>
+                                    <a class="btn btn-flat btn-danger btn-sm delete_detail" data-id="${val['id']}"><i class="fa fa-trash-o"></i></a>
+                                </td>
+                            </tr>
+                         `;
+                    });
+                    $("#tbody").html(html);
+                    changeHeighCT();
+                });
+            });
+        }
     </script>

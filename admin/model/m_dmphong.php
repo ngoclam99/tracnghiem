@@ -43,10 +43,10 @@ function editdm($id, $local)
 }
 
 function getListdmDT() {
-    $local_list = mysql_query("SELECT * FROM dm_doituong ORDER BY id DESC", dbconnect());
+    $local_list = mysql_query("SELECT * FROM dm_doituong ORDER BY stt ASC", dbconnect());
     $result = array();
     while ($local = mysql_fetch_assoc($local_list)){
-        $sql = mysql_query("SELECT * FROM doituong_chitiet WHERE id_doituong = " . $local['id'] . " ORDER BY id DESC", dbconnect());
+        $sql = mysql_query("SELECT * FROM doituong_chitiet WHERE id_doituong = " . $local['id'] . " ORDER BY stt ASC", dbconnect());
         $arr_detail = array();
         while ($detail = mysql_fetch_assoc($sql)) {
             $arr_detail[] = $detail;
@@ -100,4 +100,75 @@ function getListDVDetail($id) {
     }
     return $arr_detail;
 }
+
+function changeHeight($height_new, $id_old) {
+    $arr_id = explode('_', $id_old);
+    $id = $arr_id[0];
+    $sql = "SELECT id FROM dm_doituong WHERE id !=" . $id . " ORDER BY stt ASC";
+    $result = sql_query_array($sql);
+    $weight = 0;
+    foreach ($result as $row) {
+        ++$weight;
+        if ($weight == $height_new) {
+            ++$weight;
+        }
+        
+        capnhatweight($weight, $row['id']);
+    }
+
+    capnhatweight($height_new, $id);
+}
+
+function changeHeightCT($height_new, $id_old, $id_dm) {
+    $arr_id = explode('_', $id_old);
+    $id = $arr_id[0];
+    $sql = "SELECT id FROM doituong_chitiet WHERE id !=" . $id . " and id_doituong = " . $id_dm . " ORDER BY stt ASC";
+    $result = sql_query_array($sql);
+    $weight = 0;
+    foreach ($result as $row) {
+        ++$weight;
+        if ($weight == $height_new) {
+            ++$weight;
+        }
+        
+        capnhatweightct($weight, $row['id']);
+    }
+
+    capnhatweightct($height_new, $id);
+}
+
+function loaddmdoituong_Ct($id_dm) {
+    $sql = "SELECT * FROM doituong_chitiet WHERE id_doituong = " . $id_dm . " ORDER BY stt ASC";
+    $arr = sql_query_array($sql);
+    return $arr;
+}
+
+function capnhatweightct($height_new, $id) {
+    mysql_query("update doituong_chitiet set 
+    stt = '".$height_new."' WHERE id = " . $id,
+    dbconnect());
+}
+
+function capnhatweight($height_new, $id) {
+        echo ($height_new . '-' . $id. "\n");
+
+    mysql_query("update dm_doituong set 
+    stt = '".$height_new."' WHERE id = " . $id,
+    dbconnect());
+}
+
+ function sql_query($sql) {
+    $result = mysql_query($sql, dbconnect());
+    $row = mysql_fetch_assoc($result);
+    return $row;
+}
+
+function sql_query_array($sql) {
+    $result = mysql_query($sql, dbconnect());
+    while ($row = mysql_fetch_assoc($result)) {
+        $arr[] = $row;
+    }
+    return $arr;
+}
+
 ?>

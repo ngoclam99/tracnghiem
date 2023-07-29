@@ -56,9 +56,19 @@ switch($page) {
         }
 
         if ($_POST['change_height']) {
-            $id_new = $_POST['id_new'];
+            $new_height = $_POST['new_height'];
             $id_old = $_POST['id_old'];
-            changeHeight($id_new, $id_old);
+            changeHeight($new_height, $id_old);
+        }
+
+        if ($_POST['change_height_ct']) {
+            $new_height = $_POST['new_height'];
+            $id_old = $_POST['id_old'];
+            $id_dm = $_POST['id_dm'];
+            changeHeightCT($new_height, $id_old, $id_dm);
+            header("Content-Type: application/json");
+            echo json_encode(loaddmdoituong_Ct($id_dm));
+            exit();
         }
 
         require('view/template/dmdvduthi/list_dm.tpl');
