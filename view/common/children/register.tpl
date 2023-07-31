@@ -13,17 +13,17 @@
 
 
             <div class="row">
-                <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+                <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 hidden-xs hidden-sm">
                     <div class="avatar">
                         <div class="content">
-                            <img src="http://placehold.it/175x180" style="width:100%; height:auto; max-height:175px;"/>
+                            <img src="https://www.emh.co.uk/img/emh-no-image-available.png" style="width:100%; height:auto; max-height:175px;"/>
                             <!-- <button class="btn btn-xs btn-warning btnImportAvatar">
                                 <i class="fa fa-camera" aria-hidden="true"></i>
                             </button> -->
                         </div>
                     </div>
                 </div>
-                <div class="col-xs-12 col-sm-12 col-md-16 col-lg-16">
+                <div class="col-xs-24 col-sm-24 col-md-16 col-lg-16">
                     <div class="form-group">
                         <input type="text" class="form-control required input txtFullname"
                             placeholder="Họ và tên (VD: Nguyễn Văn A)" id="txtFullname" name="txtFullname"/>
@@ -51,12 +51,17 @@
 
             <div class="row">
                 <div class="form-group col-xs-24 col-sm-12 col-md-12 col-lg-12 mt-5">
+                    <input type="text" class="required form-control" 
+                    placeholder="Mã định danh/CCCD" id="txtcmnd" minlength="9" maxlength="14" />
+                    <span class="text-danger fw-bold msgValidation" id="msgcmnd"></span>
+                </div>
+                <!-- <div class="form-group col-xs-24 col-sm-12 col-md-12 col-lg-12 mt-5">
                     <input type="email" class="required form-control txtEmail" 
                     placeholder="Email" id="txtEmail"/>
                     <span class="text-danger fw-bold msgValidation" id="msgEmail"></span>
-                </div>
+                </div> -->
                 <div class="form-group col-xs-24 col-sm-12 col-md-12 col-lg-12 mt-5">
-                    <input type="text" class="form-control required input txtPhone" 
+                    <input type="text" class="form-control input txtPhone" 
                     placeholder="Điện thoại" id="txtPhone" />
                     <span class="text-danger fw-bold msgValidation" id="msgPhone"></span>
                 </div>
@@ -125,11 +130,13 @@
                     <select class="form-control selectpicker slDoiTuong" data-live-search="true" style="width: 100%;">
                         <option value="">---Chọn đối tượng ---</option>
                     </select>
+                    <span class="text-danger fw-bold msgValidation" id="msgdoituong"></span>
                 </div>
                 <div class="col-md-12" style="margin-top: 25px;">
                     <select class="form-control selectpicker slDoiTuongChiTiet" data-live-search="true" style="width: 100%;">
                         <option value="">---Chọn đơn vị ---</option>
                     </select>
+                    <span class="text-danger fw-bold msgValidation" id="msgdonvi"></span>
                 </div>
             </div>
             <div class="row">
@@ -137,21 +144,24 @@
                 <div class="form-group col-xs-24 col-sm-24 col-md-24 col-lg-24 text-center check-box required"
                     data-mess="">
                     <input type="checkbox" id="ckbAgreement"/>Tôi đồng ý với
-                    <a onclick="ShowRegisterRules()"><span class="btn btn-default btn-xs">Quy định đăng ký thành
-                            viên</span></a><br/>
+                   <span class="btn btn-default btn-xs">Quy định đăng ký và thể lệ cuộc thi</span><br/>
                     <span class="text-danger fw-bold msgValidation" id="msgAgreement"></span>
                 </div>
             </div>
 
-            
+            <div>
+                <p class="text-danger fw-bold msgValidation error_msg"></p>
+            </div>
 
             <div class="row">
                 <div class="text-center margin-bottom-lg col-xs-24 col-sm-24 col-md-24 col-lg-24">
-                    <input type="button" value="Thiết lập lại" class="btn btn-default" />
+                  
+				   <input type="reset" value="Thiết lập lại" class="btn btn-default" />
                     <button class="btn btn-primary btnSubmitRegister">
                         <i class="fa fa-user-plus" aria-hidden="true"></i>
                         Đăng ký tài khoản
                     </button>
+					
                 </div>
             </div>
 

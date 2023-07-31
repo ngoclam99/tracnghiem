@@ -6,7 +6,7 @@ ob_start();
  * Creat 27/02/2012
  */
 define( 'DSVH', 1 );
-
+// die("1");
 session_start();
 $_SESSION['folder'] = time();
 

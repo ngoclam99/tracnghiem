@@ -41,8 +41,8 @@ $('.btnSubmitRegister').click(function () {
     let position = POSITION ? $('#txtPosition').val() : '';
     let workplace_id = WORKPLACE ? $('.slWorkPlaces option:selected').val() : '';
     let workingunit = $('.txtWorkingUnit').val();
-
-    
+    let cmnd = $('#txtcmnd').val();
+        
     if (fullname.length == 0) {
         $('#msgFullname').text("Vui lòng nhập họ tên. Họ tên không thể để trống!");
         $('#txtFullname').select();
@@ -88,64 +88,94 @@ $('.btnSubmitRegister').click(function () {
     }
 
 
+    // if (email.trim("") !== "") {
+	//     if (validateEmail(email)) {
+	//         $.ajax({
+	//             url: 'controller/member/check-email-exists.php',
+	//             type: 'get',
+	//             data: { email },
+	//             success: function (count) {
+	//                 if (count > 0) {
+	//                     $('#msgEmail').text("Email này đã tồn tại trên hệ thống!");
+	//                     $('#txtEmail').select();
+	//                     return;
+	//                 }
+	//             }
+	//         })
+	//     } else {
+	//         if(email.length == 0){
+	//             $('#msgEmail').text("Vui lòng cung cấp email của bạn!!");
+	//             $('#txtEmail').select();
+	//             return;
+	//         }else{
+	//             $('#msgEmail').text("Định dạng email không hợp lệ. Email là chữ không dấu, không chứa khoảng trắng và phải có địa chỉ máy chủ cụ thể, ví dụ: @gmail.com hoặc @yahoo.com!!");
+	//             $('#txtEmail').select();
+	//             return;
+	//         }
+	       
+	//     }
+    // }
 
-    if (validateEmail(email)) {
-        $.ajax({
-            url: 'controller/member/check-email-exists.php',
-            type: 'get',
-            data: { email },
-            success: function (count) {
-                if (count > 0) {
-                    $('#msgEmail').text("Email này đã tồn tại trên hệ thống!");
-                    $('#txtEmail').select();
-                    return;
-                }
-            }
-        })
-    } else {
-        if(email.length == 0){
-            $('#msgEmail').text("Vui lòng cung cấp email của bạn!!");
-            $('#txtEmail').select();
-            return;
-        }else{
-            $('#msgEmail').text("Định dạng email không hợp lệ. Email là chữ không dấu, không chứa khoảng trắng và phải có địa chỉ máy chủ cụ thể, ví dụ: @gmail.com hoặc @yahoo.com!!");
-            $('#txtEmail').select();
-            return;
-        }
-       
+    if (cmnd.trim("") == "") {
+        $('#msgcmnd').text("Vui lòng nhập Mã định danh/CCCD");
+        $('#txtcmnd').select();
+        return; 
     }
 
-    if (validatePhoneNumber(phone)) {
-        $.ajax({
-            url: 'controller/member/check-phone-exists.php',
-            type: 'get',
-            data: { phone },
-            success: function (count) {
-                if (count > 0) {
-                    $('#msgPhone').text('Số điện thoại này đã được dùng để đăng ký với hệ thống!');
-                    $('#txtPhone').select();
-                    return;
-                }
-            }
-        })
-    } else {
-        if(phone.length == 0){
-            $('#msgPhone').text('Vui lòng cung cấp số điện thoại của bạn!');
-            $('#txtPhone').select();
-            return;
-        }else{
-            $('#msgPhone').text('Số điện thoại không hợp lệ. Số điện thoại gồm 10 chữ số, bắt đầu bằng số 0, không được chứa khoảng trắng!');
-            $('#txtPhone').select();
-            return;
+    if (cmnd.trim("").length != 12) {
+        $('#msgcmnd').text("Vui lòng nhập Mã định danh/CCCD đầy đủ 12 số");
+        $('#txtcmnd').select();
+        return;
+    }
+
+    $.ajax({
+        url: 'controller/member/check-cmnd-exists.php',
+        type: 'get',
+        data: {
+            'cmnd': $('#txtcmnd').val().trim(""),
+        },
+        success: function (count) {
+            if (parseInt(count) > 0) {
+                $checkcmnnd = 1;
+                $('#msgcmnd').text("Mã định danh/CCCD của bạn đã bị trùng trên hệ thống vui lòng nhập lại");
+                $('#txtcmnd').select();
+                return false; 
+            }  
         }
-      
+    })
+
+    if (phone != "") {
+        if (validatePhoneNumber(phone)) {
+            $.ajax({
+                url: 'controller/member/check-phone-exists.php',
+                type: 'get',
+                data: { phone },
+                success: function (count) {
+                    if (count > 0) {
+                        $('#msgPhone').text('Số điện thoại này đã được dùng để đăng ký với hệ thống!');
+                        $('#txtPhone').select();
+                        return;
+                    }
+                }
+            })
+        } else {
+            if(phone.length == 0){
+                $('#msgPhone').text('Vui lòng cung cấp số điện thoại của bạn!');
+                $('#txtPhone').select();
+                return;
+            }else{
+                $('#msgPhone').text('Số điện thoại không hợp lệ. Số điện thoại gồm 10 chữ số, bắt đầu bằng số 0, không được chứa khoảng trắng!');
+                $('#txtPhone').select();
+                return;
+            }
+          
+        }
     }
 
     if(!$('#ckbAgreement').is(':checked')){
         $('#msgAgreement').text('Vui lòng tick vào nút "Tôi đồng ý với quy định đăng ký thành viên" !!');
         return;
     }
-
 
     if (JOB && job_id == null) {
         $('.divWarningMsg').slideDown(200);
@@ -183,34 +213,20 @@ $('.btnSubmitRegister').click(function () {
     // }
 
     if ($(".slDoiTuong").val() == '') {
-        Swal.fire({
-            title: 'Thông báo',
-            icon: 'error',
-            html: 'Đối tượng dự thi không được để trống',
-            customClass: 'swal-wide',
-            showCloseButton: false,
-            showCancelButton: false,
-            focusConfirm: false,
-        });
-        return !1;
+        $('#msgdoituong').text("Vui lòng chọn đối tượng dự thi");
+        $(".slDoiTuong").select();
+        return;
     }
 
     if ($(".slDoiTuong").val() != '' && $(".slDoiTuongChiTiet").val() == '') {
-        Swal.fire({
-            title: 'Thông báo',
-            icon: 'error',
-            html: 'Đối tượng dự thi chi tiết không được để trống',
-            customClass: 'swal-wide',
-            showCloseButton: false,
-            showCancelButton: false,
-            focusConfirm: false,
-        });
-        return !1;
+        $('#msgdonvi').text("Vui lòng chọn đơn vị dự thi");
+        $(".slDoiTuongChiTiet").select();
+        return;
     }
 
     //dữ liệu nhập là hợp lệ => tiến hành post dữ liệu để lưu vào csdl
     let formData = new FormData();
-
+    email = "";
     formData.append("fullname", fullname);
     formData.append("username", username);
     formData.append("password", password);
@@ -228,6 +244,7 @@ $('.btnSubmitRegister').click(function () {
     formData.append("workplace_id", workplace_id);
     formData.append("working_unit", workingunit);
     formData.append("doituong", $(".slDoiTuong").val());
+    formData.append("cmnd", cmnd);
     formData.append("doituong_chitiet", $(".slDoiTuongChiTiet").val());
     formData.append("cfGender", GENDER ? 1 : 0);
     formData.append("cfBirthdate", BIRTHDATE ? 1 : 0);
@@ -236,7 +253,6 @@ $('.btnSubmitRegister').click(function () {
     formData.append("cfPosition", POSITION ? 1 : 0);
     formData.append("cfWorkPlace", WORKPLACE ? 1 : 0);
     formData.append("cfWorkingUnit", WORKINGUNIT ? 1 : 0);
-
 
 
     $.ajax({
@@ -269,7 +285,6 @@ $('.btnSubmitRegister').click(function () {
                             ip_address
                         },
                         success: function (data) {
-                            console.log(data)
                             if (data.statusCode == 200) {
                                 window.location.href = "index.php?module=home&act=index";
                             }
@@ -281,12 +296,11 @@ $('.btnSubmitRegister').click(function () {
 
                 })
             } else {
-                console.log(data);
-                // Swal.fire({
-                //     icon: data.icon,
-                //     title: data.title,
-                //     text: data.content
-                // })
+                Swal.fire({
+                    icon: data.icon,
+                    title: data.title,
+                    text: data.content
+                })
             }
         },
         error: function (jqXHR, exception) {

@@ -132,36 +132,34 @@ function LoadProvincesWithWorkplaces() {
     })
 }
 
-function LoadMembers() {
+function LoadMembers($page=1) {
     $.ajax({
         url: 'controller/member/list.php',
         type: 'get',
         data: {
             search: $('#txtSearch').val(),
-            page, pageSize,
+            'page': $page,
             wp:$('#slProvincesWorkplaces option:selected').val()
         },
         success: function (data) {
-            console.log(data)
             if (data.statusCode == 200) {
+                $("#tong").html(data.tong);
                 $('#tblData').empty();
                 let idx = (page - 1) * pageSize;
                 data.content.forEach(m => {
                     let tr = `<tr id = "${m.id}">
-                        <td class="text-center">${++idx}</td>
+                        <td class="text-center">${m.stt}</td>
                         <td class="fw-bold text-primary">
                             <a href="#" name="member-detail">${m.username}</a>
                         </td>
                         <td class="text-nowrap fw-bold">${m.fullname}</td>
                         <td>${m.gender}</td>
                         <td class="text-nowrap">${m.birthdate}</td>
+                        <td class="text-nowrap">${m.cmnd}</td>
                         <td class="text-nowrap">${m.phone}</td>
-                        <td class="text-nowrap">${m.email}</td>
                         <td class="text-nowrap">${m.address}</td>
-                        <td class="text-nowrap">${m.workplace}</td>
-                        <td class="text-nowrap">${m.working_unit}</td>
-                        <td class="text-nowrap">${m.job}</td>
-                        <td class="text-nowrap">${m.position}</td>
+                        <td class="text-nowrap">${m.donvi.ten_donvi}</td>
+                        <td class="text-nowrap">${m.doituong.title}</td>
                         <td>${m.applied_date}</td>
                         <td>${m.lasttime_login}</td>
                         <td class="text-center">
@@ -172,6 +170,14 @@ function LoadMembers() {
                         </td>
                     </tr>`;
                     $('#tblData').append(tr);
+                    $("#pagination").html(data.phantrang);
+
+                    $(".page").click(function() {
+                        $page = $(this).attr('data-page');
+                        $("#tbody").hide();
+                        LoadMembers($page);
+                        $("#tbody").fadeIn(500);
+                    });
                 })
             }
         },
@@ -180,4 +186,3 @@ function LoadMembers() {
         }
     })
 }
-

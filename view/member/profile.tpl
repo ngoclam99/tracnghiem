@@ -15,7 +15,7 @@
             <div class="panel-body">
                 <h2 class="margin-bottom-lg">Thông tin thành viên</h2>
                 <div class="row">
-                    <figure onclick="changeAvatar('/vi/users/avatar/upd/');"
+                    <figure onclick=""
                         class="avatar left pointer">
                         <div style="width:80px;">
                             <p class="text-center">
@@ -61,7 +61,7 @@
                         <td>Ngày tháng năm sinh</td>
                         <td class="pf_birthdate"></td>
                     </tr>
-                    <tr>
+                    <tr class="hidden">
                         <td>Giới tính</td>
                         <td class="pf_gender"></td>
                     </tr>
@@ -69,10 +69,15 @@
                         <td>Điện thoại</td>
                         <td class="pf_phone"></td>
                     </tr>
-                    <tr class="hidden">
+
+                    <tr>
+                        <td>Mã định danh/CCCD</td>
+                        <td class="pf_cmnd"></td>
+                    </tr>
+                    <!-- <tr class="hidden">
                         <td>Địa chỉ</td>
                         <td class="pf_address"></td>
-                    </tr>
+                    </tr> -->
                     <tr>
                         <td>Đối tượng dự thi</td>
                         <td class="pf_dt"></td>
@@ -87,8 +92,8 @@
                     </tr>
                     <tr>
                         <td>Đơn vị công tác</td>
-                        <td class="pf_workplace"></td>
-                    </tr>                  
+                        <td class="working_unit"></td>
+                    </tr>                
                     <tr>
                         <td>Ngày tham gia</td>
                         <td class="pf_applied_date"></td>
@@ -113,4 +118,4 @@
     
 <?php   include('view/common/footer.tpl'); ?>
 
-<script src="assets/js/member/js_profile.js?v=22222"></script>
+<script src="assets/js/member/js_profile.js?v=<?= time() ?>"></script>

@@ -13,6 +13,24 @@ include_once('m_exam_result.php');
 include_once('m_exam_result_detail.php');
 include_once('classes/m_message.php');
 
+function checkExams($id) {
+    $sql = "SELECT id FROM exams
+            WHERE id = " . $id;
+    $result = mysql_query($sql,dbconnect());
+    $res = mysql_fetch_assoc($result);
+    return $res;
+}
+
+
+// function checkExamsOpen($id) {
+//     $sql = "SELECT id FROM exams
+//             WHERE id = " . $id;
+//     $result = mysql_query($sql,dbconnect());
+//     $res = mysql_fetch_assoc($result);
+//     return $res;
+// }
+
+
 function CurrentExam(){
     $sql = "SELECT id, title, thumbnail,`begin`,`end`,regulation
             FROM exams
@@ -102,6 +120,17 @@ function Top10Exams()
     return $msg;
 }
 
+function checkluotThi($id_member, $exam_id) {
+    $sql = "SELECT * FROM exams WHERE id = " . $exam_id;
+    $query = mysql_query($sql, dbconnect());
+    $exam = mysql_fetch_assoc($query);
+
+    $sql = "SELECT count('member_id') as tong FROM exam_results WHERE member_id = " . $id_member;
+    $query = mysql_query($sql, dbconnect());
+    $member = mysql_fetch_assoc($query);
+    return array('exam' => $exam, 'member' => $member);
+}
+
 function LoadExams($page, $pageSize)
 {
     $sql = "SELECT e.id, title, thumbnail, 
@@ -173,25 +202,70 @@ function Top10Candidates()
     //         ORDER BY mark_ratio DESC, spent_duration DESC
     //         LIMIT 10
     //         ";
-    $sql = "SELECT t1.tongcaudung, ex.mark_per_question, DATE_FORMAT(t1.started_at,'%d/%m/%Y %T') AS exam_date, mb.fullname, ex.number_of_questions, t1.spent_duration, mb.province_code, mb.district_code, mb.ward_code, mb.id_doituong_chitiet
-    FROM exam_results t1
-    INNER JOIN (
-        SELECT member_id, MAX(tongcaudung) AS tongdung
-        FROM exam_results
-        GROUP BY member_id
-    ) t2 ON t1.member_id = t2.member_id AND t1.tongcaudung = t2.tongdung
-    INNER JOIN exams as ex ON t1.exam_id = ex.id
-    INNER JOIN members as mb ON t1.member_id = mb.id
-    WHERE ex.is_stat = 1
-    GROUP BY t1.member_id
-    ORDER BY t2.tongdung DESC, t1.spent_duration ASC LIMIT 10";
+    // $sql = "SELECT t1.tongcaudung, ex.mark_per_question, DATE_FORMAT(t1.started_at,'%d/%m/%Y %T') AS exam_date, mb.fullname, ex.number_of_questions, t1.spent_duration, mb.province_code, mb.district_code, mb.ward_code, mb.id_doituong_chitiet
+    // FROM exam_results t1
+    // INNER JOIN (
+    //     SELECT member_id, MAX(tongcaudung) AS tongdung
+    //     FROM exam_results
+    //     GROUP BY member_id
+    // ) t2 ON t1.member_id = t2.member_id AND t1.tongcaudung = t2.tongdung
+    // INNER JOIN exams as ex ON t1.exam_id = ex.id
+    // INNER JOIN members as mb ON t1.member_id = mb.id
+    // WHERE ex.is_stat = 1
+    // -- GROUP BY t1.member_id
+    // ORDER BY t2.tongdung DESC, t1.spent_duration ASC LIMIT 10";
 
+    $sql = "SELECT t1.*, DATE_FORMAT(t1.started_at,'%d/%m/%Y %T') AS exam_date, mb.fullname, ex.number_of_questions, t1.spent_duration, ex.mark_per_question FROM `exam_results` t1 INNER JOIN exams ex ON ex.id = t1.exam_id INNER JOIN members as mb ON t1.member_id = mb.id WHERE ex.is_stat = 1 ORDER BY `tongcaudung` DESC, spent_duration ASC LIMIT 100";
     $result = mysql_query($sql, dbconnect());
+    $arrRes = array();
+    while ($row = mysql_fetch_assoc($result)) {
+        $timeStart =  strtotime($row['started_at']);
+        $timeEnd =  strtotime($row['created_at']);
+        $row['time_detail'] = $timeEnd - $timeStart;
+        $arrRes[$row['member_id']][] = $row;
+    }
+
+    $arrNew = array();
+    foreach ($arrRes as $k => $v) {
+        foreach ($v as $k1 => $v1) {
+            if ($k1 == 0) {
+                array_push($arrNew, $v1);
+            } else {
+                unset($v1);
+            }
+        }
+
+        if (sizeof($arrNew) == 10) {
+            break;
+        }
+    }
+    unset($arrRes);
+
+    $arrCauHoi = array();
+    foreach ($arrNew as $k => $v) {
+        $arrCauHoi[$v['tongcaudung']][] = $v;
+    }
+    unset($arrNew);
+    $arrNew = array();
+    foreach ($arrCauHoi as $k => $v) {
+        if (sizeof($v) > 0) {
+            usort($v, compareByTimeNguoiThi($a, $b));
+            foreach ($v as $v1) {
+                array_push($arrNew, $v1);
+            }
+        } else {
+            array_push($arrNew, $v);
+        }
+    }
+
+    // $result = mysql_query($sql, dbconnect());
+
     $msg = new Message();
-    if ($result) {
+    if (!empty($arrNew)) {
         $arr = array();
         $i = 0;
-        while ($local = mysql_fetch_assoc($result)) {
+        foreach ($arrNew as $local) {
+        // while ($local = mysql_fetch_assoc($result)) {
             $local['tong_mark'] = $local['mark_per_question'] * $local['tongcaudung'];
             $local['mark'] = $local['tongcaudung'];
             $local['spent_duration'] = seconds2human($local['spent_duration']);
@@ -226,6 +300,13 @@ function Top10Candidates()
         $msg->content = mysql_error();
     }
     return $msg;
+}
+
+function compareByTimeNguoiThi($a, $b) {
+    if ($a['time_detail'] == $b['time_detail']) {
+        return 0;
+    }
+    return ($a['time_detail'] > $b['time_detail']) ? -1 : 1;
 }
 
 function getTinh() {
@@ -427,10 +508,15 @@ function save($exam_id,$result,$times,$spent_duration,$exam_date,$forecast_candi
     if (!isset($p['id']) || empty($p['id'])) {
         return '';
     }
+
+    // $dataCheck = checkluotThi($p['id'], $exam_id);
+    $checkMaxLuotThi = mysql_query("SELECT times FROM exams WHERE id = " . $exam_id,dbconnect());
+    $res = mysql_fetch_assoc($checkMaxLuotThi);;
+    $maxTime = $res['times'];
     // Kiểm tra số lần thi có vượt quá số lần kỳ thi cho phép thi không?
-    $number_exam = LoadCurrentTime($p['id'], $exam_id);
-    if ($times > $number_exam) {
-        return '';
+    // $number_exam = LoadCurrentTime($p['id'], $exam_id);
+    if ($times > $maxTime) {
+        return "Bạn đã vượt quá số lần thi";
     }
 
     // Lưu bảng result
@@ -658,6 +744,38 @@ function EarliestExam()
 }
 
 function getDoiTuong($id, $id_cuocthi) {
+    $sql = "SELECT mb.id_doituong, mb.id_doituong_chitiet, ex.is_stat, t1.member_id, COUNT( DISTINCT t1.member_id ) AS tongthisinh, COUNT(t1.member_id ) AS tongluotthisinh
+    FROM exam_results t1
+    INNER JOIN exams AS ex ON t1.exam_id = ex.id
+    INNER JOIN members AS mb ON t1.member_id = mb.id
+    WHERE ex.id = " . $id_cuocthi . "
+    AND mb.id_doituong = " . $id ."
+    GROUP BY mb.id_doituong_chitiet ORDER BY tongthisinh DESC ";
+    $result = mysql_query($sql, dbconnect());
+    while ($row = mysql_fetch_assoc($result)) {
+        $arr[] = $row;
+    }
+
+    if (!empty($arr)) {
+        foreach ($arr as $k => $v) {
+           $sql = "SELECT * FROM doituong_chitiet WHERE id = " . $v['id_doituong_chitiet'];
+           $row = sql_query($sql);
+           $arr[$k]['title'] = $row['title'];
+           if (empty($row)) {
+                $sql = "SELECT * FROM dm_doituong WHERE id = " . $v['id_doituong'];
+                $row = sql_query($sql);
+                $arr[$k]['title'] = trim($row['ten_donvi']);
+           }
+        }
+    }
+    return $arr;
+}
+
+function getDoiTuongMain($id, $id_cuocthi) {
+    $res = mysql_query("SELECT * FROM exams WHERE is_stat = 1", dbconnect());
+    $result = mysql_fetch_assoc($res);
+    $id_cuocthi = $result['id'];
+    
     $sql = "SELECT mb.id_doituong, mb.id_doituong_chitiet, ex.is_stat, t1.member_id, COUNT( DISTINCT t1.member_id ) AS tongthisinh, COUNT(t1.member_id ) AS tongluotthisinh
     FROM exam_results t1
     INNER JOIN exams AS ex ON t1.exam_id = ex.id

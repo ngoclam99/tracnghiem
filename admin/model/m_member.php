@@ -173,9 +173,9 @@ function reset_password($id,$default_password){
 }
 
 
-function mbList($wp,$search, $page, $pageSize)
+function mbList($wp,$search, $page, $pageSize, $total_page, $sum_record = 0, $stt = 0)
 {
-    $sql = "SELECT m.id,m.username,m.fullname,
+    $sql = "SELECT m.id,m.username,m.fullname, m.id_doituong, m.id_doituong_chitiet, m.cmnd,
             CASE WHEN m.get_birthdate = 1 THEN DATE_FORMAT(m.birthdate,'%d/%m/%Y')
             ELSE '' END AS birthdate,
             CASE WHEN m.get_gender = 1 THEN 
@@ -187,7 +187,7 @@ function mbList($wp,$search, $page, $pageSize)
             END AS gender,
             m.phone,m.email,
             CASE WHEN m.get_address = 1 THEN
-                CONCAT(m.address,', ',w.full_name,', ',d.full_name,',',pr.full_name)
+                CONCAT(m.address)
                 ELSE '' END AS 'address',
             CASE WHEN m.get_workplace = 1 THEN wp.name ELSE '' END AS workplace,
             m.working_unit,
@@ -197,14 +197,11 @@ function mbList($wp,$search, $page, $pageSize)
             DATE_FORMAT(lasttime_login,'%d/%m/%Y %T') AS lasttime_login    
             FROM members m
             LEFT JOIN workplaces wp ON m.workplace_id = wp.id
-            LEFT JOIN wards w ON m.ward_code = w.code
-            LEFT JOIN districts d ON m.district_code = d.code
-            LEFT JOIN provinces pr ON m.province_code = pr.code
             LEFT JOIN jobs j ON m.job_id = j.id
             WHERE (m.username LIKE '%" . $search . "%'
             OR  m.fullname LIKE '%" . $search . "%'
             OR  m.phone LIKE '%" . $search . "%'
-            OR  m.email LIKE '%" . $search . "%')";
+            OR  m.email LIKE '%" . $search . "%') ORDER BY m.id DESC";
             // $sql.= $wp!=null?" AND m.workplace_id ='".$wp."'":"";
             $sql .=" LIMIT " . ($page - 1) * $pageSize . "," . $pageSize ;
 
@@ -212,19 +209,88 @@ function mbList($wp,$search, $page, $pageSize)
     $msg = new Message();
     if ($local_list) {
         $result = array();
-        while ($local = mysql_fetch_array($local_list)) {
+        $arrdtct = doituongchitiet();
+        $arrdt = dmdoituong();
+        while ($local = mysql_fetch_assoc($local_list)) {
+            $local['stt'] = $stt++;
+            if (isset($arrdtct[$local['id_doituong_chitiet']])) {
+                $local['doituong'] = $arrdtct[$local['id_doituong_chitiet']];
+            } else {
+                $local['doituong']['title'] = "";
+            }
+
+            if (!isset($arrdt[$local['id_doituong']])) {
+                $local['donvi']['ten_donvi'] = "";
+            } else {
+                $local['donvi'] = $arrdt[$local['id_doituong']];
+            }
+
             $result[] = $local;
         }
+        $phantrang = listPhanTrang($total_page, $page);
         $msg->icon = "success";
+        $msg->phantrang = $phantrang;
         $msg->title = "Load danh sách thành viên thành công!";
         $msg->statusCode = 200;
         $msg->content = $result;
+        $msg->tong = $sum_record;
     } else {
         $msg->icon = "error";
+        $msg->phantrang = "";
         $msg->title = "Load danh sách thành viên thất bại!";
         $msg->statusCode = 500;
         $msg->content = "Lỗi: " . mysql_error();
     }
 
     return $msg;
+}
+
+function CountMember($id, $id_dt, $id_dtct, $username) {
+    $sql = "SELECT count(*) as tong 
+        FROM members m";
+    $local_list = mysql_query($sql, dbconnect());
+    $res = mysql_fetch_assoc($local_list);
+    return $res;
+
+}
+
+function listPhanTrang($total_page, $page) {
+    $html = '';
+    if ($total_page > 1) {
+        if ($page > 1) {
+            $html .= '<li><a href="javascript:void(0)" data-page="' . ($page-1) . '"><i class="fa fa-angle-double-left" aria-hidden="true"></i></a></li>';
+        }
+
+        for ($i = 1; $i <= $total_page; $i++) {
+            if ($i == $page) {
+                $html .= '<li class="active"><span class="page active">' . $i . '</span></li>';
+            } else {
+                $html .= '<li><a class="page gradient" href="javascript:void(0)" data-page="' . $i . '">' . $i . '</a></li>';
+            }
+
+        }
+
+        if ($page < $total_page) {
+            $html .= '<li><a class="page gradient" href="javascript:void(0)" data-page="' . ($page+1) . '"><i class="fa fa-angle-double-right" aria-hidden="true"></i></a></li>';
+        }
+    }
+    return $html;
+}
+
+function dmdoituong() {
+    $sql = "SELECT * FROM dm_doituong";
+    $result = mysql_query($sql, dbconnect());
+    while ($row = mysql_fetch_assoc($result)) {
+        $arr[$row['id']] = $row;
+    }
+    return $arr;
+}
+
+function doituongchitiet() {
+    $sql = "SELECT * FROM doituong_chitiet";
+    $result = mysql_query($sql, dbconnect());
+    while ($row = mysql_fetch_assoc($result)) {
+        $arr[$row['id']] = $row;
+    }
+    return $arr;
 }

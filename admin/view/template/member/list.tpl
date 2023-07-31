@@ -36,6 +36,12 @@
                         </div>
                         <div class="panel panel-success" style="margin-top:5px">
                             <div class="panel-body">
+                                <div class="text-center">
+                                    <div id="pagination" class="pagination"></div>
+                                </div>
+                                <div>
+                                    <p>Tổng số thành viên: <span class="label label-primary" id="tong"></span></p>
+                                </div>
                                 <div id="result" class="table-responsive"
                                     style="display:block; overflow-y:scroll;">
                                     <table class="table table-bordered table-striped table-hover"
@@ -53,17 +59,13 @@
                                                 </th>
                                                 <th>Giới tính</th>
                                                 <th>Ngày sinh</th>
+                                                <th>CMND/CCCD</th>
                                                 <th class="text-center">
                                                     Điện thoại
                                                 </th>
-                                                <th class="text-center">
-                                                    Email
-                                                </th>
                                                 <th>Địa chỉ</th>
-                                                <th>Đơn vị</th>
-                                                <th>Đơn vị công tác</th>
-                                                <th>Nghề nghiệp</th>
-                                                <th>Chức vụ</th>
+                                                <th>Đối tượng</th>
+                                                <th>Đơn vị dự thi</th>
                                                 <th class="text-center">
                                                     Ngày tham gia
                                                 </th>
@@ -89,3 +91,18 @@
 <?php include('modal-detail.tpl');?>
  <?php include('view/template/common/footer.tpl'); ?>
  <script src="assets/js/customize/member/js-list.js"></script>
+<style>
+    #pagination a {
+        display: inline-flex;
+        width: 100%;
+        height: 100%;
+    }
+
+    .pagination {
+       display: inline-flex;
+    }
+
+    #mbAvatar {
+        display: none;
+    }
+</style>

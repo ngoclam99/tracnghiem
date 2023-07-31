@@ -53,7 +53,7 @@
     <script src="assets/plugins/sweetalert2/sweetalert2.min.js?t=1683896486"></script>
     <link rel="StyleSheet" href="assets/css/style_custom.css?t=<?= time() ?> ">
     <script src="assets/js/js_custom?t=<?= time() ?> "></script>
-		<!--	<script>
+		<script>
 	document.addEventListener("keydown", function (event){
     if (event.ctrlKey){
        event.preventDefault();
@@ -86,7 +86,18 @@ else
 return true;
 }
 });
-</script>-->
+</script>
+<script type="text/javascript" src="assets/js/examination/chongchuotphai.js"></script>
+<style>
+    body{
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        -o-user-select: none;
+        user-select: none;
+    }
+</style>
 </head>
 
 

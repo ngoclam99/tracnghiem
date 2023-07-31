@@ -157,6 +157,7 @@ function LoadExamSummary(id) {
             exam = data.content;
             if (exam.exam_status != 0) {
                 $('#btnOpenExam').addClass('disabled');
+                location.href = "index.php?module=home&act=index";
             }
 
             total_times = exam.times;
@@ -232,6 +233,8 @@ function getCurrentTime() {
                 setTimeout(function() {
                     window.location.href = 'index.php?module=examination&act=index';
                 }, 3000);
+            } else {
+                $("#btnSaveExamResult").fadeIn(500);
             }
         }
     });
@@ -252,8 +255,11 @@ function LoadTimes() {
     })
 }
 
+$("#btnSaveExamResult").hide();
+
 $('#btnOpenExam').click(function () {
     loadbtnOpenExam();
+    $("#btnSaveExamResult").fadeIn(500);
 })
 
 function loadbtnOpenExam(current_times = 0) {

@@ -323,12 +323,11 @@ function History($page, $search, $pageSize, $workplaces, $exams, $id_doituong)
             if ($result) {
                 $arr = array();
                 while ($local = mysql_fetch_assoc($result)) {
-                    pr($local);
-            // if ($local['id_doituong'] > 0) {
-            //     $local['donvi'] = "";
-            // } else {
-            //     $local['donvi'] = $arrDV[$local['id_doituong']]['ten_donvi'];
-            // }
+                // if ($local['id_doituong'] > 0) {
+                //     $local['donvi'] = "";
+                // } else {
+                //     $local['donvi'] = $arrDV[$local['id_doituong']]['ten_donvi'];
+                // }
                     $arr[] = $local;
                 }
 
@@ -1338,7 +1337,6 @@ function History_NumberPersion($page, $search, $pageSize, $workplaces, $exams)
     }
 
     function getLichSuThi($id, $id_dt, $id_dtct, $username, $page, $perpage, $total_page, $start) {
-
         // $sql = "SELECT * FROM members";
         // $result = sql_query_array($sql);
         // foreach ($result as $v) {
@@ -1371,7 +1369,7 @@ function History_NumberPersion($page, $search, $pageSize, $workplaces, $exams)
             $wh = " WHERE " . implode(" AND ", $where);
         }
 
-        $sql = "SELECT er.member_id, er.times, er.spent_duration, er.forecast_candidates, er.started_at, er.created_at, er.tongcaudung, ex.title, mb.fullname, mb.birthdate, mb.phone, mb.email, mb.id_doituong, mb.id_doituong_chitiet, mb.get_job, mb.position, mb.username, ex.mark_per_question, (ex.mark_per_question*er.tongcaudung) as tongdiem, ex.number_of_questions, er.id as id_result, mb.id as id_user
+        $sql = "SELECT er.member_id, er.times, er.spent_duration, er.forecast_candidates, er.started_at, er.created_at, er.tongcaudung, ex.title, mb.fullname, mb.birthdate, mb.phone, mb.cmnd, mb.id_doituong, mb.id_doituong_chitiet, mb.get_job, mb.position, mb.username, ex.mark_per_question, (ex.mark_per_question*er.tongcaudung) as tongdiem, ex.number_of_questions, er.id as id_result, mb.id as id_user
             FROM exam_results er
             INNER JOIN exams ex ON ex.id = er.exam_id
             INNER JOIN members mb ON mb.id = er.member_id " . $wh . "
@@ -1460,13 +1458,61 @@ function History_NumberPersion($page, $search, $pageSize, $workplaces, $exams)
         if (!empty($where)) {
             $wh = " WHERE " . implode(" AND ", $where);
         }
-        
-        $sql = "SELECT mb.id, er.member_id, er.times, er.spent_duration, er.forecast_candidates, er.started_at, er.created_at, ex.title, mb.fullname, mb.birthdate, mb.phone, mb.email, mb.id_doituong, mb.id_doituong_chitiet, mb.get_job, mb.position, mb.username, ex.mark_per_question, ex.number_of_questions, SUM( tongcaudung ) AS tongdung, MAX(er.tongcaudung) as max_dung, (MAX(er.tongcaudung) * mark_per_question) as tongdiem, MAX( er.times ) AS tong_lan_thi, mb.username
+
+        //   $sql = "SELECT t1.*, mb.fullname, ex.number_of_questions, t1.spent_duration FROM `exam_results` t1 INNER JOIN exams ex ON ex.id = t1.exam_id INNER JOIN members as mb ON t1.member_id = mb.id WHERE ex.is_stat = 1 ORDER BY `tongcaudung` DESC, spent_duration ASC LIMIT 100";
+        // $result = mysql_query($sql, dbconnect());
+        // $arrRes = array();
+        // while ($row = mysql_fetch_assoc($result)) {
+        //     $timeStart =  strtotime($row['started_at']);
+        //     $timeEnd =  strtotime($row['created_at']);
+        //     $row['time_detail'] = $timeEnd - $timeStart;
+        //     $arrRes[$row['member_id']][] = $row;
+        // }
+
+        // $arrNew = array();
+        // foreach ($arrRes as $k => $v) {
+        //     foreach ($v as $k1 => $v1) {
+        //         if ($k1 == 0) {
+        //             array_push($arrNew, $v1);
+        //         } else {
+        //             unset($v1);
+        //         }
+        //     }
+
+        //     if (sizeof($arrNew) == 10) {
+        //         break;
+        //     }
+        // }
+        // unset($arrRes);
+        // $arrCauHoi = array();
+        // foreach ($arrNew as $k => $v) {
+        //     $arrCauHoi[$v['tongcaudung']][] = $v;
+        // }
+        // unset($arrNew);
+        // $arrNew = array();
+        // foreach ($arrCauHoi as $k => $v) {
+        //     if (sizeof($v) > 0) {
+        //         usort($v, compareByTimeNguoiThi($a, $b));
+        //         foreach ($v as $v1) {
+        //             array_push($arrNew, $v);
+        //         }
+        //     } else {
+        //         array_push($arrNew, $v);
+        //     }
+        // }
+        // pr($arrNew);
+
+        $sql = "SELECT mb.id, er.member_id, er.times, er.spent_duration, er.forecast_candidates, er.started_at, er.created_at, ex.title, mb.fullname, mb.birthdate, mb.phone, mb.cmnd, mb.id_doituong, mb.id_doituong_chitiet, mb.get_job, mb.position, mb.username, ex.mark_per_question, ex.number_of_questions, SUM( tongcaudung ) AS tongdung, MAX(er.tongcaudung) as max_dung, (MAX(er.tongcaudung) * mark_per_question) as tongdiem, MAX(er.times) AS tong_lan_thi, mb.username, er.id as erID
             FROM exam_results er
+            INNER JOIN (
+                SELECT member_id, spent_duration, MAX(tongcaudung) AS tongdung
+                FROM exam_results
+                GROUP BY member_id
+            ) t2 ON er.member_id = t2.member_id AND er.tongcaudung = t2.tongdung
             INNER JOIN exams ex ON ex.id = er.exam_id
             INNER JOIN members mb ON mb.id = er.member_id " . $wh . "
             GROUP BY er.member_id
-            ORDER BY tongdiem DESC, spent_duration ASC
+            ORDER BY tongdiem DESC, er.spent_duration ASC
             LIMIT " . $start . " , " . $perpage;
         $arr = sql_query_array($sql);
 
@@ -1496,6 +1542,13 @@ function History_NumberPersion($page, $search, $pageSize, $workplaces, $exams)
             'data' => $arr,
             'pagination' => $phantrang,
         );
+    }
+
+    function compareByTimeNguoiThi($a, $b) {
+        if ($a['time_detail'] == $b['time_detail']) {
+            return 0;
+        }
+        return ($a['time_detail'] > $b['time_detail']) ? -1 : 1;
     }
 
     function CountToalgetLichSuThi_Tong($id, $id_dt, $id_dtct, $username, $page, $perpage) {
@@ -1666,7 +1719,8 @@ function History_NumberPersion($page, $search, $pageSize, $workplaces, $exams)
             $arrTinh = getTinh();
             $arrHuyen = getHuyen();
             $arrXa = getXa();
-            $arrdt = doituongchitiet();
+            $arrdtct = doituongchitiet();
+            $arrdt = dmdoituong();
             $row['tinh'] = $arrTinh[$row['province_code']];
             $row['huyen'] = $arrHuyen[$row['district_code']];
             $row['xa'] = $arrXa[$row['ward_code']];

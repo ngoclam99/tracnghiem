@@ -27,6 +27,15 @@ function CheckDuplicatePhone($phone, $user_id)
     return $msg;
 }
 
+
+function CheckCmndExist($cmnnd)
+{
+    $sql = "SELECT * FROM members WHERE cmnd = '" . $cmnnd . "'";
+    $result = mysql_query($sql, dbconnect());
+    return mysql_num_rows($result);
+}
+
+
 function CheckDuplicateEmail($email, $user_id)
 {
     $sql = "SELECT * FROM members WHERE email = '" . $email . "' AND id !='" . $user_id . "'";
@@ -100,6 +109,19 @@ function mChangeProfile(
     $avatarurl = '';
     $isupload = false;
     $msg = new Message();
+
+    // if ($phone != '') {
+    //     $sql = "SELECT * FROM members WHERE phone = '" . $phone . "' and ";
+    //     $result_phone = mysql_query($sql, dbconnect());
+
+    //     if (mysql_num_rows($result_phone) > 0) {
+    //         $msg->icon = "error";
+    //         $msg->statusCode = 500;
+    //         $msg->title = "Số điện thoại của bạn đã được đăng ký trên hệ thống! Xin vui lòng nhập số điện thoại khác.";
+    //         $msg->content = mysql_error();
+    //         return $msg;
+    //     }
+    // }
 
     $sql = "SELECT avatar FROM members WHERE id = '" . $id . "'";
     $result = mysql_query($sql, dbconnect());
@@ -240,7 +262,7 @@ function mDetail($id)
 }
 function login($username_or_email, $login_password, $ip_address)
 {
-    $sql = "SELECT * from members WHERE (username ='" . $username_or_email . "' OR email = '" . $username_or_email . "') ";
+    $sql = "SELECT * from members WHERE (username ='" . $username_or_email . "' OR cmnd = '" . $username_or_email . "') ";
     $result = mysql_query($sql, dbconnect());
     $count = mysql_num_rows($result);
     $ip_address = getRealIPAddress();
@@ -461,8 +483,42 @@ function Register(
     $cfWorkPlace,
     $cfWorkingUnit,
     $doituong = '0',
-    $doituong_chitiet='0'
+    $doituong_chitiet='0',
+    $cmnd=''
 ) {
+
+    $sql = "SELECT * FROM members WHERE cmnd = '" . $cmnd . "'";
+    $result = mysql_query($sql, dbconnect());
+
+    if (strlen($cmnd) != 12) {
+        $msg->icon = "error";
+        $msg->statusCode = 500;
+        $msg->title = "Vui lòng nhập Mã định danh/CCCD đầy đủ: 12 số";
+        $msg->content = mysql_error();
+        return $msg;
+    }
+
+    if (mysql_num_rows($result) > 0) {
+        $msg->icon = "error";
+        $msg->statusCode = 500;
+        $msg->title = "Mã định danh/CCCD của bạn đã bị trùng trên hệ thống vui lòng nhập lại";
+        $msg->content = mysql_error();
+        return $msg;
+    }
+
+    if ($phone != '') {
+        $sql = "SELECT * FROM members WHERE phone = '" . $phone . "'";
+        $result_phone = mysql_query($sql, dbconnect());
+
+        if (mysql_num_rows($result_phone) > 0) {
+            $msg->icon = "error";
+            $msg->statusCode = 500;
+            $msg->title = "Số điện thoại của bạn đã được đăng ký trên hệ thống! Xin vui lòng nhập số điện thoại khác.";
+            $msg->content = mysql_error();
+            return $msg;
+        }
+    }
+
     $avatarurl = '';
     $isupload = true;
     $msg = new Message();
@@ -479,6 +535,9 @@ function Register(
         }
     }
 
+    // $phone = mysqli_real_escape_string($phone);
+    // $cmnd = mysqli_real_escape_string($cmnd);
+    
     if ($isupload) {
         $sql = "INSERT members 
                 SET 
@@ -516,6 +575,7 @@ function Register(
             $sql .= ",working_unit = '" . $working_unit . "'";
         }
         $sql .= ",get_birthdate='" . $cfBirthdate . "'";
+        $sql .= ",cmnd='" . $cmnd . "'";
         $sql .= ",get_gender='" . $cfGender . "'";
         $sql .= ",get_address='" . $cfAddress . "'";
         $sql .= ",get_job='" . $cfJob . "'";
@@ -524,9 +584,7 @@ function Register(
         $sql .= ",get_working_unit='" . $cfWorkingUnit . "'";
         $sql .= ",id_doituong='" . $doituong . "'";
         $sql .= ",id_doituong_chitiet='" . $doituong_chitiet . "'";
-
         $result = mysql_query($sql, dbconnect());
-
 
         if ($result && mysql_affected_rows() > 0) {
             $msg->icon = "success";
@@ -612,12 +670,12 @@ function ip_time($id, $ip)
 {
     mysql_query("update members set 
           add_ip = '" . $ip . "',
-          time_login = NOW()
+          time_login = '" . date('d/m/Y H:i') . "'
           where id_members = '" . (int) $id . "'", dbconnect());
 }
 
 function LoadDoiTuong() {
-    $result = mysql_query("select * from dm_doituong", dbconnect());
+    $result = mysql_query("select * from dm_doituong ORDER BY stt ASC", dbconnect());
     while ($local = mysql_fetch_assoc($result)) {
         $arr[] = $local;
     }
@@ -633,7 +691,7 @@ function LoadCuocThi() {
 }
 
 function LoadDoiTuongChiTiet($id_dt) {
-    $result = mysql_query("select * from doituong_chitiet WHERE id_doituong = " . $id_dt, dbconnect());
+    $result = mysql_query("select * from doituong_chitiet WHERE id_doituong = " . $id_dt . " ORDER BY stt ASC", dbconnect());
     while ($local = mysql_fetch_assoc($result)) {
         $arr[] = $local;
     }

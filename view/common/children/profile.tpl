@@ -30,7 +30,7 @@
                             <a href="javascript:void(0);">Tài khoản: <span class="pf_username"></span></a>
                         </li> 
                         <li>
-                            <a href="javascript:void(0);">Email: <span class="pf_email"></span></a>
+                            Mã định danh/CCCD: <strong><span class="pf_cmnd"></span></strong>
                         </li>                       
                                            
                        
