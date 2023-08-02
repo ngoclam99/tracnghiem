@@ -90,6 +90,7 @@ function getOptions(inputs) {
             data: { id: q.id, or: 0 },
             success: function (data) {
                 if (data.statusCode == 200) {
+                    console.log(data.content);
                     let charCode = 1;
                     let option = '';
                     data.content.forEach(o => {

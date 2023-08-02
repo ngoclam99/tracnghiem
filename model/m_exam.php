@@ -551,9 +551,27 @@ function save($exam_id,$result,$times,$spent_duration,$exam_date,$forecast_candi
     $msg->statusCode = 201;
     $msg->title = "Lưu kết quả bài thi thành công!";
     $msg->content = $er->content;
+
+    // Cập nhật lại số điểm
+    updateStatic();
     return $msg;
 }
 
+function updateStatic() {
+    $sql = "SELECT * FROM exam_results WHERE score = 0 ORDER BY id ASC LIMIT 2000";
+    $result = mysql_query($sql, dbconnect());
+    $i = 0;
+    while ($v = mysql_fetch_assoc($result)) {
+        $score = $v['tongcaudung'] + (1/$v['spent_duration']);
+        updateLastStatic($v['id'], $score);
+    }
+}
+
+function updateLastStatic($id, $score) {
+    mysql_query("update exam_results set 
+    score = '".$score."' WHERE id = " . $id,
+    dbconnect());
+}
 
 function LoadCurrentTime($id, $id_exam) {
     $result = mysql_query("select (count(*) + 1) as tong from exam_results t1 INNER JOIN exams t2 ON t1.exam_id = t2.id WHERE member_id = " . $id . " AND t2.id = " . $id_exam, dbconnect());
@@ -776,32 +794,66 @@ function getDoiTuongMain($id, $id_cuocthi) {
     $result = mysql_fetch_assoc($res);
     $id_cuocthi = $result['id'];
     
-    $sql = "SELECT mb.id_doituong, mb.id_doituong_chitiet, ex.is_stat, t1.member_id, COUNT( DISTINCT t1.member_id ) AS tongthisinh, COUNT(t1.member_id ) AS tongluotthisinh
-    FROM exam_results t1
-    INNER JOIN exams AS ex ON t1.exam_id = ex.id
-    INNER JOIN members AS mb ON t1.member_id = mb.id
-    WHERE ex.id = " . $id_cuocthi . "
-    AND mb.id_doituong = " . $id ."
-    GROUP BY mb.id_doituong_chitiet ORDER BY tongthisinh DESC ";
+    // $sql = "SELECT mb.id_doituong, mb.id_doituong_chitiet, ex.is_stat, t1.member_id, COUNT( DISTINCT t1.member_id ) AS tongthisinh, COUNT(t1.member_id ) AS tongluotthisinh
+    // FROM exam_results t1
+    // INNER JOIN exams AS ex ON t1.exam_id = ex.id
+    // INNER JOIN members AS mb ON t1.member_id = mb.id
+    // WHERE ex.id = " . $id_cuocthi . "
+    // AND mb.id_doituong = " . $id ."
+    // GROUP BY mb.id_doituong_chitiet ORDER BY tongthisinh DESC ";
+    // $result = mysql_query($sql, dbconnect());
+    // while ($row = mysql_fetch_assoc($result)) {
+    //     if ($row['id_doituong_chitiet'] > 0 and $row['id_doituong'] > 0) {
+    //         $arr[] = $row;
+    //     }
+    // }
+
+    // if (!empty($arr)) {
+    //     foreach ($arr as $k => $v) {
+    //        $sql = "SELECT * FROM doituong_chitiet WHERE id = " . $v['id_doituong_chitiet'];
+    //        $row = sql_query($sql);
+    //        $arr[$k]['title'] = $row['title'];
+    //        // if (empty($row)) {
+    //        //      $sql = "SELECT * FROM dm_doituong WHERE id = " . $v['id_doituong'];
+    //        //      $row = sql_query($sql);
+    //        //      $arr[$k]['title'] = trim($row['ten_donvi']);
+    //        // }
+    //     }
+    // }
+
+    $sql = "SELECT t2.* FROM dm_doituong t1 
+        INNER JOIN doituong_chitiet t2 ON t1.id = t2.id_doituong WHERE t1.id = " . $id;
+
     $result = mysql_query($sql, dbconnect());
     while ($row = mysql_fetch_assoc($result)) {
         $arr[] = $row;
     }
-
     if (!empty($arr)) {
         foreach ($arr as $k => $v) {
-           $sql = "SELECT * FROM doituong_chitiet WHERE id = " . $v['id_doituong_chitiet'];
+           $sql = "SELECT mb.id_doituong, mb.id_doituong_chitiet, ex.is_stat, t1.member_id, COUNT( DISTINCT t1.member_id ) AS tongthisinh, COUNT(t1.member_id ) AS tongluotthisinh
+            FROM exam_results t1
+            INNER JOIN exams AS ex ON t1.exam_id = ex.id
+            INNER JOIN members AS mb ON t1.member_id = mb.id WHERE ex.id = " . $id_cuocthi ."
+            AND mb.id_doituong_chitiet = " . $v['id'] ."";
            $row = sql_query($sql);
-           $arr[$k]['title'] = $row['title'];
-           if (empty($row)) {
-                $sql = "SELECT * FROM dm_doituong WHERE id = " . $v['id_doituong'];
-                $row = sql_query($sql);
-                $arr[$k]['title'] = trim($row['ten_donvi']);
-           }
+           $arr[$k]['member_id'] = $row['member_id'];
+           $arr[$k]['tongthisinh'] = $row['tongthisinh'];
+           $arr[$k]['tongluotthisinh'] = $row['tongluotthisinh'];
         }
     }
+    usort($arr,function($first,$second){
+        return $first['tongthisinh'] < $second['tongthisinh'];
+    });
     return $arr;
 }
+
+function compareByTongThiSinh($a, $b) {
+    if ($a['tongthisinh'] == $b['tongthisinh']) {
+        return 0;
+    }
+    return ($a['tongthisinh'] > $b['tongthisinh']) ? -1 : 1;
+}
+
 
 function compareByTongNguoiThi($a, $b) {
     if ($a['tongnguoithi'] == $b['tongnguoithi']) {

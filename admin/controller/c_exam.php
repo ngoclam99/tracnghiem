@@ -19,6 +19,13 @@ switch ($page) {
 		require('view/template/exam/history.tpl');
 		break;
 	case 'history-detail':
+		if ($_GET['deleteid']) {
+			$id = $_GET['deleteid'];
+			$member_id = $_GET['candidate'];
+			$exam_id = $_GET['exam_id'];
+			$username = deleteLichSuThi($id, $member_id, $exam_id);
+			header('Location: index.php?module=exam&act=history-total&username='. $username);
+		}
 		require('view/template/exam/history-detail.tpl');
 		break;
 

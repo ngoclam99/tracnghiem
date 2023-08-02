@@ -97,6 +97,7 @@ if ($_GET['load_lichsuthi']) {
 }
 
 if ($_GET['load_lichsuthi_tong']) {
+	// updateStatic();
 	$page = intval($_GET['page']);
 	$perpage = 200;
 	$start = 0;

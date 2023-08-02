@@ -8,7 +8,7 @@
         </h1>
         <ol class="breadcrumb">
             <li><a href="index.php?module=home">Trang Chủ</a></li>
-            <li class="active">Lịch sử thi</li>
+            <li class="active">Báo cáo thống kê</li>
         </ol>
     </section>
     <section class="content animated fadeIn">
@@ -19,7 +19,7 @@
 
                         <div class="panel panel-success" style="margin-top:5px">
                             <div class="panel-body">
-                                <h3>Báo cáo lịch sử thi</h3>
+                                <h3>Báo cáo thống kê tổng</h3>
                                 <hr style=" border: 1px solid #ccc; border-top: none">
                                 <div class="row">
                                     <form method="post">
@@ -64,7 +64,7 @@
                                 <div class="scroll_tb">
                                     <div class="text-center">
                                         <div class="bs-example text-center">
-                                            <ul class="pagination" id="pagination">
+                                            <ul class="pagination hidden" id="pagination">
                                                 
                                             </ul>   
                                         </div>
@@ -107,9 +107,6 @@
                                                 </th>
                                                 <th class="text-center">
                                                     Đơn vị
-                                                </th>
-                                                <th class="text-center">
-                                                    Ngày sinh
                                                 </th>
                                                 <th class="text-center">
                                                     Điện thoại
@@ -236,7 +233,7 @@ th, td {
         .done(function(res) {
             html = '';
             data = JSON.parse(res);
-            $("#tbody").html("");
+            console.log(data['data']);
             if (data['tongluotthi'] > 0) {
                 data['data'].map(function(val, k) {
                     html += `<tr>
@@ -251,7 +248,6 @@ th, td {
                         <td class="text-center">${val['created_at']}</td>
                         <td>${val['doituong']['ten_donvi']}</td>
                         <td>${val['doituongct']['title']}</td>
-                        <td class="text-center">${val['birthdate']}</td>
                         <td class="text-center">${val['phone']}</td>
                         <td class="text-center">${val['cmnd']}</td>
                         <td class="text-center">${val['get_job']}</td>

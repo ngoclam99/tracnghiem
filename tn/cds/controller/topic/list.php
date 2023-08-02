@@ -1,0 +1,9 @@
+<?php
+    include('../../model/m_topic.php');
+    $page = $_GET['page'];
+    $search = $_GET['search'];
+    $pageSize = $_GET['pageSize'];
+    $questions = tGet($page,$search,$pageSize);
+    header("Content-Type: application/json");
+    echo json_encode($questions);
+?>

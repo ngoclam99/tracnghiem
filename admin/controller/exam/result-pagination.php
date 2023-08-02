@@ -11,6 +11,5 @@ include('../../model/m_exam.php');
 $id = $_GET["id"];
 
 $result = exResultPagination($id);
-
 header("Content-Type: application/json");
 echo json_encode($result);

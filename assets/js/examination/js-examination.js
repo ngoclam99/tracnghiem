@@ -85,11 +85,11 @@ $('#btnSaveExamResult').click(async function (e) {
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Xác nhận nộp',
-                cancelButtonText: 'Tiếp tục làm bài',
-                showCloseButton: false,
-                showCancelButton: false,
-                focusConfirm: false,
-                allowOutsideClick: false
+                cancelButtonText: 'Tiếp tục làm bài'
+                // showCloseButton: false,
+                // showCancelButton: false,
+                // focusConfirm: false,
+                // allowOutsideClick: false
             }).then((result) => {
                 if (result.isConfirmed) {
                     submited = true;

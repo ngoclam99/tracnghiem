@@ -8,7 +8,7 @@ deny from 79.142.64.17
 #Options All
 #Options - MultiViews
 RewriteEngine on
-RewriteBase /kh
+RewriteBase /
 
 #RewriteCond %{HTTP_REFERER} !^$
 #RewriteCond %{HTTP_REFERER} !^^http://(www\.)?cd4design\.net/.*$ [NC]
@@ -51,6 +51,29 @@ Rewriterule ^gioi-thieu.html$		./?m=info&act=content&id=1
 Rewriterule ^huong-dan-su-dung.html$	./?m=info&act=content&id=2
 Rewriterule ^chinh-sach-bao-mat.html$	./?m=info&act=content&id=3
 Rewriterule ^quy-dinh-su-dung.html$	./?m=info&act=content&id=4
+
+Rewriterule ^index.html$		./index.php?module=home&act=index
+Rewriterule ^the-le-cuoc-thi.html$		./index.php?module=thongbao&act=view&id=1
+Rewriterule tai-lieu-cuoc-thi.html$		./index.php?module=tailieu&act=list
+Rewriterule huong-dan.html$		./index.php?module=huongdan&act=view&id=1
+Rewriterule ^lich-su-thi.html$		./index.php?module=examination&act=history
+Rewriterule ^vao-thi.html$		./index.php?module=examination&act=index
+Rewriterule ^thong-tin-tai-khoan.html$		./index.php?module=member&act=profile
+Rewriterule ^thiet-lap-tai-khoan.html$		./index.php?module=member&act=change-profile
+Rewriterule ^doi-mat-khau.html$		./index.php?module=member&act=change-password
+
+Rewriterule ^doi-mat-khau.html$		./index.php?module=member&act=change-password
+Rewriterule ^dang-xuat.html$		./index.php?module=member&act=logout
+Rewriterule ^dang-ky-tai-khoan.html$		./index.php?module=member&act=register
+Rewriterule ^dang-nhap.html$		./index.php?module=member&act=login
+
+
+
+
+
+
+
+Rewriterule thong-bao-([0-9]*)-([a-zA-Z0-9_-]+).html$		./index.php?module=thongbao&act=view&id=$1  [L,QSA]
 
 
 Rewriterule ^([0-9]*)_([a-zA-Z0-9_-]+).html$     ./?m=cat&id=$1  [L,QSA]

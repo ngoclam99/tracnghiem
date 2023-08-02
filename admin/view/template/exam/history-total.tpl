@@ -46,6 +46,10 @@
                                         </div>
 
                                         <div class="form-group col-md-3 col-lg-4">
+                                            <button type="button" id="timkiem" class="btn btn-warning" value="2" style="margin-top: 24px;">Tìm kiếm</button>
+                                        </div>
+
+                                        <div class="form-group col-md-3 col-lg-4">
                                             <button type="button" id="xuatexcel" class="btn btn-primary" value="1" style="margin-top: 24px;"  name="xuatexcel">Xuất excel</button>
                                         </div>
 
@@ -63,7 +67,7 @@
                                 <div class="scroll_tb">
                                     <div class="text-center">
                                         <div class="bs-example text-center">
-                                            <ul class="pagination" id="pagination">
+                                            <ul class="pagination">
                                                 
                                             </ul>   
                                         </div>
@@ -133,8 +137,15 @@
                                             
                                         </tbody>
                                     </table>
+                                    
                                 </div>
-
+                                <div class="text-center">
+                                    <div class="bs-example text-center">
+                                        <ul class="pagination">
+                                            
+                                        </ul>   
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -217,9 +228,9 @@ th, td {
         loadDT();
     });
 
-    $("#username").on("input", function() {
+    $("#timkiem").click(function() {
         loadDT();
-    });
+    })
 
     function loadDT($page = 0) {
         if (location.href.split('username=').length >= 2) {
@@ -268,14 +279,15 @@ th, td {
                         <td class="text-center">${val['get_job']}</td>
                         <td class="text-center">${val['position']}</td>
                         <td class="text-nowrap">
-                            <a href="index.php?module=exam&amp;act=history-detail&amp;id=${val['id_result']}&amp;candidate=${val['member_id']}">Xem <i class="fa fa-eye text-info"></i></a>
+                            <a href="index.php?module=exam&amp;act=history-detail&amp;id=${val['id_result']}&amp;candidate=${val['member_id']}"><i class="fa fa-eye text-info"></i></a>
+                            <a onclick="return confirm('Bạn có chắc chắn muốn xoá không?')" href="index.php?module=exam&amp;act=history-detail&amp;deleteid=${val['id_result']}&amp;candidate=${val['member_id']}&exam_id=${val['exam_id']}"><i class="fa fa-trash-o text-danger ml-2"></i></a>
                         </td>
 
                     </tr>`;
                 });
                 $("#songuoithi").html(data['tongnguoithi']);
                 $("#soluotthi").html(data['tongluotthi']);
-                $("#pagination").html(data['pagination']);
+                $(".pagination").html(data['pagination']);
                 $("#tbody").html(html);
 
                 $(".page").click(function() {
