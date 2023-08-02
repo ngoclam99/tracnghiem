@@ -201,7 +201,7 @@ function mbList($wp,$search, $page, $pageSize, $total_page, $sum_record = 0, $st
             WHERE (m.username LIKE '%" . $search . "%'
             OR  m.fullname LIKE '%" . $search . "%'
             OR  m.phone LIKE '%" . $search . "%'
-            OR  m.email LIKE '%" . $search . "%') ORDER BY m.id DESC";
+            OR  m.cmnd LIKE '%" . $search . "%') ORDER BY m.id DESC";
             // $sql.= $wp!=null?" AND m.workplace_id ='".$wp."'":"";
             $sql .=" LIMIT " . ($page - 1) * $pageSize . "," . $pageSize ;
 
@@ -211,6 +211,8 @@ function mbList($wp,$search, $page, $pageSize, $total_page, $sum_record = 0, $st
         $result = array();
         $arrdtct = doituongchitiet();
         $arrdt = dmdoituong();
+        $start = ($page - 1) * $pageSize;
+        $stt = $start + 1;
         while ($local = mysql_fetch_assoc($local_list)) {
             $local['stt'] = $stt++;
             if (isset($arrdtct[$local['id_doituong_chitiet']])) {

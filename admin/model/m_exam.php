@@ -8,7 +8,26 @@
 include_once('m_db.php');
 include('classes/m_message.php');
 
+function deleteLichSuThi($id, $member_id, $exam_id) {
+    $exam_result = sql_query("SELECT * FROM exam_results WHERE id = " . $id . " AND member_id = " . $member_id);
 
+    // Xoá bảng chi tiết
+    $sql = "DELETE FROM exam_result_details WHERE exam_result_id = " . $exam_result['id'];
+    mysql_query($sql, dbconnect());
+
+    // // Xoá bảng chi tiết
+    $sql = "DELETE FROM exam_results WHERE id = " . $exam_result['id'];
+    mysql_query($sql, dbconnect());
+    $exam_result = sql_query_array("SELECT * FROM exam_results WHERE exam_id = " . $exam_id . " AND member_id = " . $member_id . " ORDER BY times ASC");
+    $stt = 1;
+    foreach ($exam_result as $k => $v) {
+        $sql = "UPDATE exam_results SET times =  " . $stt . " WHERE id = " . $v['id'];
+        $result = mysql_query($sql, dbconnect());
+        $stt++;
+    }
+    $res = sql_query("SELECT username FROM members where id = " . $member_id);
+    return $res['username'];
+}
 
 function delete_result($result_id)
 {
@@ -68,7 +87,7 @@ function exResultPagination($id)
     $sql = "SELECT q.id,q.title,erd.question_answer,erd.option_id
     FROM exam_result_details erd   
     INNER JOIN questions q ON erd.question_id = q.id         
-    WHERE exam_result_id = '" . $id . "'    
+    WHERE exam_result_id = '" . $id . "' order by erd.stt asc    
     ";
     $result = mysql_query($sql, dbconnect());
     $msg = new Message();
@@ -111,7 +130,7 @@ function exResultSummary($result_id, $candidate)
     INNER JOIN exam_result_details erd ON erd.exam_result_id = er.id
     WHERE er.member_id = '" . $candidate . "'
     AND er.id = '" . $result_id . "'
-    GROUP BY er.id";
+    GROUP BY er.id, e.exam_code, e.title";
     $result = mysql_query($sql, dbconnect());
     $msg = new Message();
     if ($result && mysql_num_rows($result) > 0) {
@@ -685,7 +704,7 @@ function History($page, $search, $pageSize, $workplaces, $exams, $id_doituong)
             FROM exams e
             LEFT JOIN exam_configs ef ON ef.exam_id = e.id
             WHERE e.id = '" . $id . "' 
-            GROUP BY e.id ";
+            GROUP BY e.id order";
             $result = mysql_query($sql, dbconnect());
             $msg = new Message();
             if ($result) {
@@ -1369,7 +1388,7 @@ function History_NumberPersion($page, $search, $pageSize, $workplaces, $exams)
             $wh = " WHERE " . implode(" AND ", $where);
         }
 
-        $sql = "SELECT er.member_id, er.times, er.spent_duration, er.forecast_candidates, er.started_at, er.created_at, er.tongcaudung, ex.title, mb.fullname, mb.birthdate, mb.phone, mb.cmnd, mb.id_doituong, mb.id_doituong_chitiet, mb.get_job, mb.position, mb.username, ex.mark_per_question, (ex.mark_per_question*er.tongcaudung) as tongdiem, ex.number_of_questions, er.id as id_result, mb.id as id_user
+        $sql = "SELECT er.member_id, er.times, er.spent_duration, er.forecast_candidates, er.started_at, er.created_at, er.tongcaudung, ex.title, mb.fullname, mb.birthdate, mb.phone, mb.cmnd, mb.id_doituong, mb.id_doituong_chitiet, mb.get_job, mb.position, mb.username, ex.mark_per_question, (ex.mark_per_question*er.tongcaudung) as tongdiem, ex.number_of_questions, er.id as id_result, mb.id as id_user, er.exam_id
             FROM exam_results er
             INNER JOIN exams ex ON ex.id = er.exam_id
             INNER JOIN members mb ON mb.id = er.member_id " . $wh . "
@@ -1438,6 +1457,28 @@ function History_NumberPersion($page, $search, $pageSize, $workplaces, $exams)
     }
 
     function getLichSuThi_Tong($id, $id_dt, $id_dtct, $username, $page, $perpage, $total_page, $start) {
+
+        // $sql = "SELECT t2.* FROM dm_doituong t1 
+        // INNER JOIN doituong_chitiet t2 ON t1.id = t2.id_doituong WHERE t1.id = 4";
+
+        // $result = mysql_query($sql, dbconnect());
+        // while ($row = mysql_fetch_assoc($result)) {
+        //     $arr[] = $row;
+        // }
+        // if (!empty($arr)) {
+        //     foreach ($arr as $k => $v) {
+        //        $sql = "SELECT mb.id_doituong, mb.id_doituong_chitiet, ex.is_stat, t1.member_id, COUNT( DISTINCT t1.member_id ) AS tongthisinh, COUNT(t1.member_id ) AS tongluotthisinh
+        //         FROM exam_results t1
+        //         INNER JOIN exams AS ex ON t1.exam_id = ex.id
+        //         INNER JOIN members AS mb ON t1.member_id = mb.id WHERE ex.id = 25
+        //         AND mb.id_doituong_chitiet = " . $v['id'] ."";
+        //        $row = sql_query($sql);
+        //        $arr[$k]['member_id'] = $row['member_id'];
+        //        $arr[$k]['tongthisinh'] = $row['tongthisinh'];
+        //        $arr[$k]['tongluotthisinh'] = $row['tongluotthisinh'];
+        //     }
+        // }
+
         $where = array();
         if (!empty($id)) {
             $where[] = "ex.id IN (" . implode(",", $id) . ")";
@@ -1459,63 +1500,73 @@ function History_NumberPersion($page, $search, $pageSize, $workplaces, $exams)
             $wh = " WHERE " . implode(" AND ", $where);
         }
 
-        //   $sql = "SELECT t1.*, mb.fullname, ex.number_of_questions, t1.spent_duration FROM `exam_results` t1 INNER JOIN exams ex ON ex.id = t1.exam_id INNER JOIN members as mb ON t1.member_id = mb.id WHERE ex.is_stat = 1 ORDER BY `tongcaudung` DESC, spent_duration ASC LIMIT 100";
-        // $result = mysql_query($sql, dbconnect());
-        // $arrRes = array();
-        // while ($row = mysql_fetch_assoc($result)) {
-        //     $timeStart =  strtotime($row['started_at']);
-        //     $timeEnd =  strtotime($row['created_at']);
-        //     $row['time_detail'] = $timeEnd - $timeStart;
-        //     $arrRes[$row['member_id']][] = $row;
-        // }
+        $sql = "SELECT t1.*, mb.fullname, ex.number_of_questions, t1.spent_duration, ex.mark_per_question, ex.number_of_questions, mb.id_doituong, mb.id_doituong_chitiet,
+            mb.fullname, mb.birthdate, mb.phone, mb.cmnd, mb.username, mb.id, ex.title
+            FROM `exam_results` t1 
+            INNER JOIN exams ex ON ex.id = t1.exam_id 
+            INNER JOIN members as mb ON t1.member_id = mb.id
+            " . $wh . " ORDER BY `tongcaudung` DESC, spent_duration ASC LIMIT 2000";
+        $result = mysql_query($sql, dbconnect());
+        $arrRes = array();
 
-        // $arrNew = array();
-        // foreach ($arrRes as $k => $v) {
-        //     foreach ($v as $k1 => $v1) {
-        //         if ($k1 == 0) {
-        //             array_push($arrNew, $v1);
-        //         } else {
-        //             unset($v1);
-        //         }
-        //     }
+        // $user = sql_query("SELECT COUNT(*) as tong FROM members");
 
-        //     if (sizeof($arrNew) == 10) {
-        //         break;
-        //     }
-        // }
-        // unset($arrRes);
-        // $arrCauHoi = array();
-        // foreach ($arrNew as $k => $v) {
-        //     $arrCauHoi[$v['tongcaudung']][] = $v;
-        // }
-        // unset($arrNew);
-        // $arrNew = array();
-        // foreach ($arrCauHoi as $k => $v) {
-        //     if (sizeof($v) > 0) {
-        //         usort($v, compareByTimeNguoiThi($a, $b));
-        //         foreach ($v as $v1) {
-        //             array_push($arrNew, $v);
-        //         }
-        //     } else {
-        //         array_push($arrNew, $v);
-        //     }
-        // }
-        // pr($arrNew);
+        // $targetNumber = 10;
+        // $numberList = [2295];
 
-        $sql = "SELECT mb.id, er.member_id, er.times, er.spent_duration, er.forecast_candidates, er.started_at, er.created_at, ex.title, mb.fullname, mb.birthdate, mb.phone, mb.cmnd, mb.id_doituong, mb.id_doituong_chitiet, mb.get_job, mb.position, mb.username, ex.mark_per_question, ex.number_of_questions, SUM( tongcaudung ) AS tongdung, MAX(er.tongcaudung) as max_dung, (MAX(er.tongcaudung) * mark_per_question) as tongdiem, MAX(er.times) AS tong_lan_thi, mb.username, er.id as erID
-            FROM exam_results er
-            INNER JOIN (
-                SELECT member_id, spent_duration, MAX(tongcaudung) AS tongdung
-                FROM exam_results
-                GROUP BY member_id
-            ) t2 ON er.member_id = t2.member_id AND er.tongcaudung = t2.tongdung
-            INNER JOIN exams ex ON ex.id = er.exam_id
-            INNER JOIN members mb ON mb.id = er.member_id " . $wh . "
-            GROUP BY er.member_id
-            ORDER BY tongdiem DESC, er.spent_duration ASC
-            LIMIT " . $start . " , " . $perpage;
-        $arr = sql_query_array($sql);
+        // $closest = findClosestNumber($targetNumber, $numberList);
+        // pr("The closest number to $targetNumber is $closest");
 
+        while ($row = mysql_fetch_assoc($result)) {
+            $timeStart =  strtotime($row['started_at']);
+            $timeEnd =  strtotime($row['created_at']);
+            $row['time_detail'] = $timeEnd - $timeStart;
+            $row['tongdiem'] = $row['tongcaudung'] * $row['mark_per_question'];
+            $row['max_dung'] = $row['tongcaudung'];
+            $arrRes[$row['member_id']][] = $row;
+        }
+
+        $arrNew = array();
+        $arrMember = array();
+        foreach ($arrRes as $k => $v) {
+            $arr = array();
+            foreach ($v as $k1 => $v1) {
+                $arr[] = $v1['times'];
+                if ($k1 == 0) {
+                    $arrNew[$v1['member_id']] = $v1;
+                    $arrMember[] = $v1['member_id'];
+                } else {
+                    unset($v1);
+                }
+            }
+
+            $getLanThiMax = sql_query("SELECT MAX(times) as max FROM exam_results where member_id = " . $arrNew[$k]['member_id']);
+            $arrNew[$k]['tong_lan_thi'] = $getLanThiMax['max'];
+        }
+
+        unset($arrRes);
+        $arrCauHoi = array();
+        foreach ($arrNew as $k => $v) {
+            $arrNew[$k]['score'] = $v['tongcaudung'] + (1/$v['spent_duration']);
+        }
+        
+        usort($arrNew, compareByTimeNguoiThi($a, $b, 'score'));
+        // $sql = "SELECT mb.id, er.member_id, er.times, er.spent_duration, er.forecast_candidates, er.started_at, er.created_at, ex.title, mb.fullname, mb.birthdate, mb.phone, mb.cmnd, mb.id_doituong, mb.id_doituong_chitiet, mb.get_job, mb.position, mb.username, ex.mark_per_question, ex.number_of_questions, SUM( tongcaudung ) AS tongdung, MAX(er.tongcaudung) as max_dung, (MAX(er.tongcaudung) * mark_per_question) as tongdiem, MAX(er.times) AS tong_lan_thi, mb.username, er.id as erID
+        //     FROM exam_results er
+        //     INNER JOIN (
+        //         SELECT member_id, spent_duration, MAX(tongcaudung) AS tongdung
+        //         FROM exam_results
+        //         GROUP BY member_id
+        //     ) t2 ON er.member_id = t2.member_id AND er.tongcaudung = t2.tongdung
+        //     INNER JOIN exams ex ON ex.id = er.exam_id
+        //     INNER JOIN members mb ON mb.id = er.member_id " . $wh . "
+        //     GROUP BY er.member_id
+        //     ORDER BY tongdiem DESC, er.spent_duration ASC
+        //     LIMIT " . $start . " , " . $perpage;
+            
+        // $arr = sql_query_array($sql);
+        $arr = array();
+        $arr = $arrNew;
         if (!empty($arr)) {
             $arrdtct = doituongchitiet();
             $arrdt = dmdoituong();
@@ -1535,20 +1586,45 @@ function History_NumberPersion($page, $search, $pageSize, $workplaces, $exams)
                 }
                 $arr[$k]['spent_duration'] = seconds2human($v['spent_duration']);
             }
-        }
 
-        $phantrang = listPhanTrang($total_page, $page);
+        }
+        $arr = array_values($arr);
+        // $phantrang = listPhanTrang($total_page, $page);
         return array(
             'data' => $arr,
-            'pagination' => $phantrang,
+            // 'pagination' => $phantrang,
         );
     }
 
-    function compareByTimeNguoiThi($a, $b) {
-        if ($a['time_detail'] == $b['time_detail']) {
+    function compareByTongThiSinh($a, $b) {
+        if ($a['tongthisinh'] == $b['tongthisinh']) {
             return 0;
         }
-        return ($a['time_detail'] > $b['time_detail']) ? -1 : 1;
+        return ($a['tongthisinh'] > $b['tongthisinh']) ? -1 : 1;
+    }
+
+
+    function findClosestNumber($target, $numbers) {
+        $closestNumber = null;
+        $closestDifference = null;
+
+        foreach ($numbers as $number) {
+            $difference = abs($target - $number);
+
+            if ($closestDifference === null || $difference < $closestDifference) {
+                $closestNumber = $number;
+                $closestDifference = $difference;
+            }
+        }
+
+        return $closestNumber;
+    }
+
+    function compareByTimeNguoiThi($a, $b, $k) {
+        if ($a[$k] == $b[$k]) {
+            return 0;
+        }
+        return ($a[$k] > $b[$k]) ? -1 : 1;
     }
 
     function CountToalgetLichSuThi_Tong($id, $id_dt, $id_dtct, $username, $page, $perpage) {
@@ -1754,174 +1830,231 @@ function History_NumberPersion($page, $search, $pageSize, $workplaces, $exams)
 // PHP extension php_zip enabled
 // PHP extension php_xml enabled
 // PHP extension php_gd2 enabled (if not compiled in)
-    function xuatExcelCuocThi($data = array()) {
-        $objPHPExcel                 = new PHPExcel(); 
-        $nam                         = date('d/m/Y H:i:s');
-        $filename                    = 'Báo cáo tổng cả cuộc thi';
-        // Read the file
-        $objPHPExcel->getProperties()->setCreator("Văn Lâm")
-        ->setLastModifiedBy("Administrator")
-        ->setTitle("Báo cáo tổng cả cuộc thi")
-        ->setSubject("Báo cáo tổng cả cuộc thi");
-        $objPHPExcel->getDefaultStyle()->getFont()->setName('Times new Roman')->setSize(13);
+function xuatExcelCuocThi($data = array()) {
+    $objPHPExcel                 = new PHPExcel(); 
+    $nam                         = date('d/m/Y H:i:s');
+    $filename                    = 'Báo cáo tổng cả cuộc thi';
+    // Read the file
+    $objPHPExcel->getProperties()->setCreator("Văn Lâm")
+    ->setLastModifiedBy("Administrator")
+    ->setTitle("Báo cáo tổng cả cuộc thi")
+    ->setSubject("Báo cáo tổng cả cuộc thi");
+    $objPHPExcel->getDefaultStyle()->getFont()->setName('Times new Roman')->setSize(13);
 
-            /**********************************************************************
-            ****************          FILE EXCEL 8.1               ****************
-            ****************                                       ****************
-            ***********************************************************************/
-            $objPHPExcel->getActiveSheet()->setTitle("Báo cáo tổng cả cuộc thi");
-            $day= date('Y/m/d');
-            // pr($sinhvien);
-            $dem = sizeof($data['arr']) + 3;
+        /**********************************************************************
+        ****************          FILE EXCEL 8.1               ****************
+        ****************                                       ****************
+        ***********************************************************************/
+        $objPHPExcel->getActiveSheet()->setTitle("Báo cáo tổng cả cuộc thi");
+        $day= date('Y/m/d');
+        // pr($sinhvien);
+        $dem = sizeof($data['arr']) + 3;
 
-            //Border
-           //Border
-            $styleArray = array(
-                'borders' => array(
-                    'allborders' => array(
-                        'style' => PHPExcel_Style_Border::BORDER_THIN
-                    )
+        //Border
+       //Border
+        $styleArray = array(
+            'borders' => array(
+                'allborders' => array(
+                    'style' => PHPExcel_Style_Border::BORDER_THIN
                 )
-            );
-            $objPHPExcel->getActiveSheet()->getStyle('A3:N'.$dem)->applyFromArray($styleArray);
-            unset($styleArray);
-            // Căn cỡ cột tự động
-            foreach(range('A','Z') as $columnID){
-                $objPHPExcel->getActiveSheet()->getColumnDimension($columnID)->setAutoSize(true);
-            }
-
-            // Căn cỡ hàng tự động
-            foreach($objPHPExcel->getActiveSheet()->getRowDimensions() as $rd) {
-                $rd->setRowHeight(-1);
-            }
-
-            //Xuống dòng
-            $objPHPExcel->getActiveSheet()->getStyle('A5:J5')->getAlignment()->setWrapText(true);
-
-            // Merge cell
-            $array_merge = array('A1:E1');
-            foreach($array_merge as $cell){
-                $objPHPExcel->getActiveSheet()->mergeCells($cell);
-            }
-            // Căn giữa ngang
-            $canngang= array();
-            foreach($canngang as $cell){
-                $objPHPExcel->getActiveSheet('G' . $dem . ':I' . $dem, 'L' . $dem . ':M' . $dem)->getStyle($cell)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-            }
-
-            // Căn giữa dọc
-            $array_vertical_center = array('A1:K15');
-            foreach($array_vertical_center as $cell){
-                $objPHPExcel->getActiveSheet()->getStyle($cell)->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
-            }
-
-            // In đậm
-            $array_bold = array('A1', 'A3:M3');
-            foreach($array_bold as $cell){
-                $objPHPExcel->getActiveSheet()->getStyle($cell)->getFont()->setBold(true);
-            }
-            // In nghiêng
-            $array_italic = array();
-            foreach($array_italic as $cell){
-                $objPHPExcel->getActiveSheet()->getStyle($cell)->getFont()->setItalic(true);
-            }
-
-            // Chỉnh cỡ font
-            $array_font_size = array(
-                'A1' => 16,
-            );
-            foreach($array_font_size as $key => $value){
-                $objPHPExcel->getActiveSheet()->getStyle($key)->getFont()->setSize($value);
-            }
-
-            // Chỉnh cỡ cột
-            $array_column = array(
-                'A' => 4,
-                'B' => 23,
-                'C' => 12,
-                'D' => 11,
-                'E' => 13,
-                'F' => 45,
-                'G' => 15,
-                'H' => 15,
-                'J'=> 15,
-                'I'=>12,
-                'J'=>12,
-                'K'=>12,
-                'L'=>12,
-                'M'=>12,
-                'N'=>12,
-            );
-
-            foreach($array_column as $key => $value){
-                $objPHPExcel->getActiveSheet()->getColumnDimension($key)->setAutoSize(false);
-                $objPHPExcel->getActiveSheet()->getColumnDimension($key)->setWidth($value);
-            }
-            //Chỉnh cỡ hàng fix cứng
-            $array_row = array(
-                1 => 50
-
-            );
-            foreach($array_row as $key => $value){
-                $objPHPExcel->getActiveSheet()->getRowDimension($key)->setRowHeight($value);
-            }
-            //*******************************************
-            //************* NỘI DUNG ********************
-            //*******************************************
-            $title = "XUẤT BÁO CÁO THỐNG KÊ THI SINH CẢ CUỘC THI";
-            // $array_content = $this->column_tieude($title)['header'];
-            $array_content = array(
-                'A1'  => 'BÁO CÁO TỔNG CẢ CUỘC THI ' . date('d/m/Y') ,
-                'B2' => 'Tổng số thí sinh: ' . $data['total'], 
-                'C2' => 'Tổng lượt thi: ' . $data['tong_luotthi'], 
-                'A3' => 'STT',
-                'B3' => 'Họ và tên',
-                'C3' => 'Số điện thoại',
-                'D3' => 'Ngày sinh',
-                'E3' => 'Email',
-                'F3' => 'Cuộc thi',
-                'G3' => 'Tỉnh',
-                'H3' => 'Huyện',
-                'I3' => 'Xã',
-                'J3' => 'Địa chỉ',
-                'K3' => 'Đơn vị',
-                'L3' => 'Tổng lần thi',
-                'M3' => 'Số điểm',
-            );
-            
-            $indexRow = 4;
-            
-            foreach ($data['arr'] AS $k => $v)
-            {
-                $array_content['A'.$indexRow] = $k+1;
-                $array_content['B'.$indexRow] = $v['fullname'];
-                $array_content['C'.$indexRow] = $v['phone'];
-                $array_content['D'.$indexRow] = $v['birthdate'];
-                $array_content['E'.$indexRow] = $v['email'];
-                $array_content['F'.$indexRow] = $v['title'];
-                $array_content['G'.$indexRow] = $v['tinh']['full_name'];
-                $array_content['H'.$indexRow] = $v['huyen']['full_name'];
-                $array_content['I'.$indexRow] = $v['xa']['full_name'];
-                $array_content['J'.$indexRow] = $v['address'];
-                $array_content['K'.$indexRow] = $v['doituong']['title'];
-                $array_content['L'.$indexRow] = $v['tonglanthi'];
-                $array_content['M'.$indexRow] = $v['tongcaudung']*$v['mark_per_question'];
-                $indexRow++;
-            }
-
-
-            // Muốn thêm nội dung động thì foreach array push là xong.
-            foreach($array_content as $key => $value){
-                $objPHPExcel->getActiveSheet()->setCellValue($key,$value);
-            }
-            // End chỉnh sửa nội dung
-            // ob_end_clean();
-            if (ob_get_contents()) ob_end_clean();
-            header("Content-type: application/vnd.ms-excel");
-            header("Content-Disposition: attachment;filename=".$filename.".xls");
-            header("Cache-Control: max-age=0");
-
-            $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
-            $objWriter->save('php://output');
-            exit();
+            )
+        );
+        $objPHPExcel->getActiveSheet()->getStyle('A3:N'.$dem)->applyFromArray($styleArray);
+        unset($styleArray);
+        // Căn cỡ cột tự động
+        foreach(range('A','Z') as $columnID){
+            $objPHPExcel->getActiveSheet()->getColumnDimension($columnID)->setAutoSize(true);
         }
+
+        // Căn cỡ hàng tự động
+        foreach($objPHPExcel->getActiveSheet()->getRowDimensions() as $rd) {
+            $rd->setRowHeight(-1);
+        }
+
+        //Xuống dòng
+        $objPHPExcel->getActiveSheet()->getStyle('A5:J5')->getAlignment()->setWrapText(true);
+
+        // Merge cell
+        $array_merge = array('A1:E1');
+        foreach($array_merge as $cell){
+            $objPHPExcel->getActiveSheet()->mergeCells($cell);
+        }
+        // Căn giữa ngang
+        $canngang= array();
+        foreach($canngang as $cell){
+            $objPHPExcel->getActiveSheet('G' . $dem . ':I' . $dem, 'L' . $dem . ':M' . $dem)->getStyle($cell)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        }
+
+        // Căn giữa dọc
+        $array_vertical_center = array('A1:K15');
+        foreach($array_vertical_center as $cell){
+            $objPHPExcel->getActiveSheet()->getStyle($cell)->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+        }
+
+        // In đậm
+        $array_bold = array('A1', 'A3:M3');
+        foreach($array_bold as $cell){
+            $objPHPExcel->getActiveSheet()->getStyle($cell)->getFont()->setBold(true);
+        }
+        // In nghiêng
+        $array_italic = array();
+        foreach($array_italic as $cell){
+            $objPHPExcel->getActiveSheet()->getStyle($cell)->getFont()->setItalic(true);
+        }
+
+        // Chỉnh cỡ font
+        $array_font_size = array(
+            'A1' => 16,
+        );
+        foreach($array_font_size as $key => $value){
+            $objPHPExcel->getActiveSheet()->getStyle($key)->getFont()->setSize($value);
+        }
+
+        // Chỉnh cỡ cột
+        $array_column = array(
+            'A' => 4,
+            'B' => 23,
+            'C' => 12,
+            'D' => 11,
+            'E' => 13,
+            'F' => 45,
+            'G' => 15,
+            'H' => 15,
+            'J'=> 15,
+            'I'=>12,
+            'J'=>12,
+            'K'=>12,
+            'L'=>12,
+            'M'=>12,
+            'N'=>12,
+        );
+
+        foreach($array_column as $key => $value){
+            $objPHPExcel->getActiveSheet()->getColumnDimension($key)->setAutoSize(false);
+            $objPHPExcel->getActiveSheet()->getColumnDimension($key)->setWidth($value);
+        }
+        //Chỉnh cỡ hàng fix cứng
+        $array_row = array(
+            1 => 50
+
+        );
+        foreach($array_row as $key => $value){
+            $objPHPExcel->getActiveSheet()->getRowDimension($key)->setRowHeight($value);
+        }
+        //*******************************************
+        //************* NỘI DUNG ********************
+        //*******************************************
+        $title = "XUẤT BÁO CÁO THỐNG KÊ THI SINH CẢ CUỘC THI";
+        // $array_content = $this->column_tieude($title)['header'];
+        $array_content = array(
+            'A1'  => 'BÁO CÁO TỔNG CẢ CUỘC THI ' . date('d/m/Y') ,
+            'B2' => 'Tổng số thí sinh: ' . $data['total'], 
+            'C2' => 'Tổng lượt thi: ' . $data['tong_luotthi'], 
+            'A3' => 'STT',
+            'B3' => 'Họ và tên',
+            'C3' => 'Số điện thoại',
+            'D3' => 'Ngày sinh',
+            'E3' => 'Email',
+            'F3' => 'Cuộc thi',
+            'G3' => 'Tỉnh',
+            'H3' => 'Huyện',
+            'I3' => 'Xã',
+            'J3' => 'Địa chỉ',
+            'K3' => 'Đơn vị',
+            'L3' => 'Tổng lần thi',
+            'M3' => 'Số điểm',
+        );
+        
+        $indexRow = 4;
+        
+        foreach ($data['arr'] AS $k => $v)
+        {
+            $array_content['A'.$indexRow] = $k+1;
+            $array_content['B'.$indexRow] = $v['fullname'];
+            $array_content['C'.$indexRow] = $v['phone'];
+            $array_content['D'.$indexRow] = $v['birthdate'];
+            $array_content['E'.$indexRow] = $v['email'];
+            $array_content['F'.$indexRow] = $v['title'];
+            $array_content['G'.$indexRow] = $v['tinh']['full_name'];
+            $array_content['H'.$indexRow] = $v['huyen']['full_name'];
+            $array_content['I'.$indexRow] = $v['xa']['full_name'];
+            $array_content['J'.$indexRow] = $v['address'];
+            $array_content['K'.$indexRow] = $v['doituong']['title'];
+            $array_content['L'.$indexRow] = $v['tonglanthi'];
+            $array_content['M'.$indexRow] = $v['tongcaudung']*$v['mark_per_question'];
+            $indexRow++;
+        }
+
+
+        // Muốn thêm nội dung động thì foreach array push là xong.
+        foreach($array_content as $key => $value){
+            $objPHPExcel->getActiveSheet()->setCellValue($key,$value);
+        }
+        // End chỉnh sửa nội dung
+        // ob_end_clean();
+        if (ob_get_contents()) ob_end_clean();
+        header("Content-type: application/vnd.ms-excel");
+        header("Content-Disposition: attachment;filename=".$filename.".xls");
+        header("Cache-Control: max-age=0");
+
+        $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
+        $objWriter->save('php://output');
+        exit();
+    }
+
+//add can bo
+function updateLastStatic($id, $score) {
+    mysql_query("update exam_results set 
+    score = '".$score."' WHERE id = " . $id,
+    dbconnect());
+}
+
+function updateStatic() {
+    $sql = "SELECT * FROM exam_results WHERE score = 0 ORDER BY id ASC LIMIT 2000";
+    $result = mysql_query($sql, dbconnect());
+    $i = 0;
+    while ($v = mysql_fetch_assoc($result)) {
+        $score = $v['tongcaudung'] + (1/$v['spent_duration']);
+        updateLastStatic($v['id'], $score);
+        echo ($i++ . "\n");
+    }
+    // $sql = "SELECT t1.*, mb.fullname, ex.number_of_questions, t1.spent_duration, ex.mark_per_question, ex.number_of_questions, mb.id_doituong, mb.id_doituong_chitiet,
+    //         mb.fullname, mb.birthdate, mb.phone, mb.cmnd, mb.username, mb.id, ex.title
+    //         FROM `exam_results` t1 
+    //         INNER JOIN exams ex ON ex.id = t1.exam_id 
+    //         INNER JOIN members as mb ON t1.member_id = mb.id ORDER BY `tongcaudung` DESC, spent_duration ASC LIMIT 1000";
+    //     $result = mysql_query($sql, dbconnect());
+    //     $arrRes = array();
+
+    // while ($row = mysql_fetch_assoc($result)) {
+    //     $timeStart =  strtotime($row['started_at']);
+    //     $timeEnd =  strtotime($row['created_at']);
+    //     $row['time_detail'] = $timeEnd - $timeStart;
+    //     $row['tongdiem'] = $row['tongcaudung'] * $row['mark_per_question'];
+    //     $row['max_dung'] = $row['tongcaudung'];
+    //     $arrRes[$row['member_id']][] = $row;
+    // }
+
+    // $arrNew = array();
+    // foreach ($arrRes as $k => $v) {
+    //     $arr = array();
+    //     foreach ($v as $k1 => $v1) {
+    //         $arr[] = $v1['times'];
+    //         if ($k1 == 0) {
+    //             $arrNew[$v1['member_id']] = $v1;
+    //         } else {
+    //             unset($v1);
+    //         }
+    //     }
+    //     $arrNew[$k]['tong_lan_thi'] = max($arr);
+    // }
+
+    // unset($arrRes);
+    // $arrCauHoi = array();
+    // foreach ($arrNew as $k => $v) {
+    //     $arrNew[$k]['score'] = $v['tongcaudung'] + (1/$v['spent_duration']);
+    // }
+    
+    // usort($arrNew, compareByTimeNguoiThi($a, $b, 'score'));
+    pr($arrNew);
+}

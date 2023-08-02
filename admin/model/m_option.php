@@ -10,9 +10,9 @@ include_once('classes/m_message.php');
 include_once('classes/m_option.php');
 function oGet($question_id, $random_options)
 {
-    $sql = "SELECT id,content,correct FROM options WHERE question_id = '" . $question_id . "'";
+    $sql = "SELECT id,content,correct FROM options WHERE question_id = '" . $question_id . "' ORDER BY id ASC";
     if ($random_options == 1) {
-        $sql .= "  ORDER BY RAND()";
+        // $sql .= "  ORDER BY RAND()";
     }
 
     $options = mysql_query($sql, dbconnect());
@@ -167,4 +167,3 @@ function oDeletebyQuestion($question_id)
         return mysql_error();
     }
 }
-
